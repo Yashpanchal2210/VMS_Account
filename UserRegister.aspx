@@ -181,10 +181,10 @@
             <label for="role">Role:</label>
             <asp:DropDownList ID="Role" runat="server" Width="100%">
                 <asp:ListItem Text="-- Select Role --"></asp:ListItem>
-                <asp:ListItem Text="Store Keeper"></asp:ListItem>
                 <asp:ListItem Text="Commanding Officer"></asp:ListItem>
                 <asp:ListItem Text="Logistic Officer"></asp:ListItem>
                 <asp:ListItem Text="Accounting Officer"></asp:ListItem>
+                <asp:ListItem Text="Store Keeper"></asp:ListItem>
             </asp:DropDownList>
         </div>
         <div>

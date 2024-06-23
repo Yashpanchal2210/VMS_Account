@@ -9,25 +9,22 @@
                 <input type="month" id="monthYearPicker" runat="server" required class="form-control date-picker" style="width: 21%" />
 
                 <label class="col-form-label">Commanding Officer:</label>
-                <select class="form-control" id="coVal" name="coVal">
-                    <option value="">Select</option>
-                </select>
+                <input type="text" class="form-control" id="coVal" name="coVal" style="width: 50%;" />
 
                 <label class="col-form-label">Logistic Officer:</label>
-                <select class="form-control" id="loVal" name="loVal">
-                    <option value="">Select</option>
-                </select>
+                <input type="text" class="form-control" id="loVal" name="loVal" style="width: 50%;" />
 
                 <label class="col-form-label">Accounting Officer:</label>
-                <select class="form-control" id="aoVal" name="aoVal">
-                    <option value="">Select</option>
-                </select>
+                <input type="text" class="form-control" id="aoVal" name="aoVal" style="width: 50%;" />
+
             </div>
             <asp:Button ID="ExportToExcelButton" runat="server" Text="Download Report" OnClick="ExportToExcelButton_Click" CssClass="btn btn-primary" BackColor="#009900" />
         </form>
     </div>
-
-    <script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <%--  <script>
         window.onload = function () {
             getCOData();
         };
@@ -108,5 +105,5 @@
                     console.error('Error fetching item names:', error);
                 });
         }
-    </script>
+    </script>--%>
 </asp:Content>

@@ -11,7 +11,7 @@ namespace VMS_1
 {
 
 
-    public partial class VictuallingManagement
+    public partial class ExtraIssue
     {
 
         /// <summary>
@@ -24,48 +24,30 @@ namespace VMS_1
         protected global::System.Web.UI.HtmlControls.HtmlForm PageForm;
 
         /// <summary>
-        /// monthYearPicker control.
+        /// Button3 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl monthYearPicker;
+        protected global::System.Web.UI.WebControls.Button Button3;
 
         /// <summary>
-        /// GenerateHTMLViewButton control.
+        /// GridViewExtraIssue control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button GenerateHTMLViewButton;
+        protected global::System.Web.UI.WebControls.GridView GridViewExtraIssue;
 
         /// <summary>
-        /// HTMLContentLiteralP2 control.
+        /// lblStatus control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal HTMLContentLiteralP2;
-
-        /// <summary>
-        /// HTMLContentLiteralP8 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal HTMLContentLiteralP8;
-
-        /// <summary>
-        /// HTMLContentLiteralP14 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal HTMLContentLiteralP14;
+        protected global::System.Web.UI.WebControls.Label lblStatus;
     }
 }

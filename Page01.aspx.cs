@@ -22,7 +22,7 @@ namespace VMS_1
         {
             if (!IsPostBack)
             {
-                GetCONames();
+                //GetCONames();
             }
 
             Response.Cache.SetCacheability(HttpCacheability.NoCache);
@@ -31,98 +31,98 @@ namespace VMS_1
             Response.AppendHeader("Pragma", "no-cache");
         }
 
-        [WebMethod]
-        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        public static string[] GetCONames()
-        {
-            HashSet<string> CoNames = new HashSet<string>();
-            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-            string query = "select name from usermaster where Role = 'Commanding Officer'";
+        //[WebMethod]
+        //[ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        //public static string[] GetCONames()
+        //{
+        //    HashSet<string> CoNames = new HashSet<string>();
+        //    string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+        //    string query = "select name from usermaster where Role = 'Commanding Officer'";
 
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connStr))
-                {
-                    conn.Open();
-                    SqlCommand command = new SqlCommand(query, conn);
-                    SqlDataReader reader = command.ExecuteReader();
+        //    try
+        //    {
+        //        using (SqlConnection conn = new SqlConnection(connStr))
+        //        {
+        //            conn.Open();
+        //            SqlCommand command = new SqlCommand(query, conn);
+        //            SqlDataReader reader = command.ExecuteReader();
 
-                    while (reader.Read())
-                    {
-                        CoNames.Add(reader["name"].ToString());
-                    }
-                    reader.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while loading item names: " + ex.Message);
-            }
+        //            while (reader.Read())
+        //            {
+        //                CoNames.Add(reader["name"].ToString());
+        //            }
+        //            reader.Close();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("An error occurred while loading item names: " + ex.Message);
+        //    }
 
-            return CoNames.ToArray();
-        }
+        //    return CoNames.ToArray();
+        //}
 
-        [WebMethod]
-        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        public static string[] GetLONames()
-        {
-            HashSet<string> CoNames = new HashSet<string>();
-            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-            string query = "select name from usermaster where Role = 'Logistic Officer'";
+        //[WebMethod]
+        //[ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        //public static string[] GetLONames()
+        //{
+        //    HashSet<string> CoNames = new HashSet<string>();
+        //    string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+        //    string query = "select name from usermaster where Role = 'Logistic Officer'";
 
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connStr))
-                {
-                    conn.Open();
-                    SqlCommand command = new SqlCommand(query, conn);
-                    SqlDataReader reader = command.ExecuteReader();
+        //    try
+        //    {
+        //        using (SqlConnection conn = new SqlConnection(connStr))
+        //        {
+        //            conn.Open();
+        //            SqlCommand command = new SqlCommand(query, conn);
+        //            SqlDataReader reader = command.ExecuteReader();
 
-                    while (reader.Read())
-                    {
-                        CoNames.Add(reader["name"].ToString());
-                    }
-                    reader.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while loading item names: " + ex.Message);
-            }
+        //            while (reader.Read())
+        //            {
+        //                CoNames.Add(reader["name"].ToString());
+        //            }
+        //            reader.Close();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("An error occurred while loading item names: " + ex.Message);
+        //    }
 
-            return CoNames.ToArray();
-        }
+        //    return CoNames.ToArray();
+        //}
 
-        [WebMethod]
-        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        public static string[] GetAONames()
-        {
-            HashSet<string> AoNames = new HashSet<string>();
-            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-            string query = "select name from usermaster where Role = 'Accounting Officer'";
+        //[WebMethod]
+        //[ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        //public static string[] GetAONames()
+        //{
+        //    HashSet<string> AoNames = new HashSet<string>();
+        //    string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+        //    string query = "select name from usermaster where Role = 'Accounting Officer'";
 
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connStr))
-                {
-                    conn.Open();
-                    SqlCommand command = new SqlCommand(query, conn);
-                    SqlDataReader reader = command.ExecuteReader();
+        //    try
+        //    {
+        //        using (SqlConnection conn = new SqlConnection(connStr))
+        //        {
+        //            conn.Open();
+        //            SqlCommand command = new SqlCommand(query, conn);
+        //            SqlDataReader reader = command.ExecuteReader();
 
-                    while (reader.Read())
-                    {
-                        AoNames.Add(reader["name"].ToString());
-                    }
-                    reader.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while loading item names: " + ex.Message);
-            }
+        //            while (reader.Read())
+        //            {
+        //                AoNames.Add(reader["name"].ToString());
+        //            }
+        //            reader.Close();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("An error occurred while loading item names: " + ex.Message);
+        //    }
 
-            return AoNames.ToArray();
-        }
+        //    return AoNames.ToArray();
+        //}
 
 
         protected void ExportToExcelButton_Click(object sender, EventArgs e)

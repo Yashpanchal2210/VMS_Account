@@ -187,7 +187,7 @@
             <a href="IssueMaster.aspx">Issue Master</a>
             <a href="ItemReceipt.aspx">Item Receipt</a>
             <a href="ItemMaster.aspx">Item Master</a>
-            <a href="RationScale.aspx">Item Price</a>
+            <a href="RationScale.aspx">Item Rate</a>
             <a href="Strength.aspx">Strength</a>
             <% if (IsUserLoggedIn() && IsUserInRole("Admin"))
                 { %>
@@ -220,8 +220,8 @@
             <a href="SailorWorksheet.aspx">Sailor Worksheet</a>
             <a href="Page2_7Report.aspx">Page2-7</a>
             <a href="Page08.aspx">Page 08</a>
-            <a href="ExtraIssueReport.aspx">Extra Issue(Page9)</a>
-            <a href="PaymentIssue.aspx">Payment Issue(Page10-11)</a>
+            <a href="ExtraIssue.aspx">Extra Issue(Page9)</a>
+            <a href="Page10-11.aspx">Payment Issue(Page10-11)</a>
             <a href="freshrationreceipt.aspx">Fresh Ration Receipt(Page 12)</a>
             <a href="ReportsGenerate.aspx">Strength Report(Page 13)</a>
             <a href="Page14.aspx">Page14</a>
@@ -271,7 +271,7 @@
                             <a class="dropdown-item" href="IssueMaster.aspx">Issue Master</a>
                             <a class="dropdown-item" href="ItemReceipt.aspx">Item Receipt</a>
                             <a class="dropdown-item" href="ItemMaster.aspx">Item Master</a>
-                            <a class="dropdown-item" href="RationScale.aspx">Item Price</a>
+                            <a class="dropdown-item" href="RationScale.aspx">Item Rate</a>
                             <a class="dropdown-item" href="Strength.aspx">Strength</a>
                             <% if (IsUserLoggedIn() && IsUserInRole("Admin"))
                                 { %>
@@ -308,8 +308,8 @@
                             <a class="dropdown-item" href="SailorWorksheet.aspx">Sailor Worksheet</a>
                             <a class="dropdown-item" href="Page2_7Report.aspx">Page2-7</a>
                             <a class="dropdown-item" href="Page08.aspx">Page 08</a>
-                            <a class="dropdown-item" href="ExtraIssueReport.aspx">Extra Issue(Page9)</a>
-                            <a class="dropdown-item" href="PaymentIssue.aspx">Payment Issue(Page10-11)</a>
+                            <a class="dropdown-item" href="ExtraIssue.aspx">Extra Issue(Page9)</a>
+                            <a class="dropdown-item" href="Page10-11.aspx">Payment Issue(Page10-11)</a>
                             <a class="dropdown-item" href="freshrationreceipt.aspx">Fresh Ration Receipt(Page 12)</a>
                             <a class="dropdown-item" href="ReportsGenerate.aspx">Strength Report(Page 13)</a>
                             <a class="dropdown-item" href="Page14.aspx">Page14</a>

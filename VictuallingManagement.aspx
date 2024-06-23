@@ -2,10 +2,20 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        .table-container {
-            display: flex;
-            overflow-x: auto;
-            white-space: nowrap;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
         }
     </style>
     <div class="container">
@@ -14,13 +24,23 @@
             <div class="form-group">
                 <label for="monthYearPicker">Select Month and Year:</label>
                 <input type="month" id="monthYearPicker" runat="server" required class="form-control date-picker" style="width: 21%" />
-            </div>
-            <asp:Button ID="ExportToExcelButton" runat="server" Text="View" OnClick="ExportToExcelButton_Click" CssClass="btn btn-primary" BackColor="#009900" />
-        </form>
 
-        <div id="tablesContainer" runat="server">
-            <!-- Tables will be displayed here -->
-        </div>
+                <label class="col-form-label">Commanding Officer:</label>
+                <input type="text" class="form-control" id="coVal" name="coVal" style="width: 50%;" />
+
+                <label class="col-form-label">Logistic Officer:</label>
+                <input type="text" class="form-control" id="loVal" name="loVal" style="width: 50%;" />
+
+                <label class="col-form-label">Accounting Officer:</label>
+                <input type="text" class="form-control" id="aoVal" name="aoVal" style="width: 50%;" />
+            </div>
+            <asp:Button ID="GenerateHTMLViewButton" runat="server" Text="Generate HTML View" OnClick="GenerateHTMLViewButton_Click" />
+            <div id="htmlViewContainer">
+                <asp:Literal ID="HTMLContentLiteralP2" runat="server"></asp:Literal>
+                <asp:Literal ID="HTMLContentLiteralP8" runat="server"></asp:Literal>
+                <asp:Literal ID="HTMLContentLiteralP14" runat="server"></asp:Literal>
+            </div>
+        </form>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

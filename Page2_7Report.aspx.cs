@@ -82,7 +82,7 @@ namespace VMS_1
                 worksheet.Row(1).Height = 0;
 
                 // Apply borders to all cells
-                using (ExcelRange range = worksheet.Cells["B2:CI34"])
+                using (ExcelRange range = worksheet.Cells["B2:CY34"])
                 {
                     range.Style.Border.Top.Style = ExcelBorderStyle.Medium;
                     range.Style.Border.Left.Style = ExcelBorderStyle.Medium;

@@ -2,7 +2,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
-        <h2 class="mt-4">Item Price</h2>
+        <h2 class="mt-4">Item Rate</h2>
 
         <form id="itemMasterForm" runat="server">
             <%--<div class="text-right">
@@ -12,7 +12,7 @@
                 <table class="table" id="myTable">
                     <thead>
                         <tr>
-                            <th class="heading">Item Name</th>
+                            <th class="heading">Name</th>
                             <th class="heading">Rate</th>
                             <th class="heading">Action</th>
                         </tr>

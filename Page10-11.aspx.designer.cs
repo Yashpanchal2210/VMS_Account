@@ -11,7 +11,7 @@ namespace VMS_1
 {
 
 
-    public partial class VictuallingManagement
+    public partial class Page10_11
     {
 
         /// <summary>
@@ -33,39 +33,12 @@ namespace VMS_1
         protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl monthYearPicker;
 
         /// <summary>
-        /// GenerateHTMLViewButton control.
+        /// PaymentExportToExcelButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button GenerateHTMLViewButton;
-
-        /// <summary>
-        /// HTMLContentLiteralP2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal HTMLContentLiteralP2;
-
-        /// <summary>
-        /// HTMLContentLiteralP8 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal HTMLContentLiteralP8;
-
-        /// <summary>
-        /// HTMLContentLiteralP14 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal HTMLContentLiteralP14;
+        protected global::System.Web.UI.WebControls.Button PaymentExportToExcelButton;
     }
 }

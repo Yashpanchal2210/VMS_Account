@@ -6,62 +6,62 @@
 
         <form id="usersForm" runat="server">
             <asp:GridView ID="GridViewUser" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowEditing="GridViewUser_RowEditing" OnRowCancelingEdit="GridViewUser_RowCancelingEdit" OnRowDeleting="GridViewUser_RowDeleting" OnRowUpdating="GridViewUser_RowUpdating" Width="100%">
-                <columns>
+                <Columns>
                     <asp:TemplateField HeaderText="Name">
-                        <itemtemplate>
+                        <ItemTemplate>
                             <asp:Label ID="lblName" runat="server" Text='<%# Eval("name") %>'></asp:Label>
-                        </itemtemplate>
-                        <edititemtemplate>
+                        </ItemTemplate>
+                        <EditItemTemplate>
                             <asp:TextBox ID="txtName" runat="server" Text='<%# Bind("name") %>'></asp:TextBox>
-                        </edititemtemplate>
+                        </EditItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Rank">
-                        <itemtemplate>
+                        <ItemTemplate>
                             <asp:Label ID="lblRank" runat="server" Text='<%# Eval("rank") %>'></asp:Label>
-                        </itemtemplate>
-                        <edititemtemplate>
+                        </ItemTemplate>
+                        <EditItemTemplate>
                             <asp:TextBox ID="txtRank" runat="server" Text='<%# Bind("rank") %>'></asp:TextBox>
-                        </edititemtemplate>
+                        </EditItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Designation">
-                        <itemtemplate>
+                        <ItemTemplate>
                             <asp:Label ID="lblDesignation" runat="server" Text='<%# Eval("designation") %>'></asp:Label>
-                        </itemtemplate>
-                        <edititemtemplate>
+                        </ItemTemplate>
+                        <EditItemTemplate>
                             <asp:TextBox ID="txtDesignation" runat="server" Text='<%# Bind("designation") %>'></asp:TextBox>
-                        </edititemtemplate>
+                        </EditItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Nuid">
-                        <itemtemplate>
+                        <ItemTemplate>
                             <asp:Label ID="lblNuid" runat="server" Text='<%# Eval("NudId") %>'></asp:Label>
-                        </itemtemplate>
-                        <edititemtemplate>
+                        </ItemTemplate>
+                        <EditItemTemplate>
                             <asp:TextBox ID="txtNuid" runat="server" Text='<%# Bind("NudId") %>'></asp:TextBox>
-                        </edititemtemplate>
+                        </EditItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Password">
-                        <itemtemplate>
+                        <ItemTemplate>
                             <asp:Label ID="lblPassword" runat="server" Text="********"></asp:Label>
-                        </itemtemplate>
-                        <edititemtemplate>
-                            <asp:TextBox ID="txtPassword" runat="server" Text="********"></asp:TextBox>
-                        </edititemtemplate>
+                        </ItemTemplate>
+                        <EditItemTemplate>
+                            <asp:TextBox ID="txtPassword" runat="server" Text='<%# Bind("Password") %>' ></asp:TextBox>
+                        </EditItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Role">
-                        <itemtemplate>
+                        <ItemTemplate>
                             <asp:Label ID="lblRole" runat="server" Text='<%# Eval("role") %>'></asp:Label>
-                        </itemtemplate>
-                        <edititemtemplate>
+                        </ItemTemplate>
+                        <EditItemTemplate>
                             <asp:DropDownList ID="ddlRole" runat="server" CssClass="form-control">
-                                <asp:ListItem Text="User" Value="User"></asp:ListItem>
-                                <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
-                                <asp:ListItem Text="Logistic Officer" Value="Logistic Officer"></asp:ListItem>
-                                <asp:ListItem Text="Commanding Officer" Value="Commanding Officer"></asp:ListItem>
+                                <asp:ListItem Text="Commanding Officer"></asp:ListItem>
+                                <asp:ListItem Text="Logistic Officer"></asp:ListItem>
+                                <asp:ListItem Text="Accounting Officer"></asp:ListItem>
+                                <asp:ListItem Text="Store Keeper"></asp:ListItem>
                             </asp:DropDownList>
-                        </edititemtemplate>
+                        </EditItemTemplate>
                     </asp:TemplateField>
                     <asp:CommandField ShowEditButton="True" HeaderText="Action" ShowDeleteButton="True" ControlStyle-CssClass="btn" ButtonType="Link" />
-                </columns>
+                </Columns>
             </asp:GridView>
         </form>
     </div>

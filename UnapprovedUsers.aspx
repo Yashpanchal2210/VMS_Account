@@ -5,7 +5,7 @@
         <h2 class="mt-4">Unapproved Users List</h2>
 
         <form id="usersForm" runat="server">
-            <asp:GridView ID="GridViewUser" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowCommand="GridViewUser_RowCommand" Width="100%">
+            <asp:GridView ID="GridViewUser" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowCommand="GridViewUser_RowCommand" OnRowEditing="GridViewUser_RowEditing" OnRowCancelingEdit="GridViewUser_RowCancelingEdit" OnRowUpdating="GridViewUser_RowUpdating" Width="100%">
                 <Columns>
                     <asp:TemplateField HeaderText="Name">
                         <ItemTemplate>
@@ -45,10 +45,10 @@
                         </ItemTemplate>
                         <EditItemTemplate>
                             <asp:DropDownList ID="ddlRole" runat="server" CssClass="form-control">
-                                <asp:ListItem Text="User" Value="User"></asp:ListItem>
-                                <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
+                                <asp:ListItem Text="Commanding Officer" Value="Commanding Officer"></asp:ListItem>
                                 <asp:ListItem Text="Logistic Officer" Value="Logistic Officer"></asp:ListItem>
-                                <asp:ListItem Text="CO" Value="CO"></asp:ListItem>
+                                <asp:ListItem Text="Accounting Officer" Value="Accounting Officer"></asp:ListItem>
+                                <asp:ListItem Text="Store Keeper" Value="Store Keeper"></asp:ListItem>
                             </asp:DropDownList>
                         </EditItemTemplate>
                     </asp:TemplateField>
@@ -56,7 +56,12 @@
                         <ItemTemplate>
                             <asp:Button ID="btnApprove" runat="server" Text="Approve" CommandName="Approve" CommandArgument='<%# Eval("NudId") %>' CssClass="btn btn-success" />
                             <asp:Button ID="btnReject" runat="server" Text="Reject" CommandName="Reject" CommandArgument='<%# Eval("NudId") %>' CssClass="btn btn-danger" />
+                            <asp:Button ID="btnEdit" runat="server" Text="Edit" CommandName="Edit" CommandArgument='<%# Eval("NudId") %>' CssClass="btn btn-warning" />
                         </ItemTemplate>
+                        <EditItemTemplate>
+                            <asp:Button ID="btnUpdate" runat="server" Text="Update" CommandName="Update" CommandArgument='<%# Eval("NudId") %>' CssClass="btn btn-primary" />
+                            <asp:Button ID="btnCancel" runat="server" Text="Cancel" CommandName="Cancel" CssClass="btn btn-secondary" />
+                        </EditItemTemplate>
                     </asp:TemplateField>
                 </Columns>
             </asp:GridView>
