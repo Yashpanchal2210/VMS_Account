@@ -16,8 +16,8 @@
                 <table class="table" id="myTable">
                     <thead>
                         <tr>
-                            <th class="heading">Basic Item</th>
                             <th class="heading">Category</th>
+                            <th class="heading">Basic Item</th>
                             <th class="heading">Denomination</th>
                             <th class="heading">Veg Scale</th>
                             <th class="heading">NonVeg Scale</th>
@@ -26,18 +26,18 @@
                     <tbody id="tableBody" runat="server">
                         <tr>
                             <td>
-                                <%--<input type="text" class="form-control" name="itemname" required />--%>
-                                <asp:DropDownList ID="basicItem" runat="server" CssClass="form-control" onchange="fetchBasicDenom()" required>
-                                    <asp:ListItem Text="Select" Value="" />
-                                </asp:DropDownList>
-                            </td>
-                            <td>
                                 <%--<input type="number" class="form-control" name="officerScale" required min="0" step="0.001" />--%>
                                 <select class="form-control" name="category" id="CategoryBasic" onchange="changeCategory(this.value)" required>
                                     <option value="">Select</option>
                                     <option value="Officer">Officer</option>
                                     <option value="Sailor">Sailor</option>
                                 </select>
+                            </td>
+                            <td>
+                                <%--<input type="text" class="form-control" name="itemname" required />--%>
+                                <asp:DropDownList ID="basicItem" runat="server" CssClass="form-control" onchange="fetchBasicDenom()" required>
+                                    <asp:ListItem Text="Select" Value="" />
+                                </asp:DropDownList>
                             </td>
                             <td>
                                 <input type="text" class="form-control" id="denomsVal" name="denoms" readonly />
@@ -114,16 +114,8 @@
                         <asp:BoundField DataField="Denomination" HeaderText="Denomination" ReadOnly="True" />
                         <asp:BoundField DataField="VegScale" HeaderText="Veg Scale" ReadOnly="True" />
                         <asp:BoundField DataField="NonVegScale" HeaderText="NonVeg Scale" ReadOnly="True" />
-                        <asp:TemplateField HeaderText="InLieu Item">
-                            <ItemTemplate>
-                                <asp:Label ID="lblInLieuItem" runat="server" Text='<%# Eval("InLieuItem") %>'></asp:Label>
-                            </ItemTemplate>
-                            <EditItemTemplate>
-                                <asp:DropDownList ID="ddlInLieuItem" runat="server"></asp:DropDownList>
-                                <asp:HiddenField ID="hfRowIndex" runat="server" Value='<%# Container.DataItemIndex %>' />
-                                <asp:HiddenField ID="hfId" runat="server" Value='<%# Eval("Id") %>' />
-                            </EditItemTemplate>
-                        </asp:TemplateField>
+                        <asp:BoundField DataField="InLieuItem" HeaderText="NonVeg Scale" ReadOnly="True" />
+
                         <asp:TemplateField HeaderText="VegScale">
                             <ItemTemplate>
                                 <asp:Label ID="lblVegScale" runat="server" Text='<%# Eval("InLieuItemVegScale") %>'></asp:Label>
@@ -249,6 +241,32 @@
             hiddenCategory.value = val;
             var caregoryField = document.getElementById("categoryIlue");
             caregoryField.value = val;
+
+            fetch('ItemMaster.aspx/GetCategoryWiseDataItems', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ basicItem: val })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    var inlieuItemDropdown = document.getElementById(`basicItem`);
+                    inlieuItemDropdown.innerHTML = '<option value="">Select</option>';
+
+                    if (data.d && Array.isArray(data.d)) {
+                        data.d.forEach(function (item) {
+                            var option = document.createElement("option");
+                            option.value = item;
+                            option.text = item;
+                            inlieuItemDropdown.add(option);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching in-lieu items:', error);
+                });
+
         }
 
         function fetchInLieuItemsForRow(rowSequence, idValue) {

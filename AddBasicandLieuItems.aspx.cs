@@ -32,7 +32,7 @@ namespace VMS_1
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 string query = @"
-                    select * from BasicLieuItems";
+                    select * from BasicLieuItems ORDER BY Id desc";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
 

@@ -43,7 +43,7 @@ namespace VMS_1
             HashSet<string> itemNames = new HashSet<string>();
             //string connStr = "Data Source=PIYUSH-JHA\\SQLEXPRESS;Initial Catalog=InsProj;Integrated Security=True;Encrypt=False";
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-            string query = "SELECT DISTINCT InLieuItem FROM InLieuItems ORDER BY InLieuItem ASC";
+            string query = "SELECT InLieuItem FROM InLieuItems";
             //string itemquery = "SELECT DISTINCT BasicItem FROM BasicItems ORDER BY BasicItem ASC";
 
             try
@@ -333,7 +333,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT Dates, referenceNos, receivedFrom, itemnames, denominations, quantities FROM ReceiptMaster", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT Dates, referenceNos, receivedFrom, itemnames, denominations, quantities FROM ReceiptMaster ORDER By itemId DESC", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 
@@ -374,7 +374,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand("UPDATE ReceiptMaster SET Dates=@Date, referenceNos=@ReferenceNos, receivedFrom=@ReceivedFrom, itemnames=@ItemNames, denominations=@Denominations, quantities=@Quantities WHERE ID=@ID", conn);
+                    SqlCommand cmd = new SqlCommand("UPDATE ReceiptMaster SET Dates=@Date, referenceNos=@ReferenceNos, receivedFrom=@ReceivedFrom, itemnames=@ItemNames, denominations=@Denominations, quantities=@Quantities WHERE itemid=@ID", conn);
                     cmd.Parameters.AddWithValue("@ID", e.RowIndex);
                     cmd.Parameters.AddWithValue("@Date", date);
                     cmd.Parameters.AddWithValue("@ReferenceNos", referenceNos);

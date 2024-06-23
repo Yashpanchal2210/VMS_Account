@@ -59,7 +59,7 @@
                                 </select>
                             </td>
                             <td>
-                                <input type="number" class="form-control" id="qty" name="qty" required />
+                                <input type="text" class="form-control" id="qty" name="qty" required />
                             </td>
                             <%--<td>
                     <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>--%>
@@ -75,7 +75,78 @@
                 <asp:Button ID="SubmitButton" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-success mr-2" Width="107px" Height="38px" />
             </div>
             <div class="mt-3">
-                <asp:GridView ID="GridViewExtraIssueDivers" runat="server" CssClass="table table-bordered table-striped">
+                <%--<asp:GridView ID="GridViewExtraIssueDivers" runat="server" CssClass="table table-bordered table-striped">
+                </asp:GridView>--%>
+                <asp:GridView ID="GridViewExtraIssueDivers" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowEditing="GridView_RowEditing" OnRowUpdating="GridView_RowUpdating" OnRowCancelingEdit="GridView_RowCancelingEdit"
+                    OnRowDeleting="GridView_RowDeleting" OnRowDataBound="GridView_RowDataBound" DataKeyNames="Id">
+                    <Columns>
+                        <asp:TemplateField HeaderText="Date">
+                            <ItemTemplate>
+                                <asp:Label ID="lblDate" runat="server" Text='<%# Eval("Date") %>'></asp:Label>
+                            </ItemTemplate>
+                            <%--   <EditItemTemplate>
+                                <asp:TextBox ID="lblDate" runat="server" Text='<%# Bind("Date") %>'></asp:TextBox>
+                            </EditItemTemplate>--%>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Name">
+                            <ItemTemplate>
+                                <asp:Label ID="lblname" runat="server" Text='<%# Eval("Name") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="lblname" runat="server" Text='<%# Bind("Name") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Rank">
+                            <ItemTemplate>
+                                <asp:Label ID="lblrank" runat="server" Text='<%# Eval("Rank") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtrank" runat="server" Text='<%# Bind("Rank") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="PNo">
+                            <ItemTemplate>
+                                <asp:Label ID="lblpno" runat="server" Text='<%# Eval("PNo") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtpno" runat="server" Text='<%# Bind("PNo") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Days">
+                            <ItemTemplate>
+                                <asp:Label ID="lbldays" runat="server" Text='<%# Eval("Days") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtdays" runat="server" Text='<%# Bind("Days") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="ItemName">
+                            <ItemTemplate>
+                                <asp:Label ID="lblitemname" runat="server" Text='<%# Eval("ItemName") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:DropDownList ID="ddlitemname" runat="server" CssClass="itemname"></asp:DropDownList>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Qty">
+                            <ItemTemplate>
+                                <asp:Label ID="lblqty" runat="server" Text='<%# Eval("Qty") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtqty" runat="server" Text='<%# Bind("Qty") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Actions">
+                            <ItemTemplate>
+                                <asp:LinkButton ID="EditButton" runat="server" CommandName="Edit" Text="Edit"></asp:LinkButton>
+                                <asp:LinkButton ID="DeleteButton" runat="server" CommandName="Delete" Text="Delete"></asp:LinkButton>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:LinkButton ID="UpdateButton" runat="server" CommandName="Update" Text="Update"></asp:LinkButton>
+                                <asp:LinkButton ID="CancelButton" runat="server" CommandName="Cancel" Text="Cancel"></asp:LinkButton>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
                 </asp:GridView>
             </div>
         </form>
@@ -181,6 +252,8 @@
                     console.error('Error fetching item names:', error);
                 });
         }
+
+}
 
 
     </script>

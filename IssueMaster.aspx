@@ -30,7 +30,7 @@
                     <option value="Wardroom">Wardroom</option>
                     <option value="Galley">Galley</option>
                 </select>
-                <span class="text-danger">PLEASE SELECT TYPE FIRST</span>
+                <span class="text-warning" id="selecttype">PLEASE SELECT TYPE FIRST</span>
             </div>
             <input type="hidden" id="ScalAmount_Val" />
             <input type="hidden" id="ItemCategory_Val" />
@@ -169,7 +169,7 @@
                         </div>
                         <div class="modal-body">
 
-                            <p><span class="font-weight-bolder" id="entitledStrengthValue"></span>Quantity is Entitled for given strength.</p>
+                            <p>Quantity entitled for given strength:&nbsp<span class="font-weight-bolder" id="entitledStrengthValue"></span> </p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -182,14 +182,13 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="infoModalLabel">Entitled Strength Info</h5>
+                            <h5 class="modal-title" id="infoModalLabel">Info</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            Kindly enter approximate strength for which the item is to be issue * number of days 
-           
+                            Entitled Strength = ("Approximate Daily Strength" * "Number Of Days") 
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -217,11 +216,12 @@
 
         function selectCategory(val, row) {
 
-            var categoryVal = document.getElementById("Selected_Category").value;
 
-            if (categoryVal == null || categoryVal == "") {
-                document.getElementById("Selected_Category").value = val;
-            }
+            var categoryVal = document.getElementById('selecttype').style.display = 'none';
+
+            //var categoryVal = document.getElementById("Selected_Category").value;
+
+            document.getElementById("Selected_Category").value = val;
 
             fetch('IssueMaster.aspx/GetInLiueItemsByCategory', {
                 method: 'POST',
@@ -267,7 +267,7 @@
                     }
 
                     // Enable the select element after populating it
-                    
+
                 })
                 .catch(error => {
                     console.error('Error fetching Items:', error);
@@ -513,7 +513,7 @@
                 dropdown.append($('<option></option>').attr('value', entry.Value).text(entry.Text));
             });
         }
-            var selectedCategoryValue = '';
+        var selectedCategoryValue = '';
 
         //function itemcategory_SelectedIndexChanged(element) {
         //    selectedCategoryValue = element.value;

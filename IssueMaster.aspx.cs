@@ -137,35 +137,6 @@ namespace VMS_1
             return categories;
         }
 
-        [WebMethod]
-        public static string GetItemNamesByCategory(string category)
-        {
-            List<string> itemNames = new List<string>();
-
-            // Your SQL query to fetch item names based on the selected category
-            //string connStr = "Data Source=PIYUSH-JHA\\SQLEXPRESS;Initial Catalog=InsProj;Integrated Security=True;Encrypt=False";
-            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-            string query = "SELECT * FROM AlternateItem where ItemID = @Category";
-
-            using (SqlConnection conn = new SqlConnection(connStr))
-            {
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@Category", category);
-                    conn.Open();
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            itemNames.Add(reader["AltItemName"].ToString());
-                        }
-                    }
-                }
-            }
-            return JsonConvert.SerializeObject(itemNames); ;
-        }
-
-
         protected void SubmitButton_Click(object sender, EventArgs e)
         {
             try
@@ -335,7 +306,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM IssueMaster", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM IssueMaster ORDER By Id Desc", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 

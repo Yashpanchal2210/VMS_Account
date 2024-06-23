@@ -34,24 +34,25 @@ namespace VMS_1
             {
                 string query = @"
             SELECT 
-                b.Id AS ID,
-                b.BasicItem AS BasicItem, 
-                b.Category AS Category, 
-                REPLACE(b.Denomination, ',', '') AS Denomination, 
-                FORMAT(b.VegScale, 'N4') AS VegScale, 
-                FORMAT(b.NonVegScale, 'N4') AS NonVegScale, 
-                i.Id AS InlIueId,
-                i.InLieuItem AS InLieuItem, 
-                i.Category AS InLieuItemCategory, 
-                REPLACE(i.Denomination, ',', '') AS InLieuItemDenomination, 
-                FORMAT(i.VegScale, 'N4') AS InLieuItemVegScale, 
-                FORMAT(i.NonVegScale, 'N4') AS InLieuItemNonVegScale
-            FROM 
-                BasicItems b
-            LEFT JOIN 
-                InLieuItems i ON b.Id = i.BasicItemId
-            ORDER BY 
-                b.Id DESC";
+    b.Id AS ID,
+    b.BasicItem AS BasicItem, 
+    b.Category AS Category, 
+    REPLACE(b.Denomination, ',', '') AS Denomination, 
+    FORMAT(b.VegScale, 'N4') AS VegScale, 
+    FORMAT(b.NonVegScale, 'N4') AS NonVegScale, 
+    i.Id AS InlIueId,
+    i.InLieuItem AS InLieuItem, 
+    i.Category AS InLieuItemCategory, 
+    REPLACE(i.Denomination, ',', '') AS InLieuItemDenomination, 
+    FORMAT(i.VegScale, 'N4') AS InLieuItemVegScale, 
+    FORMAT(i.NonVegScale, 'N4') AS InLieuItemNonVegScale
+FROM 
+    BasicItems b
+LEFT JOIN 
+    InLieuItems i ON b.Id = i.BasicItemId
+ORDER BY 
+    b.AddDate DESC, b.Id DESC
+";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
 
@@ -78,6 +79,51 @@ namespace VMS_1
             }
             basicItem.Items.Insert(0, new ListItem("Select", ""));
         }
+
+        [WebMethod]
+        public static List<string> GetCategoryWiseDataItems(string basicItem)
+        {
+            List<string> items = new List<string>();
+            string connectionString = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string idQuery = "SELECT BasicItem FROM BasicLieuItems WHERE Category = @Category";
+                string basicItemValue = null;
+                using (SqlCommand cmd = new SqlCommand(idQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Category", basicItem);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            basicItemValue = reader["BasicItem"].ToString();
+                        }
+                    }
+                }
+
+                if (basicItemValue != null)
+                {
+                    string query = "SELECT ilueItem, ilueDenom FROM BasicLieuItems WHERE BasicItem = @BasicItem";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@BasicItem", basicItemValue);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                items.Add(reader["ilueItem"].ToString());
+                            }
+                        }
+                    }
+                }
+            }
+
+            return items;
+        }
+
 
         [WebMethod]
         public static List<string> GetInLieuItems(string basicItem)
@@ -300,8 +346,6 @@ namespace VMS_1
             ScriptManager.RegisterStartupScript(this, GetType(), "refreshPage", "window.location.href=window.location.href;", true);
             LoadGridView();
         }
-
-
 
         protected void GridView1_RowEditing(object sender, GridViewEditEventArgs e)
         {

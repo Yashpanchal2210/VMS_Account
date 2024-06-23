@@ -25,8 +25,8 @@
                             <th class="heading date" style="width: 123px">Date</th>
                             <th class="heading veg-officer" style="width: 123px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
                             <th class="heading non-veg-officer" style="width: 123px">&nbsp;&nbsp; NonVeg</th>
-                            <th class="heading rik-officer" style="width: 123px"> &nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
-                            <th class="heading rik-officer" style="width: 123px"> &nbsp;&nbsp; NonVeg</th>
+                            <th class="heading rik-officer" style="width: 123px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
+                            <th class="heading rik-officer" style="width: 123px">&nbsp;&nbsp; NonVeg</th>
                             <th class="heading veg-staff" style="width: 123px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
                             <th class="heading non-veg-staff" style="width: 123px">&nbsp;&nbsp; NonVeg</th>
                             <th class="heading rik-staff" style="width: 123px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
@@ -88,7 +88,24 @@
 
             </div>
             <div class="table-responsive">
-                <asp:GridView ID="GridViewStrength" runat="server" CssClass="table table-bordered table-striped">
+                <asp:GridView ID="GridViewStrength" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowEditing="GridViewStrength_RowEditing" OnRowDeleting="GridViewStrength_RowDeleting" DataKeyNames="Id">
+                    <Columns>
+                        <asp:BoundField DataField="Id" Visible="false" HeaderText="ID" ReadOnly="True" />
+                        <asp:BoundField DataField="vegOfficers" HeaderText="vegOfficers" ReadOnly="True" />
+                        <asp:BoundField DataField="nonVegOfficers" HeaderText="nonVegOfficers" ReadOnly="True" />
+                        <asp:BoundField DataField="vegrikOfficers" HeaderText="vegrikOfficers" ReadOnly="True" />
+                        <asp:BoundField DataField="nonVegrikOfficers" HeaderText="nonVegrikOfficers" ReadOnly="True" />
+                        <asp:BoundField DataField="vegSailor" HeaderText="vegSailor" ReadOnly="True" />
+                        <asp:BoundField DataField="nonVegSailor" HeaderText="nonVegSailor" ReadOnly="True" />
+                        <asp:BoundField DataField="vegSailorRik" HeaderText="vegSailorRik" ReadOnly="True" />
+                        <asp:BoundField DataField="nonVegSailorRik" HeaderText="nonVegSailorRik" ReadOnly="True" />
+                        <asp:BoundField DataField="vegNonEntitledOfficer" HeaderText="vegNonEntitledOfficer" ReadOnly="True" />
+                        <asp:BoundField DataField="nonVegNonEntitledOfficer" HeaderText="nonVegNonEntitledOfficer" ReadOnly="True" />
+                        <asp:BoundField DataField="vegNonEntitledSailor" HeaderText="vegNonEntitledSailor" ReadOnly="True" />
+                        <asp:BoundField DataField="NonVegNonEntitledSailor" HeaderText="NonVegNonEntitledSailor" ReadOnly="True" />
+                        <asp:BoundField DataField="civilians" HeaderText="civilians" ReadOnly="True" />
+                        <asp:CommandField ShowEditButton="True" ShowDeleteButton="True" />
+                    </Columns>
                 </asp:GridView>
             </div>
         </form>

@@ -105,7 +105,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Wastage", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Wastage order by id desc", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 

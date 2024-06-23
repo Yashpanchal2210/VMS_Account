@@ -119,7 +119,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM ExtraIssueCategory where Type = 'LeadPoisioning'", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM ExtraIssueCategory where Type = 'LeadPoisioning' Order By Id Desc", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 

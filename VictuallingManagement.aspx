@@ -2,9 +2,11 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        table {
+        /*table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 5px;
+            margin-bottom: 5px;
         }
 
         th, td {
@@ -16,7 +18,7 @@
 
         th {
             background-color: #f2f2f2;
-        }
+        }*/
     </style>
     <div class="container">
         <h2 class="mt-4">Victualling Account</h2>
@@ -36,9 +38,22 @@
             </div>
             <asp:Button ID="GenerateHTMLViewButton" runat="server" Text="Generate HTML View" OnClick="GenerateHTMLViewButton_Click" />
             <div id="htmlViewContainer">
+                <%--Start Page02--%>
                 <asp:Literal ID="HTMLContentLiteralP2" runat="server"></asp:Literal>
+                <%--End Page02--%>
+
+                <%--Start Page2to7--%>
+                <div id="tablesContainerPage2to7" runat="server">
+                </div>
+                <%--End Page2to7--%>
+
+                <%--Start Page8--%>
                 <asp:Literal ID="HTMLContentLiteralP8" runat="server"></asp:Literal>
+                <%--End Page8--%>
+
+                <%--Start Page14--%>
                 <asp:Literal ID="HTMLContentLiteralP14" runat="server"></asp:Literal>
+                <%--End Page14--%>
             </div>
         </form>
     </div>

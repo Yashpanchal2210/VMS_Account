@@ -56,7 +56,7 @@ namespace VMS_1
                         cmd.Parameters.AddWithValue("@Days", i < days.Length ? days[i] : days[0]);
                         cmd.Parameters.AddWithValue("@ItemName", itemName);
                         cmd.Parameters.AddWithValue("@ItemId", itemnameId[i]);
-                        cmd.Parameters.AddWithValue("@Qty", qty[i]);
+                        cmd.Parameters.AddWithValue("@Qty", decimal.Parse(qty[i]));
                         cmd.Parameters.AddWithValue("@Type", "DiversIssue");
 
                         cmd.ExecuteNonQuery();
@@ -65,7 +65,7 @@ namespace VMS_1
                         // Update PresentStockMaster table if ItemName exists
                         SqlCommand updatePresentStockCmd = new SqlCommand("UPDATE PresentStockMaster SET Qty = Qty - @Quantity WHERE ItemName = @ItemName", conn);
                         updatePresentStockCmd.Parameters.AddWithValue("@ItemName", "Milk Fresh");
-                        updatePresentStockCmd.Parameters.AddWithValue("@Quantity", itemName);
+                        updatePresentStockCmd.Parameters.AddWithValue("@Quantity", decimal.Parse(qty[i]));
                         updatePresentStockCmd.Parameters.AddWithValue("@Denos", denomination);
                         updatePresentStockCmd.ExecuteNonQuery();
 
@@ -167,7 +167,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM ExtraIssue", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM ExtraIssue Order By Id desc", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 
@@ -178,6 +178,120 @@ namespace VMS_1
             catch (Exception ex)
             {
                 lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
+            }
+        }
+
+        protected void GridView_RowEditing(object sender, GridViewEditEventArgs e)
+        {
+            GridViewExtraIssueDivers.EditIndex = e.NewEditIndex;
+            LoadGridView();
+
+            // Bind the dropdown list in the edited row
+            GridViewRow row = GridViewExtraIssueDivers.Rows[e.NewEditIndex];
+            DropDownList ddlitemname = (DropDownList)row.FindControl("ddlitemname");
+            if (ddlitemname != null)
+            {
+                ddlitemname.DataSource = GetItemNames(); // Call your GetItemNames method here
+                ddlitemname.DataTextField = "Text";
+                ddlitemname.DataValueField = "Value";
+                ddlitemname.DataBind();
+            }
+        }
+
+
+        protected void GridView_RowUpdating(object sender, GridViewUpdateEventArgs e)
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+
+            GridViewRow row = GridViewExtraIssueDivers.Rows[e.RowIndex];
+            //int id = Convert.ToInt32(GridView.DataKeys[e.RowIndex].Values[0]);
+            //string date = ((TextBox)row.FindControl("lblDate")).Text;
+            string name = ((TextBox)row.FindControl("lblname")).Text;
+            string rank = ((TextBox)row.FindControl("txtrank")).Text;
+            string pno = ((TextBox)row.FindControl("txtpno")).Text;
+            string days = ((TextBox)row.FindControl("txtdays")).Text;
+            DropDownList itemname = (DropDownList)row.FindControl("ddlitemname");
+            string qty = ((TextBox)row.FindControl("txtqty")).Text;
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand("UPDATE ExtraIssue SET Name = @Name, Rank = @Rank, PNo = @PNo, Days = @Days, ItemId = @ItemID,  ItemName=@ItemName, Qty = @Qty WHERE Id=@Id", conn);
+                    cmd.Parameters.AddWithValue("@Id", e.RowIndex);
+                    //cmd.Parameters.AddWithValue("@Date", date);
+                    cmd.Parameters.AddWithValue("@Name", name);
+                    cmd.Parameters.AddWithValue("@Rank", rank);
+                    cmd.Parameters.AddWithValue("@PNo", pno);
+                    cmd.Parameters.AddWithValue("@Days", days);
+                    cmd.Parameters.AddWithValue("@ItemID", itemname);
+                    cmd.Parameters.AddWithValue("@ItemName", itemname);
+                    cmd.Parameters.AddWithValue("@Qty", qty);
+
+                    cmd.ExecuteNonQuery();
+                }
+                GridViewExtraIssueDivers.EditIndex = -1;
+                LoadGridView();
+                lblStatus.Text = "Record updated successfully.";
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = "An error occurred while updating the record: " + ex.Message;
+            }
+        }
+
+        protected void GridView_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow && GridViewExtraIssueDivers.EditIndex == e.Row.RowIndex)
+            {
+                DropDownList ddlitemname = (DropDownList)e.Row.FindControl("ddlitemname");
+                if (ddlitemname != null)
+                {
+                    // Bind the DropDownList to a data source
+                    ddlitemname.DataSource = GetItemNames(); // Set YourDataSource to your data source
+                    ddlitemname.DataTextField = "ItemName";
+                    ddlitemname.DataValueField = "ItemId";
+                    ddlitemname.DataBind();
+
+                    // Set the selected value based on the current row's data
+                    DataRowView drv = (DataRowView)e.Row.DataItem;
+                    ddlitemname.SelectedValue = drv["ItemId"].ToString();
+                }
+            }
+        }
+
+
+        protected void GridView_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+        {
+            GridViewExtraIssueDivers.EditIndex = -1;
+            LoadGridView();
+        }
+
+        protected void GridView_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+
+            try
+            {
+                int id = Convert.ToInt32(GridViewExtraIssueDivers.DataKeys[e.RowIndex].Value);
+
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand("DELETE FROM ExtraIssue WHERE Id=@ID", conn);
+                    cmd.Parameters.AddWithValue("@ID", id);
+
+                    cmd.ExecuteNonQuery();
+                }
+                LoadGridView();
+                lblStatus.Text = "Record deleted successfully.";
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = "An error occurred while deleting the record: " + ex.Message;
             }
         }
 

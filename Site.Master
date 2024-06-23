@@ -222,7 +222,7 @@
             <a href="Page08.aspx">Page 08</a>
             <a href="ExtraIssue.aspx">Extra Issue(Page9)</a>
             <a href="Page10-11.aspx">Payment Issue(Page10-11)</a>
-            <a href="freshrationreceipt.aspx">Fresh Ration Receipt(Page 12)</a>
+            <a href="Page12.aspx">Fresh Ration Receipt(Page 12)</a>
             <a href="ReportsGenerate.aspx">Strength Report(Page 13)</a>
             <a href="Page14.aspx">Page14</a>
             <a href="transfervoucher.aspx">Transfer Voucher</a>
@@ -310,7 +310,7 @@
                             <a class="dropdown-item" href="Page08.aspx">Page 08</a>
                             <a class="dropdown-item" href="ExtraIssue.aspx">Extra Issue(Page9)</a>
                             <a class="dropdown-item" href="Page10-11.aspx">Payment Issue(Page10-11)</a>
-                            <a class="dropdown-item" href="freshrationreceipt.aspx">Fresh Ration Receipt(Page 12)</a>
+                            <a class="dropdown-item" href="Page12.aspx">Fresh Ration Receipt(Page 12)</a>
                             <a class="dropdown-item" href="ReportsGenerate.aspx">Strength Report(Page 13)</a>
                             <a class="dropdown-item" href="Page14.aspx">Page14</a>
                             <a class="dropdown-item" href="transfervoucher.aspx">Transfer Voucher</a>

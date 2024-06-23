@@ -132,7 +132,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM ExtraIssueCategory Where Type = 'LimeJuiceandSugar'", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM ExtraIssueCategory Where Type = 'LimeJuiceandSugar' Order By Id Desc", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 

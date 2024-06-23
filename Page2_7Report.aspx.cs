@@ -34,6 +34,7 @@ namespace VMS_1
             // Get the current date and calculate the previous month
             string[] selectedDate = monthYearPicker.Value.Split('-');
 
+
             DataTable monthEndStockData = GetPreviousMonthData(selectedDate);
 
             // Fetch data from the PresentStockMaster table
@@ -505,7 +506,7 @@ namespace VMS_1
             DataTable dataTable = new DataTable();
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                using (SqlCommand cmd = new SqlCommand("SELECT DISTINCT InLieuItem, Denomination FROM InLieuItems", conn))
+                using (SqlCommand cmd = new SqlCommand("SELECT TOP 72 InLieuItem, Denomination FROM InLieuItems", conn))
                 {
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                     adapter.Fill(dataTable);

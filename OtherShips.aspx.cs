@@ -189,7 +189,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM otherships", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM otherships order by Id desc", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 

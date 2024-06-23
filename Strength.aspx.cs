@@ -23,12 +23,12 @@ namespace VMS_1
             Response.AppendHeader("Pragma", "no-cache");
             if (!IsPostBack)
             {
-                //LoadGridView();
+                LoadGridView();
                 // Initialize ViewState["DataTable"] if it's null
-                if (ViewState["DataTable"] == null)
-                {
-                    ViewState["DataTable"] = new DataTable();
-                }
+                //if (ViewState["DataTable"] == null)
+                //{
+                //    ViewState["DataTable"] = new DataTable();
+                //}
             }
         }
 
@@ -87,11 +87,11 @@ namespace VMS_1
                 lblStatus.Text = "Data entered successfully.";
 
                 // Refresh the GridView after data insertion
-                BindGridView();
-                //LoadGridView();
+                //BindGridView();
+                LoadGridView();
 
                 // Bind the total GridView after data insertion
-                BindTotalGridView((DataTable)ViewState["DataTable"]);
+                //BindTotalGridView((DataTable)ViewState["DataTable"]);
             }
             catch (Exception ex)
             {
@@ -100,28 +100,28 @@ namespace VMS_1
             }
         }
 
-        //private void LoadGridView()
-        //{
-        //    try
-        //    {
-        //        string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-        //        using (SqlConnection conn = new SqlConnection(connStr))
-        //        {
-        //            conn.Open();
+        private void LoadGridView()
+        {
+            try
+            {
+                string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
 
-        //            SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Strength", conn);
-        //            DataTable dt = new DataTable();
-        //            da.Fill(dt);
+                    SqlDataAdapter da = new SqlDataAdapter("select * from strength order By Id desc", conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
 
-        //            GridViewStrength.DataSource = dt;
-        //            GridViewStrength.DataBind();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
-        //    }
-        //}
+                    GridViewStrength.DataSource = dt;
+                    GridViewStrength.DataBind();
+                }
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
+            }
+        }
 
         // Method to bind data to the GridView
 
@@ -180,5 +180,80 @@ namespace VMS_1
             GridViewStrength.DataSource = dt;
             GridViewStrength.DataBind();
         }
+
+        protected void GridViewStrength_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                // Add Edit button
+                LinkButton lnkEdit = new LinkButton();
+                lnkEdit.ID = "lnkEdit";
+                lnkEdit.Text = "Edit";
+                lnkEdit.CommandName = "Edit";
+                e.Row.Cells[0].Controls.Add(lnkEdit);
+
+                // Add Delete button
+                LinkButton lnkDelete = new LinkButton();
+                lnkDelete.ID = "lnkDelete";
+                lnkDelete.Text = "Delete";
+                lnkDelete.CommandName = "Delete";
+                e.Row.Cells[0].Controls.Add(lnkDelete);
+            }
+        }
+
+        protected void GridViewStrength_RowUpdating(object sender, GridViewUpdateEventArgs e)
+        {
+            int id = Convert.ToInt32(GridViewStrength.DataKeys[e.RowIndex].Value);
+
+            GridViewRow row = GridViewStrength.Rows[e.RowIndex];
+            string vegOfficers = ((TextBox)row.FindControl("txtVegOfficers")).Text;
+            string nonVegOfficers = ((TextBox)row.FindControl("txtNonVegOfficers")).Text;
+            // Retrieve other updated values as needed
+
+            UpdateRowByID(id, vegOfficers, nonVegOfficers);
+            GridViewStrength.EditIndex = -1;
+            LoadGridView();
+        }
+
+        private void UpdateRowByID(int id, string vegOfficers, string nonVegOfficers)
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("UPDATE Strength SET vegOfficers = @VegOfficers, nonVegOfficers = @NonVegOfficers WHERE Id = @Id", conn);
+                cmd.Parameters.AddWithValue("@VegOfficers", vegOfficers);
+                cmd.Parameters.AddWithValue("@NonVegOfficers", nonVegOfficers);
+                cmd.Parameters.AddWithValue("@Id", id);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        protected void GridViewStrength_RowEditing(object sender, GridViewEditEventArgs e)
+        {
+            GridViewStrength.EditIndex = e.NewEditIndex;
+            LoadGridView();
+        }
+
+        protected void GridViewStrength_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        {
+            int id = Convert.ToInt32(GridViewStrength.DataKeys[e.RowIndex].Value);
+            DeleteRowByID(id);
+            LoadGridView();
+        }
+
+        private void DeleteRowByID(int id)
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("DELETE FROM Strength WHERE Id = @Id", conn);
+                cmd.Parameters.AddWithValue("@Id", id);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+
     }
 }

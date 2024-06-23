@@ -122,7 +122,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM ExtraIssueCategory where Type = 'PestControl'", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM ExtraIssueCategory where Type = 'PestControl' Order By Id", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 

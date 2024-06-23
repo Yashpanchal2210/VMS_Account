@@ -138,7 +138,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM RationScale", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM RationScale ORDER By Id desc", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 
