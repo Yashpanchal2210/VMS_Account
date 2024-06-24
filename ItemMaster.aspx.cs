@@ -24,7 +24,7 @@ namespace VMS_1
             if (!IsPostBack)
             {
                 LoadGridView();
-                LoadBasicItems();
+                //LoadBasicItems();
             }
         }
 
@@ -63,22 +63,22 @@ ORDER BY
             }
         }
 
-        private void LoadBasicItems()
-        {
-            using (SqlConnection conn = new SqlConnection(connStr))
-            {
-                string query = "SELECT MIN(Id) AS Id, BasicItem, BasicDenom FROM BasicLieuItems GROUP BY BasicItem, BasicDenom";
-                SqlCommand cmd = new SqlCommand(query, conn);
+        //private void LoadBasicItems()
+        //{
+        //    using (SqlConnection conn = new SqlConnection(connStr))
+        //    {
+        //        string query = "SELECT MIN(Id) AS Id, BasicItem, BasicDenom FROM BasicLieuItems GROUP BY BasicItem, BasicDenom";
+        //        SqlCommand cmd = new SqlCommand(query, conn);
 
-                conn.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-                basicItem.DataSource = reader;
-                basicItem.DataTextField = "BasicItem";
-                basicItem.DataValueField = "Id";
-                basicItem.DataBind();
-            }
-            basicItem.Items.Insert(0, new ListItem("Select", ""));
-        }
+        //        conn.Open();
+        //        SqlDataReader reader = cmd.ExecuteReader();
+        //        basicItem.DataSource = reader;
+        //        basicItem.DataTextField = "BasicItem";
+        //        basicItem.DataValueField = "Id";
+        //        basicItem.DataBind();
+        //    }
+        //    basicItem.Items.Insert(0, new ListItem("Select", ""));
+        //}
 
         [WebMethod]
         public static List<string> GetCategoryWiseDataItems(string basicItem)
@@ -90,32 +90,15 @@ ORDER BY
             {
                 conn.Open();
 
-                string idQuery = "SELECT BasicItem FROM BasicLieuItems WHERE Category = @Category";
-                string basicItemValue = null;
+                string idQuery = "SELECT BasicItem FROM BasicItems WHERE Category = @Category";
                 using (SqlCommand cmd = new SqlCommand(idQuery, conn))
                 {
                     cmd.Parameters.AddWithValue("@Category", basicItem);
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        if (reader.Read())
+                        while (reader.Read())
                         {
-                            basicItemValue = reader["BasicItem"].ToString();
-                        }
-                    }
-                }
-
-                if (basicItemValue != null)
-                {
-                    string query = "SELECT ilueItem, ilueDenom FROM BasicLieuItems WHERE BasicItem = @BasicItem";
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@BasicItem", basicItemValue);
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                items.Add(reader["ilueItem"].ToString());
-                            }
+                            items.Add(reader["BasicItem"].ToString());
                         }
                     }
                 }
@@ -125,8 +108,9 @@ ORDER BY
         }
 
 
+
         [WebMethod]
-        public static List<string> GetInLieuItems(string basicItem)
+        public static List<string> GetInLieuItems(string basicItem, string categoryVal)
         {
             List<string> items = new List<string>();
             string connectionString = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
@@ -135,32 +119,32 @@ ORDER BY
             {
                 conn.Open();
 
-                string idQuery = "SELECT BasicItem FROM BasicLieuItems WHERE Id = @Id";
-                string basicItemValue = null;
-                using (SqlCommand cmd = new SqlCommand(idQuery, conn))
+                string basicitemId = "select Id from BasicItems where BasicItem = @ItemName And Category = @Category";
+                string basicId = null;
+                using (SqlCommand cmd = new SqlCommand(basicitemId, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Id", basicItem);
+                    cmd.Parameters.AddWithValue("@ItemName", basicItem);
+                    cmd.Parameters.AddWithValue("@Category", categoryVal);
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
-                            basicItemValue = reader["BasicItem"].ToString();
+                            basicId = reader["Id"].ToString();
                         }
                     }
                 }
 
-                if (basicItemValue != null)
+
+                string idQuery = "SELECT InlieuItem FROM InLieuItems WHERE BasicItemId = @Id";
+                string basicItemValue = "";
+                using (SqlCommand cmd = new SqlCommand(idQuery, conn))
                 {
-                    string query = "SELECT ilueItem, ilueDenom FROM BasicLieuItems WHERE BasicItem = @BasicItem";
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    cmd.Parameters.AddWithValue("@Id", basicId);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        cmd.Parameters.AddWithValue("@BasicItem", basicItemValue);
-                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        while (reader.Read())
                         {
-                            while (reader.Read())
-                            {
-                                items.Add(reader["ilueItem"].ToString());
-                            }
+                            items.Add(reader["InlieuItem"].ToString());
                         }
                     }
                 }
@@ -176,7 +160,7 @@ ORDER BY
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                string query = "SELECT BasicDenom FROM BasicLieuItems WHERE Id = @BasicItem";
+                string query = "select Top 1 Denomination from BasicItems where BasicItem = @BasicItem";
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@BasicItem", basicItem);
 
@@ -184,7 +168,7 @@ ORDER BY
                 SqlDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    basicDenom = reader["BasicDenom"].ToString();
+                    basicDenom = reader["Denomination"].ToString();
                 }
             }
 
@@ -217,7 +201,7 @@ ORDER BY
         {
             try
             {
-                string itemName = basicItem.SelectedItem.Text;
+                string itemName = /*basicItem.SelectedItem.Text*/"";
                 string category = Request.Form["category"];
                 string denomsVal = Request.Form["denoms"];
                 denomsVal = denomsVal.Replace(",", "");

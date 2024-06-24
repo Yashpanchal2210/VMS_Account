@@ -34,20 +34,15 @@
                                 </select>
                             </td>
                             <td>
-                                <%--<input type="text" class="form-control" name="itemname" required />--%>
-                                <asp:DropDownList ID="basicItem" runat="server" CssClass="form-control" onchange="fetchBasicDenom()" required>
+                                <select class="form-control" name="basicItem" id="basicnameVal" onchange="fetchBasicDenom()" >
+                                    <option value="">Select</option>
+                                </select>
+                                <%--<asp:DropDownList ID="basicItem" runat="server" CssClass="form-control" required>
                                     <asp:ListItem Text="Select" Value="" />
-                                </asp:DropDownList>
+                                </asp:DropDownList>--%>
                             </td>
                             <td>
                                 <input type="text" class="form-control" id="denomsVal" name="denoms" readonly />
-                                <%-- <select class="form-control" name="denoms" required>
-                                    <option value="">Select</option>
-                                    <option value="Kgs">Kgs</option>
-                                    <option value="Ltr">Ltr</option>
-                                    <option value="Nos">Nos</option>
-                                    <option value="Other">Other</option>
-                                </select>--%>
                             </td>
                             <td>
                                 <input type="number" class="form-control" name="veg" required min="0" step="0.00000001" /></td>
@@ -181,7 +176,7 @@
         }
 
         function fetchBasicDenom() {
-            var basicItemValue = document.getElementById('<%= basicItem.ClientID %>').value;
+            var basicItemValue = document.getElementById('basicnameVal').value;
 
             fetch('ItemMaster.aspx/GetBasicDenom', {
                 method: 'POST',
@@ -242,6 +237,8 @@
             var caregoryField = document.getElementById("categoryIlue");
             caregoryField.value = val;
 
+            var basicVal = document.getElementById("basicnameVal");
+
             fetch('ItemMaster.aspx/GetCategoryWiseDataItems', {
                 method: 'POST',
                 headers: {
@@ -251,7 +248,7 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    var inlieuItemDropdown = document.getElementById(`basicItem`);
+                    var inlieuItemDropdown = document.getElementById(`basicnameVal`);
                     inlieuItemDropdown.innerHTML = '<option value="">Select</option>';
 
                     if (data.d && Array.isArray(data.d)) {
@@ -272,9 +269,12 @@
         function fetchInLieuItemsForRow(rowSequence, idValue) {
 
             var basicItemValue = "";
+            var CategoryValue = "";
+
 
             if (idValue == "" || idValue == null) {
-                basicItemValue = document.getElementById('<%= basicItem.ClientID %>').value;
+                basicItemValue = document.getElementById('basicnameVal').value;
+                CategoryValue = document.getElementById("CategoryBasic").value;
             } else {
                 basicItemValue = idValue;
             }
@@ -284,7 +284,7 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ basicItem: basicItemValue })
+                body: JSON.stringify({ basicItem: basicItemValue, categoryVal: CategoryValue })
             })
                 .then(response => response.json())
                 .then(data => {

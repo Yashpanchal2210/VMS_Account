@@ -1,4 +1,5 @@
-﻿using OfficeOpenXml;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -86,6 +87,7 @@ namespace VMS_1
             GenerateHTMLViewP18(selectedDateP27);
             GenerateHTMLViewP8();
             GenerateHTMLViewP2_7(selectedDateP27);
+            //BindData(selectedDateP27);
         }
 
 
@@ -119,6 +121,11 @@ namespace VMS_1
                     adapter.Fill(receiptMasterTable);
                 }
             }
+            //FEtch Month End stock
+            DataTable monthEndStockData = GetPreviousMonthData(selectedDate);
+
+            //Fetch Fresh Data
+            DataTable presentFreshStock = GetFreshStockData(selectedDate);
 
             // Generate HTML tables
             string htmlTables = "<div class='table-container' style='overflow-x: auto; display: flex; flex-wrap: nowrap;'>";
@@ -148,7 +155,49 @@ namespace VMS_1
             htmlTables += "</tr>";
 
             // Rows for ReceiptMaster data
-            int lineNumber = 1;
+            
+            htmlTables += "<tr><th>1</th><th>FULL STOWAGE</th>";
+            foreach (DataRow receiptRow in inLieuItemsTable.Rows)
+            {
+                htmlTables += "<th></th>";
+            }
+            htmlTables += "</tr>";
+
+            htmlTables += "<tr><th>2</th><th>STOCK NOT TO FALL BELOW</th>";
+            foreach (DataRow receiptRow in inLieuItemsTable.Rows)
+            {
+                htmlTables += "<th></th>";
+            }
+            htmlTables += "</tr>";
+
+            htmlTables += "<tr><th>3</th><th>BALANCE AS PER ACCOUNT</th>";
+            foreach (DataRow receiptRow in inLieuItemsTable.Rows)
+            {
+                if (monthEndStockData.Rows.Count > 0)
+                {
+                    foreach (DataRow row in monthEndStockData.Rows)
+                    {
+                        string itemName = row["InLieuItem"].ToString();
+                        // Find the row in receiptMasterTable where ItemName matches InLieuItem and referenceNos matches
+                        if (row["InLieuItem"].Equals(receiptRow["itemnames"]))
+                        {
+                            htmlTables += $"<th>{receiptRow["quantities"]}</th>";
+                        }
+                        else
+                        {
+                            htmlTables += "<th>0</th>"; // If no match found, display empty cell
+                        }
+                    }
+                }
+                else
+                {
+                    htmlTables += "<th>0</th>"; // If no match found, display empty cell
+                }
+            }
+            htmlTables += "</tr>";
+
+            
+            int lineNumber = 4;
             foreach (DataRow receiptRow in receiptMasterTable.Rows)
             {
                 htmlTables += "<tr>";
@@ -159,12 +208,10 @@ namespace VMS_1
                 {
                     string itemName = row["InLieuItem"].ToString();
                     // Find the row in receiptMasterTable where ItemName matches InLieuItem and referenceNos matches
-                    DataRow[] matchingRows = receiptMasterTable.Select($"itemnames = '{itemName}' AND referenceNos = '{receiptRow["referenceNos"]}'");
-                    if (matchingRows.Length > 0)
+                    if (row["InLieuItem"].Equals(receiptRow["itemnames"]))
                     {
-                        // Assuming Quantity is the column name for the quantity data
-                        htmlTables += $"<td>{matchingRows[0]["quantities"]}</td>";
-                    }
+                        htmlTables += $"<td>{receiptRow["quantities"]}</td>";
+                    }                    
                     else
                     {
                         htmlTables += "<td></td>"; // If no match found, display empty cell
@@ -175,7 +222,42 @@ namespace VMS_1
                 lineNumber++;
             }
 
+            foreach (DataRow receiptRow in receiptMasterTable.Rows)
+            {
+                htmlTables += "<tr>";
+                htmlTables += $"<td>{lineNumber}</td>"; // Display line number in the first column
+                htmlTables += $"<td>{receiptRow["referenceNos"]}</td>"; // Display referenceNos in the second column
 
+                foreach (DataRow row in inLieuItemsTable.Rows)
+                {
+                    string itemName = row["InLieuItem"].ToString();
+                    // Find the row in receiptMasterTable where ItemName matches InLieuItem and referenceNos matches
+                    if (row["InLieuItem"].Equals(receiptRow["itemnames"]))
+                    {
+                        htmlTables += $"<td>{receiptRow["quantities"]}</td>";
+                    }
+                    else
+                    {
+                        htmlTables += "<td></td>"; // If no match found, display empty cell
+                    }
+                }
+
+                htmlTables += "</tr>";
+                lineNumber++;
+            }
+            htmlTables += $"<tr><th>{lineNumber}</th><th>FRESH RECEIPTS FROM  Pg - 12</th>"; // Display referenceNos in the second column
+            foreach (DataRow receiptRow in presentFreshStock.Rows)
+            {
+                foreach (DataRow row in inLieuItemsTable.Rows)
+                {
+                    // Find the row in receiptMasterTable where ItemName matches InLieuItem and referenceNos matches
+                    if (row["InLieuItem"].Equals(receiptRow["itemnames"]))
+                    {
+                        htmlTables += $"<th>{receiptRow["quantities"]}</th>";
+                    }
+                }
+            }
+            htmlTables += "</tr>";
 
             htmlTables += "</table>";
             //}
@@ -183,145 +265,6 @@ namespace VMS_1
 
             tablesContainerPage2to7.InnerHtml = htmlTables;
         }
-
-        //protected void GenerateHTMLViewP2_7(string[] selectedDate)
-        //{
-        //    DataTable monthEndStockData = GetPreviousMonthData(selectedDate);
-
-        //    // Fetch data from the PresentStockMaster table
-        //    DataTable presentStockData = GetPresentStockData();
-
-        //    // DataTable receiptData = GetReceiptData();
-        //    DataTable presentReceiptData = GetReceiptData(selectedDate);
-
-        //    // Fetch IssueData Officer
-        //    DataTable presentIssueOfficer = GetOfficerIssueData(selectedDate);
-
-        //    // Fetch IssueData Sailor
-        //    DataTable presentIssueSailor = GetSailorIssueData(selectedDate);
-
-        //    // Fetch Wastage
-        //    DataTable presentWastage = GetWastageData(selectedDate);
-
-        //    // Fetch Divers Data
-        //    DataTable presentDivers = GetDiversIssueData(selectedDate);
-
-        //    // Fetch OtherShips
-        //    DataTable presentOtherShips = GetOtherShipData(selectedDate);
-
-        //    // Fetch Patients
-        //    DataTable presentPatients = GetPatientsData(selectedDate);
-
-        //    // Fetch ExtraIssue
-        //    DataTable presentExtraIssue = GetExtraIssueData(selectedDate);
-
-        //    // Fetch Ration Payment
-        //    DataTable presentRationPayement = GetRationPaymentData(selectedDate);
-
-        //    // Your existing code to fetch data from the database and create the Excel package
-        //    DataTable inLieuItemsTable = new DataTable();
-
-        //    using (SqlConnection connection = new SqlConnection(connStr))
-        //    {
-        //        string query = "SELECT inlieuitem, Denomination FROM InLieuItems";
-        //        using (SqlCommand command = new SqlCommand(query, connection))
-        //        {
-        //            connection.Open();
-        //            SqlDataAdapter adapter = new SqlDataAdapter(command);
-        //            adapter.Fill(inLieuItemsTable);
-        //        }
-        //    }
-
-        //    int itemCount = inLieuItemsTable.Rows.Count;
-        //    // Generate HTML tables
-        //    string htmlTables = "<div class='table-container' style='overflow-x: auto; display: flex; flex-wrap: nowrap;'>";
-        //    int itemsPerPage = 32; // Number of items to display per page
-        //    int itemsPerPageMinusOne = itemsPerPage - 1;
-        //    int totalPages = 7;
-        //    int totalItems = itemCount > itemsPerPage * (totalPages - 1) ? itemsPerPage * (totalPages - 1) : itemCount;
-        //    int remainingItems = itemCount - totalItems;
-        //    int itemIndex = 0;
-
-        //    for (int i = 2; i < 8; i++) // Loop to create tables for each page
-        //    {
-        //        htmlTables += "<table border='1' width='100%' style='text-align:center; margin-right:10px;'>";
-        //        htmlTables += $"<tr><th colspan='11'>Page {i.ToString().PadLeft(2, '0')}</th></tr>";
-        //        htmlTables += "<tr><th style='width:40px;'>Line No.</th>";
-
-        //        if (i == 2) // Set width only for the first page
-        //        {
-        //            htmlTables += "<th style='width: 450px;'>Column 1</th>";
-        //        }
-
-        //        for (int h = 1; h < (i == 2 ? 10 : 11); h++)
-        //        {
-        //            string itemHeader = itemIndex < totalItems ? inLieuItemsTable.Rows[itemIndex]["inlieuitem"].ToString() : $"Column {h}";
-        //            string itemDenomination = itemIndex < totalItems ? inLieuItemsTable.Rows[itemIndex]["Denomination"].ToString() : "";
-
-        //            htmlTables += $"<th>{itemHeader}<br/>{itemDenomination}</th>";
-        //            itemIndex++;
-        //        }
-        //        htmlTables += "</tr>";
-
-        //        int rowsToDisplay = i == 8 ? remainingItems : itemsPerPage;
-        //        for (int j = 0; j < rowsToDisplay; j++)
-        //        {
-        //            htmlTables += "<tr>";
-        //            int lineNumber = j + 1;
-        //            htmlTables += $"<td>{lineNumber}</td>";
-
-        //            if (i == 2 && j == 0) // Check if it's page 2 and row 3
-        //            {
-        //                // Show "FULL STOWAGE" in column 1, row 3
-        //                htmlTables += "<td>FULL STOWAGE</td>";
-
-        //                // Skip the rest of the loop for this row
-        //                for (int k = 1; k < 10; k++)
-        //                {
-        //                    htmlTables += "<td>1</td>";
-        //                }
-        //            }
-        //            else if (i == 2 && j == 1)
-        //            {
-        //                htmlTables += "<td style=''>BALANCE AS PER ACCOUNT</td>";
-
-        //                for (int k = 1; k < 10; k++)
-        //                {
-        //                    htmlTables += "<td>2</td>";
-        //                }
-        //            }
-        //            else if (i == 2 && j == 2)
-        //            {
-        //                htmlTables += "<td style=''>STOCK NOT TO FALL BELOW</td>";
-
-        //                for (int k = 1; k < 10; k++)
-        //                {
-        //                    htmlTables += "<td>2</td>";
-        //                }
-        //            }
-        //            else
-        //            {
-        //                for (int k = 0; k < 10; k++)
-        //                {
-        //                    htmlTables += "<td></td>";
-        //                }
-        //            }
-
-        //            htmlTables += "</tr>";
-        //        }
-
-        //        htmlTables += "</table>";
-        //        if (itemIndex >= totalItems)
-        //        {
-        //            break;
-        //        }
-        //    }
-        //    htmlTables += "</div>";
-
-        //    tablesContainerPage2to7.InnerHtml = htmlTables;
-        //}
-
-
 
 
         private DataTable GetPreviousMonthData(string[] previousMonthDate)
@@ -527,6 +470,23 @@ namespace VMS_1
                 {
                     cmd.Parameters.AddWithValue("@Month", selectedDate[1]);
                     cmd.Parameters.AddWithValue("@Year", selectedDate[0]);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+
+        private DataTable GetFreshStockData(string[] selectedDate)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("select Dates, itemnames, quantities, referenceNos from ReceiptMaster Where MONTH(Dates) = @Month AND YEAR(Dates) = @Year order by Dates ASC", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Month", selectedDate[1]);
+                    cmd.Parameters.AddWithValue("@Year", selectedDate[0]);
+                    cmd.Parameters.AddWithValue("@role", "Wardroom");
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                     adapter.Fill(dataTable);
                 }

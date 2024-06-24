@@ -40,6 +40,9 @@ namespace VMS_1
             // Fetch data from the PresentStockMaster table
             DataTable presentStockData = GetPresentStockData();
 
+            //Fetch Fresh data
+            DataTable presentFreshData = GetFreshStockData(selectedDate);
+
             //DataTable receiptData = GetReceiptData();
             DataTable presentReceiptData = GetReceiptData(selectedDate);
 
@@ -82,14 +85,7 @@ namespace VMS_1
                 worksheet.Column(3).Width = 62.71;
                 worksheet.Row(1).Height = 0;
 
-                // Apply borders to all cells
-                using (ExcelRange range = worksheet.Cells["B2:CY34"])
-                {
-                    range.Style.Border.Top.Style = ExcelBorderStyle.Medium;
-                    range.Style.Border.Left.Style = ExcelBorderStyle.Medium;
-                    range.Style.Border.Right.Style = ExcelBorderStyle.Medium;
-                    range.Style.Border.Bottom.Style = ExcelBorderStyle.Medium;
-                }
+
 
                 // Add header rows and merge cells
                 worksheet.Cells["B2:L2"].Merge = true;
@@ -132,10 +128,24 @@ namespace VMS_1
 
                 // Add numbering from 1 to 28 in column B (B7 to B34)
                 int number = 1;
-                for (int row = 7; row <= 34; row++)
+                int columnLength = 28;
+                if (presentReceiptData != null && presentReceiptData.Rows != null && presentReceiptData.Rows.Count > 0)
+                {
+                    columnLength = columnLength + presentReceiptData.Rows.Count;
+                }
+                for (int row = 7; row <= columnLength; row++)
                 {
                     worksheet.Cells[row, 2].Value = number;
                     number++;
+                }
+
+                // Apply borders to all cells
+                using (ExcelRange range = worksheet.Cells["B2:CC" + columnLength])
+                {
+                    range.Style.Border.Top.Style = ExcelBorderStyle.Medium;
+                    range.Style.Border.Left.Style = ExcelBorderStyle.Medium;
+                    range.Style.Border.Right.Style = ExcelBorderStyle.Medium;
+                    range.Style.Border.Bottom.Style = ExcelBorderStyle.Medium;
                 }
 
                 // Add static labels to cells
@@ -146,7 +156,9 @@ namespace VMS_1
                 worksheet.Cells["C10"].Value = "BALANCE AS PER ACCOUNT";
                 worksheet.Cells["C10"].Style.Font.Bold = true;
 
+
                 int dataStartRowReceiptCRV = 11;
+                int startRowReceiptCRV = dataStartRowReceiptCRV;
                 foreach (DataRow rowReceiptCRV in presentReceiptData.Rows)
                 {
                     string CellNo = "C" + dataStartRowReceiptCRV;
@@ -157,12 +169,85 @@ namespace VMS_1
                         if (row["InLieuItem"].Equals(rowReceiptCRV["itemnames"]))
                         {
                             worksheet.Cells[dataStartRowReceiptCRV, dataStartRowReceiptCRVNOS1].Value = rowReceiptCRV["quantities"]; // Start from column C
-                            break;
+                            //break;
+                        }
+                        else
+                        {
+                            worksheet.Cells[dataStartRowReceiptCRV, dataStartRowReceiptCRVNOS1].Value = 0;
                         }
                         dataStartRowReceiptCRVNOS1++;
                     }
 
                     dataStartRowReceiptCRV++;
+                }
+
+                int endRowReceiptCRV = dataStartRowReceiptCRV;
+                
+
+                //int startColumnSub = 4;
+                //int dataEndColumnSub = startColumnSub + presentStockData.Rows.Count - 1;
+                //int endColumnSub = dataEndColumnSub; // Assuming dataEndColumnSub is the last column index
+                //int resultRowSub1 = 32; // Row to display the first result
+                //int resultRowSub2 = 33; // Row to display the second result
+
+                //for (int col = startColumnSub; col <= endColumnSub; col++)
+                //{
+                //    string startCell = ExcelCellBase.GetAddress(21, col); // D21
+                //    string endCell = ExcelCellBase.GetAddress(31, col); // D31
+                //    string resultCell1 = ExcelCellBase.GetAddress(resultRowSub1, col); // Result in D32
+                //    string resultCell2 = ExcelCellBase.GetAddress(resultRowSub2, col); // Result in D33
+
+                //    // Set the formula to subtract D31 from D21 and place the result in the result cells
+                //    worksheet.Cells[resultCell1].Formula = $"{startCell}-{endCell}";
+                //    worksheet.Cells[resultCell2].Formula = resultCell1;
+                //}
+
+                int freshDataRow = dataStartRowReceiptCRV++;
+                worksheet.Cells["C" + freshDataRow].Value = "FRESH RECEIPTS FROM  Pg - 12";
+                int TotalReceipt = dataStartRowReceiptCRV++;
+                worksheet.Cells["C" + TotalReceipt].Value = "TOTAL RECEIPTS";
+                worksheet.Cells["C" + dataStartRowReceiptCRV++].Style.Font.Bold = true;
+                int issueSailorDataRow = dataStartRowReceiptCRV++;
+                worksheet.Cells["C" + issueSailorDataRow].Value = "ISSUE TO SHIP'S COY";
+                int issueOfficerDataRow = dataStartRowReceiptCRV++;
+                worksheet.Cells["C" + issueOfficerDataRow].Value = "ISSUE TO OFFICERS";
+                int issueExtraIssueDataRow = dataStartRowReceiptCRV++;
+                worksheet.Cells["C" + issueExtraIssueDataRow].Value = "EXTRA ISSUES from  Pg - 09";
+                int issuePaymentIssueDataRow = dataStartRowReceiptCRV++;
+                worksheet.Cells["C" + issuePaymentIssueDataRow].Value = "PAYMENT ISSUE from Pg.10/11";
+                int issuePatientsDataRow = dataStartRowReceiptCRV++;
+                worksheet.Cells["C" + issuePatientsDataRow].Value = "ISSUE TO PATIENTS";
+                int issueOtherShipsDataRow = dataStartRowReceiptCRV++;
+                worksheet.Cells["C" + issueOtherShipsDataRow].Value = "ISSUE TO OTHER SHIPS";
+                //worksheet.Cells["C" + dataStartRowReceiptCRV++].Value = "ISSUE TO CAT SCHOOL";
+                int issueDiversDataRow = dataStartRowReceiptCRV++;
+                worksheet.Cells["C" + issueDiversDataRow].Value = "ISSUE TO DIVERS";
+                int issueWastageDataRow = dataStartRowReceiptCRV++;
+                worksheet.Cells["C" + issueWastageDataRow].Value = "WASTAGE";
+                int issueGrandIssue = dataStartRowReceiptCRV++;
+                worksheet.Cells["C" + issueGrandIssue].Value = "ISSUE GRAND TOTAL";
+                worksheet.Cells["C" + dataStartRowReceiptCRV++].Style.Font.Bold = true;
+                int BalanceAsPerAccount = dataStartRowReceiptCRV++;
+                worksheet.Cells["C" + BalanceAsPerAccount].Value = "BALANCE AS PER ACCOUNT";
+                int BalanceAsPerMuster = dataStartRowReceiptCRV++;
+                worksheet.Cells["C" + BalanceAsPerMuster].Value = "BALANCE AS PER MUSTER";
+                worksheet.Cells["C" + dataStartRowReceiptCRV++].Value = "CRV / LOSS STATEMENT";
+
+
+                //FreshData
+                int dataStartRowFresh = freshDataRow;
+                foreach (DataRow rowFresh in presentFreshData.Rows)
+                {
+                    int dataStartRowReceiptCRVNOS1 = 4;
+                    foreach (DataRow row in presentStockData.Rows)
+                    {
+                        if (row["InLieuItem"].Equals(rowFresh["itemnames"]))
+                        {
+                            worksheet.Cells[dataStartRowFresh, dataStartRowReceiptCRVNOS1].Value = rowFresh["quantities"]; // Start from column C
+                            //break;
+                        }
+                        dataStartRowReceiptCRVNOS1++;
+                    }
                 }
 
                 //ISSUE OFFICER
@@ -172,16 +257,10 @@ namespace VMS_1
                     int dataStartRowIssueOfficer1 = 4;
                     foreach (DataRow row in presentStockData.Rows)
                     {
-                        bool matchfound = false;
                         if (row["InLieuItem"].Equals(rowIssueOfficer["ItemName"]))
                         {
-                            worksheet.Cells[23, dataStartRowIssueOfficer1].Value = Convert.ToDouble(rowIssueOfficer["QtyIssued"]); // Start from column C
-                            matchfound = true;
+                            worksheet.Cells[issueOfficerDataRow, dataStartRowIssueOfficer1].Value = Convert.ToDouble(rowIssueOfficer["quantities"]); // Start from column C
                             //break;
-                        }
-                        if (!matchfound)
-                        {
-                            worksheet.Cells[23, dataStartRowIssueOfficer1].Value = 0.00;
                         }
                         dataStartRowIssueOfficer1++;
                     }
@@ -193,18 +272,28 @@ namespace VMS_1
                     int dataStartRowIssueSailor = 4;
                     foreach (DataRow row in presentStockData.Rows)
                     {
-                        bool matchFound = false;
                         if (row["InLieuItem"].Equals(rowIssueSailor["ItemName"]))
                         {
-                            worksheet.Cells[22, dataStartRowIssueSailor].Value = Convert.ToDouble(rowIssueSailor["QtyIssued"]); // Start from column C
-                            matchFound = true;
+                            worksheet.Cells[issueSailorDataRow, dataStartRowIssueSailor].Value = Convert.ToDouble(rowIssueSailor["QtyIssued"]); // Start from column C
                             //break;
                         }
-                        if (!matchFound)
-                        {
-                            worksheet.Cells[22, dataStartRowIssueSailor].Value = 0.00;
-                        }
                         dataStartRowIssueSailor++;
+                    }
+                }
+
+                //Extra Issue
+                foreach (DataRow rowExtraIssue in presentExtraIssue.Rows)
+                {
+                    int dataStartRowExtraIssue = 4;
+                    foreach (DataRow row in presentStockData.Rows)
+                    {
+                        if (row["InLieuItem"].Equals(rowExtraIssue["ItemName"]))
+                        {
+                            worksheet.Cells[issueExtraIssueDataRow, dataStartRowExtraIssue].Value = Convert.ToDouble(rowExtraIssue["Qty"]); // Start from column C
+                            worksheet.Cells[issueExtraIssueDataRow, dataStartRowExtraIssue].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                            //break;
+                        }
+                        dataStartRowExtraIssue++;
                     }
                 }
 
@@ -214,18 +303,11 @@ namespace VMS_1
                     int dataStartRowWastage = 4;
                     foreach (DataRow row in presentStockData.Rows)
                     {
-                        bool matchFound = false;
                         if (row["InLieuItem"].Equals(rowWastage["ItemName"]))
                         {
-                            worksheet.Cells[30, dataStartRowWastage].Value = Convert.ToDouble(rowWastage["Qty"]); // Start from column C
-                            worksheet.Cells[30, dataStartRowWastage].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-                            matchFound = true;
+                            worksheet.Cells[issueWastageDataRow, dataStartRowWastage].Value = Convert.ToDouble(rowWastage["Qty"]); // Start from column C
+                            worksheet.Cells[issueWastageDataRow, dataStartRowWastage].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                             //break;
-                        }
-                        if (!matchFound)
-                        {
-                            worksheet.Cells[30, dataStartRowWastage].Value = 0.00;
-                            worksheet.Cells[30, dataStartRowWastage].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                         }
                         dataStartRowWastage++;
                     }
@@ -237,18 +319,11 @@ namespace VMS_1
                     int dataStartRowDivers = 4;
                     foreach (DataRow row in presentStockData.Rows)
                     {
-                        bool matchFound = false;
                         if (row["InLieuItem"].Equals(rowDivers["ItemName"]))
                         {
-                            worksheet.Cells[29, dataStartRowDivers].Value = Convert.ToDouble(rowDivers["Qty"]); // Start from column C
-                            worksheet.Cells[29, dataStartRowDivers].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-                            matchFound = true;
+                            worksheet.Cells[issueDiversDataRow, dataStartRowDivers].Value = Convert.ToDouble(rowDivers["Qty"]); // Start from column C
+                            worksheet.Cells[issueDiversDataRow, dataStartRowDivers].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                             //break;
-                        }
-                        if (!matchFound)
-                        {
-                            worksheet.Cells[29, dataStartRowDivers].Value = 0.00;
-                            worksheet.Cells[29, dataStartRowDivers].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                         }
                         dataStartRowDivers++;
                     }
@@ -260,18 +335,11 @@ namespace VMS_1
                     int dataStartRowShips = 4;
                     foreach (DataRow row in presentStockData.Rows)
                     {
-                        bool matchFound = false;
                         if (row["InLieuItem"].Equals(rowShips["ItemName"]))
                         {
-                            worksheet.Cells[27, dataStartRowShips].Value = Convert.ToDouble(rowShips["Qty"]); // Start from column C
-                            worksheet.Cells[27, dataStartRowShips].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-                            matchFound = true;
+                            worksheet.Cells[issueOtherShipsDataRow, dataStartRowShips].Value = Convert.ToDouble(rowShips["Qty"]); // Start from column C
+                            worksheet.Cells[issueOtherShipsDataRow, dataStartRowShips].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                             //break;
-                        }
-                        if (!matchFound)
-                        {
-                            worksheet.Cells[27, dataStartRowShips].Value = 0.00;
-                            worksheet.Cells[27, dataStartRowShips].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                         }
                         dataStartRowShips++;
                     }
@@ -283,43 +351,13 @@ namespace VMS_1
                     int dataStartRowPatients = 4;
                     foreach (DataRow row in presentStockData.Rows)
                     {
-                        bool matchFound = false;
                         if (row["InLieuItem"].Equals(rowPatients["ItemName"]))
                         {
-                            worksheet.Cells[26, dataStartRowPatients].Value = Convert.ToDouble(rowPatients["Qty"]); // Start from column C
-                            worksheet.Cells[26, dataStartRowPatients].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-                            matchFound = true;
+                            worksheet.Cells[issuePatientsDataRow, dataStartRowPatients].Value = Convert.ToDouble(rowPatients["Qty"]); // Start from column C
+                            worksheet.Cells[issuePatientsDataRow, dataStartRowPatients].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                             //break;
-                        }
-                        if (!matchFound)
-                        {
-                            worksheet.Cells[26, dataStartRowPatients].Value = 0.00;
-                            worksheet.Cells[26, dataStartRowPatients].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                         }
                         dataStartRowPatients++;
-                    }
-                }
-
-                //Extra Issue
-                foreach (DataRow rowExtraIssue in presentExtraIssue.Rows)
-                {
-                    int dataStartRowExtraIssue = 4;
-                    foreach (DataRow row in presentStockData.Rows)
-                    {
-                        bool matchFound = false;
-                        if (row["InLieuItem"].Equals(rowExtraIssue["ItemName"]))
-                        {
-                            worksheet.Cells[24, dataStartRowExtraIssue].Value = Convert.ToDouble(rowExtraIssue["Qty"]); // Start from column C
-                            worksheet.Cells[24, dataStartRowExtraIssue].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-                            matchFound = true;
-                            //break;
-                        }
-                        if (!matchFound)
-                        {
-                            worksheet.Cells[24, dataStartRowExtraIssue].Value = 0.00;
-                            worksheet.Cells[24, dataStartRowExtraIssue].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-                        }
-                        dataStartRowExtraIssue++;
                     }
                 }
 
@@ -329,30 +367,24 @@ namespace VMS_1
                     int dataStartRowPayemtnIssue = 4;
                     foreach (DataRow row in presentStockData.Rows)
                     {
-                        bool matchFound = false;
                         if (row["InLieuItem"].Equals(rowPayemtnIssue["ItemName"]))
                         {
-                            worksheet.Cells[25, dataStartRowPayemtnIssue].Value = Convert.ToDouble(rowPayemtnIssue["Qty"]); // Start from column C
-                            worksheet.Cells[25, dataStartRowPayemtnIssue].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-                            matchFound = true;
+                            worksheet.Cells[issuePaymentIssueDataRow, dataStartRowPayemtnIssue].Value = Convert.ToDouble(rowPayemtnIssue["Qty"]); // Start from column C
+                            worksheet.Cells[issuePaymentIssueDataRow, dataStartRowPayemtnIssue].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                             //break;
-                        }
-                        if (!matchFound)
-                        {
-                            worksheet.Cells[25, dataStartRowPayemtnIssue].Value = 0.00;
-                            worksheet.Cells[25, dataStartRowPayemtnIssue].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                         }
                         dataStartRowPayemtnIssue++;
                     }
                 }
 
+
                 int dataStartColumnSum = 4;
                 int dataEndColumn = dataStartColumnSum + presentStockData.Rows.Count;
                 for (int col = dataStartColumnSum; col < dataEndColumn; col++)
                 {
-                    string startCell = ExcelCellBase.GetAddress(11, col);
-                    string endCell = ExcelCellBase.GetAddress(20, col);
-                    string sumCell = ExcelCellBase.GetAddress(21, col);
+                    string startCell = ExcelCellBase.GetAddress(startRowReceiptCRV, col);
+                    string endCell = ExcelCellBase.GetAddress(endRowReceiptCRV, col);
+                    string sumCell = ExcelCellBase.GetAddress(TotalReceipt, col);
                     worksheet.Cells[sumCell].Formula = $"SUM({startCell}:{endCell})";
                 }
 
@@ -360,51 +392,24 @@ namespace VMS_1
                 int dataEndColumnEnd = dataStartColumnEndSum + presentStockData.Rows.Count;
                 for (int col = dataStartColumnEndSum; col < dataEndColumnEnd; col++)
                 {
-                    string startCell = ExcelCellBase.GetAddress(22, col);
-                    string endCell = ExcelCellBase.GetAddress(30, col);
-                    string sumCell = ExcelCellBase.GetAddress(31, col);
+                    string startCell = ExcelCellBase.GetAddress(issueSailorDataRow, col);
+                    string endCell = ExcelCellBase.GetAddress(issueWastageDataRow, col);
+                    string sumCell = ExcelCellBase.GetAddress(issueGrandIssue, col);
                     worksheet.Cells[sumCell].Formula = $"SUM({startCell}:{endCell})";
                 }
 
-                int startColumnSub = 4;
-                int dataEndColumnSub = startColumnSub + presentStockData.Rows.Count - 1;
-                int endColumnSub = dataEndColumnSub; // Assuming dataEndColumnSub is the last column index
-                int resultRowSub1 = 32; // Row to display the first result
-                int resultRowSub2 = 33; // Row to display the second result
-
-                for (int col = startColumnSub; col <= endColumnSub; col++)
+                int dataStartColumnEndSub = 4;
+                int dataEndColumnEndSub = dataStartColumnEndSub + presentStockData.Rows.Count;
+                for (int col = dataStartColumnEndSub; col < dataEndColumnEndSub; col++)
                 {
-                    string startCell = ExcelCellBase.GetAddress(21, col); // D21
-                    string endCell = ExcelCellBase.GetAddress(31, col); // D31
-                    string resultCell1 = ExcelCellBase.GetAddress(resultRowSub1, col); // Result in D32
-                    string resultCell2 = ExcelCellBase.GetAddress(resultRowSub2, col); // Result in D33
+                    string startCell = ExcelCellBase.GetAddress(TotalReceipt, col);
+                    string endCell = ExcelCellBase.GetAddress(issueGrandIssue, col);
+                    string sumCell = ExcelCellBase.GetAddress(BalanceAsPerAccount, col);
+                    worksheet.Cells[sumCell].Formula = $"MIN({startCell}-{endCell})";
 
-                    // Set the formula to subtract D31 from D21 and place the result in the result cells
-                    worksheet.Cells[resultCell1].Formula = $"{startCell}-{endCell}";
-                    worksheet.Cells[resultCell2].Formula = resultCell1;
+                    string sumCell1 = ExcelCellBase.GetAddress(BalanceAsPerMuster, col);
+                    worksheet.Cells[sumCell1].Formula = $"MIN({startCell}-{endCell})";
                 }
-
-
-
-
-                worksheet.Cells["C20"].Value = "FRESH RECEIPTS FROM  Pg - 12";
-                worksheet.Cells["C21"].Value = "TOTAL RECEIPTS";
-                worksheet.Cells["C21"].Style.Font.Bold = true;
-                worksheet.Cells["C22"].Value = "ISSUE TO SHIP'S COY";
-                worksheet.Cells["C23"].Value = "ISSUE TO OFFICERS";
-                worksheet.Cells["C24"].Value = "EXTRA ISSUES from  Pg - 09";
-                worksheet.Cells["C25"].Value = "PAYMENT ISSUE from Pg.10/11";
-                worksheet.Cells["C26"].Value = "ISSUE TO PATIENTS";
-                worksheet.Cells["C27"].Value = "ISSUE TO OTHER SHIPS";
-                //worksheet.Cells["C28"].Value = "ISSUE TO CAT SCHOOL";
-                worksheet.Cells["C29"].Value = "ISSUE TO DIVERS";
-                worksheet.Cells["C30"].Value = "WASTAGE";
-                worksheet.Cells["C31"].Value = "ISSUE GRAND TOTAL";
-                worksheet.Cells["C31"].Style.Font.Bold = true;
-                worksheet.Cells["C32"].Value = "BALANCE AS PER ACCOUNT";
-                worksheet.Cells["C33"].Value = "BALANCE AS PER MUSTER";
-                worksheet.Cells["C34"].Value = "CRV / LOSS STATEMENT";
-
 
                 // Bind data from the PresentStockMaster table
                 int dataStartColumn = 4; // Column D
@@ -515,12 +520,29 @@ namespace VMS_1
             return dataTable;
         }
 
+        private DataTable GetFreshStockData(string[] selectedDate)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("select Dates, itemnames, quantities, referenceNos from ReceiptMaster Where MONTH(Dates) = @Month AND YEAR(Dates) = @Year order by Dates ASC", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Month", selectedDate[1]);
+                    cmd.Parameters.AddWithValue("@Year", selectedDate[0]);
+                    cmd.Parameters.AddWithValue("@role", "Wardroom");
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+
         private DataTable GetOfficerIssueData(string[] selectedDate)
         {
             DataTable dataTable = new DataTable();
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                using (SqlCommand cmd = new SqlCommand("SELECT * FROM IssueMaster Where Role = @role AND MONTH(Date) = @Month AND Year(Date) = @Year", conn))
+                using (SqlCommand cmd = new SqlCommand("SELECT ItemName, SUM(CONVERT(INT, QtyIssued)) AS quantities FROM IssueMaster Where Role = @role AND MONTH(Date) = @Month AND Year(Date) = @Year GROUP By ItemName", conn))
                 {
                     cmd.Parameters.AddWithValue("@Month", selectedDate[1]);
                     cmd.Parameters.AddWithValue("@Year", selectedDate[0]);
