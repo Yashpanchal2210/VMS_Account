@@ -3,7 +3,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
         <h2 class="mt-4">Strength Module</h2>
-
+        <span class="text-warning" style="background-color:white;">Please re-enter the value on particular data to update.</span>
         <form id="strengthForm" runat="server">
             <%--<div class="text-right">
                 <asp:LinkButton ID="DashboardButton" runat="server" Text="Go to Dashboard" CssClass="btn btn-info" PostBackUrl="~/Dashboard.aspx"></asp:LinkButton>
@@ -91,6 +91,7 @@
                 <asp:GridView ID="GridViewStrength" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowEditing="GridViewStrength_RowEditing" OnRowDeleting="GridViewStrength_RowDeleting" DataKeyNames="Id">
                     <Columns>
                         <asp:BoundField DataField="Id" Visible="false" HeaderText="ID" ReadOnly="True" />
+                        <asp:BoundField DataField="dates" HeaderText="Date" ReadOnly="True" />
                         <asp:BoundField DataField="vegOfficers" HeaderText="vegOfficers" ReadOnly="True" />
                         <asp:BoundField DataField="nonVegOfficers" HeaderText="nonVegOfficers" ReadOnly="True" />
                         <asp:BoundField DataField="vegrikOfficers" HeaderText="vegrikOfficers" ReadOnly="True" />
@@ -104,7 +105,7 @@
                         <asp:BoundField DataField="vegNonEntitledSailor" HeaderText="vegNonEntitledSailor" ReadOnly="True" />
                         <asp:BoundField DataField="NonVegNonEntitledSailor" HeaderText="NonVegNonEntitledSailor" ReadOnly="True" />
                         <asp:BoundField DataField="civilians" HeaderText="civilians" ReadOnly="True" />
-                        <asp:CommandField ShowEditButton="True" ShowDeleteButton="True" />
+                        <asp:CommandField ShowDeleteButton="True" DeleteText="Delete Row"/>
                     </Columns>
                 </asp:GridView>
             </div>

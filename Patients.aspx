@@ -51,7 +51,15 @@
                 <h2 class="mt-4">Entered Data</h2>
             </div>
             <div>
-                <asp:GridView ID="GridViewPatients" runat="server" CssClass="table table-bordered table-striped">
+                <asp:GridView ID="GridViewPatients" runat="server" CssClass="table table-bordered table-striped"
+                    AutoGenerateColumns="False" OnRowDeleting="GridViewExtraPatients_RowDeleting" DataKeyNames="Id">
+                    <Columns>
+                        <asp:BoundField DataField="Id" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
+                        <asp:BoundField DataField="Date" HeaderText="Date" DataFormatString="{0:yyyy-MM-dd}" />
+                        <asp:BoundField DataField="ItemName" HeaderText="Item Name" />
+                        <asp:BoundField DataField="Qty" HeaderText="Qty" />
+                        <asp:CommandField ShowDeleteButton="True" DeleteText="Delete Row" />
+                    </Columns>
                 </asp:GridView>
             </div>
         </form>

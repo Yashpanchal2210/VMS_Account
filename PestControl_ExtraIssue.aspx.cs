@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Irony;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -68,6 +69,8 @@ namespace VMS_1
 
                         cmd.ExecuteNonQuery();
 
+                        lblStatus.Text = "Data entered successfully.";
+
                         // Update PresentStockMaster table if ItemName exists
                         SqlCommand updatePresentStockCmd = new SqlCommand("UPDATE PresentStockMaster SET Qty = Qty - @Quantity WHERE ItemName = @ItemName", conn);
                         updatePresentStockCmd.Parameters.AddWithValue("@ItemName", "Milk Fresh");
@@ -88,6 +91,16 @@ namespace VMS_1
                             updateCmd.Parameters.AddWithValue("@ItemName", "Milk Fresh");
                             updateCmd.Parameters.AddWithValue("@Quantity", decimal.Parse(milk[i]));
 
+                            int rowsAffected = updateCmd.ExecuteNonQuery();
+
+                            // Check if the update was successful
+                            if (rowsAffected == 0)
+                            {
+                                // Show validation message that item quantity is less
+                                // For example, you can set a label text or display an alert using JavaScript
+                                lblStatus.Text = "Item quantity is less than the specified value.";
+                            }
+
                             updateCmd.ExecuteNonQuery();
                         }
                         else
@@ -103,7 +116,6 @@ namespace VMS_1
                         }
                     }
                 }
-                lblStatus.Text = "Data entered successfully.";
 
                 LoadGridView();
             }
@@ -122,12 +134,16 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM ExtraIssueCategory where Type = 'PestControl' Order By Id", conn);
+                    string query = "SELECT * FROM ExtraIssueCategory WHERE Type = @Type ORDER BY Id DESC";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@Type", "PestControl");
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 
-                    GridViewExtraIssueCategory1.DataSource = dt;
-                    GridViewExtraIssueCategory1.DataBind();
+                    GridViewExtraIssuePest.DataSource = dt;
+                    GridViewExtraIssuePest.DataBind();
                 }
             }
             catch (Exception ex)
@@ -136,5 +152,86 @@ namespace VMS_1
             }
         }
 
+        protected void GridViewExtraIssuePest_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        {
+
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+
+            int id = Convert.ToInt32(GridViewExtraIssuePest.DataKeys[e.RowIndex].Value);
+            string quantities = "";
+            string itemname = "";
+            string date = "";
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("SELECT Qty, ItemName, Date FROM ExtraIssueCategory WHERE Id=@Id AND Type = @Type", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.Parameters.AddWithValue("@Type", "PestControl");
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            quantities = reader["Qty"].ToString();
+                            itemname = reader["ItemName"].ToString();
+                            date = reader["Date"].ToString();
+                        }
+                    }
+                }
+
+                if (quantities != null)
+                {
+                    DateTime dateTime = DateTime.Parse(date);
+                    int month = dateTime.Month;
+                    int year = dateTime.Year;
+
+                    SqlCommand checkItemCmd = new SqlCommand("SELECT COUNT(*) FROM PresentStockMaster WHERE ItemName = @ItemName", conn);
+                    checkItemCmd.Parameters.AddWithValue("@ItemName", itemname);
+
+                    int itemCount = (int)checkItemCmd.ExecuteScalar();
+
+                    if (itemCount > 0)
+                    {
+                        // If item exists, update the quantity
+                        SqlCommand updatePresentStockCmd = new SqlCommand("UPDATE PresentStockMaster SET Qty = Qty + @Quantity WHERE ItemName = @ItemName", conn);
+                        updatePresentStockCmd.Parameters.AddWithValue("@ItemName", itemname);
+                        updatePresentStockCmd.Parameters.AddWithValue("@Quantity", quantities);
+
+                        updatePresentStockCmd.ExecuteNonQuery();
+                    }
+
+                    SqlCommand checkCmd = new SqlCommand(
+                    "SELECT COUNT(*) FROM MonthEndStockMaster WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year AND ItemName = @ItemName", conn);
+                    checkCmd.Parameters.AddWithValue("@Month", month);
+                    checkCmd.Parameters.AddWithValue("@Year", year);
+                    checkCmd.Parameters.AddWithValue("@ItemName", itemname);
+
+                    int count = (int)checkCmd.ExecuteScalar();
+
+                    if (count > 0)
+                    {
+                        SqlCommand updateCmd = new SqlCommand(
+                            "UPDATE MonthEndStockMaster SET Qty = Qty + @Quantity WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year AND ItemName = @ItemName", conn);
+                        updateCmd.Parameters.AddWithValue("@Month", month);
+                        updateCmd.Parameters.AddWithValue("@Year", year);
+                        updateCmd.Parameters.AddWithValue("@ItemName", itemname);
+                        updateCmd.Parameters.AddWithValue("@Quantity", quantities);
+
+                        updateCmd.ExecuteNonQuery();
+                    }
+                }
+
+
+
+                using (SqlCommand cmd = new SqlCommand("DELETE FROM ExtraIssueCategory WHERE Id=@Id", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+            LoadGridView(); // Rebind the GridView to show the updated data
+        }
     }
 }

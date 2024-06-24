@@ -56,6 +56,7 @@
                             <td>
                                 <select class="form-control" name="itemname" id="itemname" required>
                                     <option value="">Select</option>
+                                    <option value=""></option>
                                 </select>
                             </td>
                             <td>
@@ -138,7 +139,7 @@
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Actions">
                             <ItemTemplate>
-                                <asp:LinkButton ID="EditButton" runat="server" CommandName="Edit" Text="Edit"></asp:LinkButton>
+                                <%--<asp:LinkButton ID="EditButton" runat="server" CommandName="Edit" Text="Edit"></asp:LinkButton>--%>
                                 <asp:LinkButton ID="DeleteButton" runat="server" CommandName="Delete" Text="Delete"></asp:LinkButton>
                             </ItemTemplate>
                             <EditItemTemplate>

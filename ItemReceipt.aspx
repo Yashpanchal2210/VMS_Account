@@ -84,8 +84,9 @@
             </div>
             <div>
                 <asp:GridView ID="GridView" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowEditing="GridView_RowEditing" OnRowUpdating="GridView_RowUpdating" OnRowCancelingEdit="GridView_RowCancelingEdit"
-                    OnRowDeleting="GridView_RowDeleting">
+                    OnRowDeleting="GridView_RowDeleting" DataKeyNames="itemid">
                     <Columns>
+                        <asp:BoundField DataField="itemid" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
                         <asp:TemplateField HeaderText="Date">
                             <ItemTemplate>
                                 <asp:Label ID="lblDate" runat="server" Text='<%# Eval("Dates") %>'></asp:Label>
@@ -136,8 +137,8 @@
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Actions">
                             <ItemTemplate>
-                                <asp:LinkButton ID="EditButton" runat="server" CommandName="Edit" Text="Edit"></asp:LinkButton>
-                                <asp:LinkButton ID="DeleteButton" runat="server" CommandName="Delete" Text="Delete" OnClientClick="return confirm('Are you sure you want to delete this item?');"></asp:LinkButton>
+                                <%--<asp:LinkButton ID="EditButton" runat="server" CommandName="Edit" Text="Edit"></asp:LinkButton>--%>
+                                <asp:LinkButton ID="DeleteButton" runat="server" CommandName="Delete" Text="Delete"></asp:LinkButton>
                             </ItemTemplate>
                             <EditItemTemplate>
                                 <asp:LinkButton ID="UpdateButton" runat="server" CommandName="Update" Text="Update"></asp:LinkButton>
@@ -193,7 +194,7 @@
             newRow.innerHTML = `
                                 <td><input type="text" class="form-control" value="${selectedRefNo}" disabled /></td>
                                  <td>
-                                      <select class="form-control itemname" name="itemname" id="itemname_${rowSequence}" required>
+                                      <select class="form-control itemname js-states" name="itemname" id="itemname_${rowSequence}" required>
                                      </select>
                                  </td>
                                 <td><input type="text" class="form-control" name="qty" required pattern="^\\d+(\\.\\d+)?$" /></td>

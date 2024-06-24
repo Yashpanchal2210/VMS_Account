@@ -11,35 +11,35 @@ namespace VMS_1
 {
 
 
-    public partial class PestControl_ExtraIssue
+    public partial class DiverReport
     {
 
         /// <summary>
-        /// pestControlForm control.
+        /// PageForm control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm pestControlForm;
+        protected global::System.Web.UI.HtmlControls.HtmlForm PageForm;
 
         /// <summary>
-        /// tableBody control.
+        /// ExportDiversStockButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl tableBody;
+        protected global::System.Web.UI.WebControls.Button ExportDiversStockButton;
 
         /// <summary>
-        /// SubmitButton control.
+        /// GridViewExtraIssueDivers control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button SubmitButton;
+        protected global::System.Web.UI.WebControls.GridView GridViewExtraIssueDivers;
 
         /// <summary>
         /// lblStatus control.
@@ -49,14 +49,5 @@ namespace VMS_1
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblStatus;
-
-        /// <summary>
-        /// GridViewExtraIssuePest control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GridViewExtraIssuePest;
     }
 }

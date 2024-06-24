@@ -51,15 +51,6 @@ namespace VMS_1
         protected global::System.Web.UI.WebControls.GridView GridViewMonthStock;
 
         /// <summary>
-        /// hfChartDataPage2to7 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hfChartDataPage2to7;
-
-        /// <summary>
         /// GridViewPresentStock control.
         /// </summary>
         /// <remarks>
@@ -103,24 +94,6 @@ namespace VMS_1
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblStatus;
-
-        /// <summary>
-        /// ExportDiversStockButton control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button ExportDiversStockButton;
-
-        /// <summary>
-        /// GridViewExtraIssueDivers control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GridViewExtraIssueDivers;
 
         /// <summary>
         /// Button2 control.

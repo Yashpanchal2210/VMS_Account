@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.Services;
@@ -107,6 +108,27 @@ ORDER BY
             return items;
         }
 
+        [WebMethod]
+        public static string GetInLieuBasicDenom(string basicItem)
+        {
+            string basicDenom = string.Empty;
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "select Top 1 Denomination from inLieuItems where InLieuItem = @BasicItem";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@BasicItem", basicItem);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    basicDenom = reader["Denomination"].ToString();
+                }
+            }
+
+            return basicDenom;
+        }
 
 
         [WebMethod]
@@ -396,5 +418,6 @@ ORDER BY
 
             LoadGridView();
         }
+
     }
 }

@@ -44,8 +44,18 @@
                 <h2 class="mt-4">Entered Data</h2>
             </div>
             <div>
-                <asp:GridView ID="GridViewExtraIssueCategory1" runat="server" CssClass="table table-bordered table-striped">
+                <asp:GridView ID="GridViewExtraIssuePest" runat="server" CssClass="table table-bordered table-striped"
+                    AutoGenerateColumns="False" OnRowDeleting="GridViewExtraIssuePest_RowDeleting" DataKeyNames="Id">
+                    <Columns>
+                        <asp:BoundField DataField="Id" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
+                        <asp:BoundField DataField="Date" HeaderText="Date" DataFormatString="{0:yyyy-MM-dd}" />
+                        <asp:BoundField DataField="Strength" HeaderText="Strength" />
+                        <asp:BoundField DataField="ItemName" HeaderText="Item Name" />
+                        <asp:BoundField DataField="Qty" HeaderText="Qty" />
+                        <asp:CommandField ShowDeleteButton="True" DeleteText="Delete Row" />
+                    </Columns>
                 </asp:GridView>
+
             </div>
         </form>
     </div>

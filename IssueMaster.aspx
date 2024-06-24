@@ -2,6 +2,8 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+
     <style>
         .input-container {
             position: relative;
@@ -38,6 +40,8 @@
             <input type="hidden" id="EntitledStrength" name="EntitledStrength" />
             <input type="hidden" id="scaleAmount" />
             <input type="hidden" id="Selected_Category" name="Category" />
+
+            <asp:HiddenField ID="DeleteStatus" runat="server" />
 
             <div class="table-responsive">
                 <table class="table" id="issueTable">
@@ -88,53 +92,36 @@
             <div>
                 <h2 class="mt-4">Issue Details</h2>
             </div>
-            <%--<div>
-                <label for="ddlMonth">Select Month:</label>
-                <asp:DropDownList ID="ddlMonth" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlMonth_SelectedIndexChanged">
-                    <asp:ListItem Text="January" Value="1"></asp:ListItem>
-                    <asp:ListItem Text="February" Value="2"></asp:ListItem>
-                    <asp:ListItem Text="March" Value="3"></asp:ListItem>
-                    <asp:ListItem Text="April" Value="4"></asp:ListItem>
-                    <asp:ListItem Text="May" Value="5"></asp:ListItem>
-                    <asp:ListItem Text="June" Value="6"></asp:ListItem>
-                    <asp:ListItem Text="July" Value="7"></asp:ListItem>
-                    <asp:ListItem Text="August" Value="8"></asp:ListItem>
-                    <asp:ListItem Text="September" Value="9"></asp:ListItem>
-                    <asp:ListItem Text="Octomber" Value="10"></asp:ListItem>
-                    <asp:ListItem Text="November" Value="11"></asp:ListItem>
-                    <asp:ListItem Text="December" Value="12"></asp:ListItem>
-                </asp:DropDownList>
-            </div>--%>
             <div>
                 <a class="btn" href="ExportIssueOfficerandSailor.aspx">Export Issue</a>
             </div>
             <div>
-                <asp:GridView ID="GridViewIssue" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False">
+                <asp:GridView ID="GridViewIssue" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" DataKeyNames="Id"
+                    OnRowEditing="GridViewIssue_RowEditing"
+                    OnRowUpdating="GridViewIssue_RowUpdating"
+                    OnRowCancelingEdit="GridViewIssue_RowCancelingEdit"
+                    OnRowDeleting="GridViewIssue_RowDeleting">
                     <Columns>
-                        <asp:TemplateField HeaderText="Date">
+                        <asp:BoundField DataField="Id" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
+                        <%--<asp:TemplateField HeaderText="Date">
                             <ItemTemplate>
                                 <asp:Label ID="lblDate" runat="server" Text='<%# Eval("Date") %>'></asp:Label>
                             </ItemTemplate>
                             <EditItemTemplate>
-                                <asp:TextBox ID="lblDate" runat="server" Text='<%# Bind("Date") %>'></asp:TextBox>
-                            </EditItemTemplate>
-                        </asp:TemplateField>
-                        <%--<asp:TemplateField HeaderText="Category">
-                            <ItemTemplate>
-                                <asp:Label ID="lblCategory" runat="server" Text='<%# Eval("CategoryItemName") %>'></asp:Label>
-                            </ItemTemplate>
-                            <EditItemTemplate>
-                                <asp:TextBox ID="lblCategory" runat="server" Text='<%# Bind("CategoryItemName") %>'></asp:TextBox>
+                                <asp:TextBox ID="txtDate" runat="server" Text='<%# Bind("Date") %>'></asp:TextBox>
                             </EditItemTemplate>
                         </asp:TemplateField>--%>
-                        <asp:TemplateField HeaderText="Item">
+                        <asp:BoundField DataField="Date" HeaderText="Date" ReadOnly="true" />
+
+                        <%--<asp:TemplateField HeaderText="Item">
                             <ItemTemplate>
                                 <asp:Label ID="lblItem" runat="server" Text='<%# Eval("ItemName") %>'></asp:Label>
                             </ItemTemplate>
                             <EditItemTemplate>
                                 <asp:TextBox ID="txtItem" runat="server" Text='<%# Bind("ItemName") %>'></asp:TextBox>
                             </EditItemTemplate>
-                        </asp:TemplateField>
+                        </asp:TemplateField>--%>
+                        <asp:BoundField DataField="ItemName" HeaderText="ItemName" ReadOnly="true" />
                         <asp:TemplateField HeaderText="Qty Issued">
                             <ItemTemplate>
                                 <asp:Label ID="lblQtyIssued" runat="server" Text='<%# Eval("QtyIssued") %>'></asp:Label>
@@ -143,17 +130,28 @@
                                 <asp:TextBox ID="txtQtyIssued" runat="server" Text='<%# Bind("QtyIssued") %>'></asp:TextBox>
                             </EditItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Denomination">
+                        <%--<asp:TemplateField HeaderText="Denomination">
                             <ItemTemplate>
                                 <asp:Label ID="lblDenomination" runat="server" Text='<%# Eval("Denomination") %>'></asp:Label>
                             </ItemTemplate>
                             <EditItemTemplate>
                                 <asp:TextBox ID="txtDenomination" runat="server" Text='<%# Bind("Denomination") %>'></asp:TextBox>
                             </EditItemTemplate>
-                        </asp:TemplateField>
+                        </asp:TemplateField>--%>
+                        <asp:BoundField DataField="Denomination" HeaderText="Denomination" ReadOnly="true" />
 
+                        <asp:TemplateField HeaderText="Strength">
+                            <ItemTemplate>
+                                <asp:Label ID="lblstrength" runat="server" Text='<%# Eval("EntitledStrength") %>'></asp:Label>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtstrength" runat="server" Text='<%# Bind("EntitledStrength") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:CommandField ShowDeleteButton="True" DeleteText="Delete Row" />
                     </Columns>
                 </asp:GridView>
+
             </div>
 
 
@@ -206,6 +204,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
     <script>
         $(document).ready(function () {
             $('#DropDownList1').select2({
@@ -216,19 +216,23 @@
 
         function selectCategory(val, row) {
 
+            document.getElementById('selecttype').style.display = 'none';
 
-            var categoryVal = document.getElementById('selecttype').style.display = 'none';
+            var categoryVal = "";
+            if (val != "") {
+                categoryVal = document.getElementById("Selected_Category").value;
+                categoryVal = val;
+            } else {
+                categoryVal = document.getElementById("Selected_Category").value;
+            }
 
-            //var categoryVal = document.getElementById("Selected_Category").value;
-
-            document.getElementById("Selected_Category").value = val;
 
             fetch('IssueMaster.aspx/GetInLiueItemsByCategory', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ Category: document.getElementById("Selected_Category").value })
+                body: JSON.stringify({ Category: categoryVal })
             })
                 .then(response => response.json())
                 .then(data => {
@@ -250,7 +254,8 @@
                         }
                         selectElement.disabled = false;
                     } else {
-                        const selectElement1 = document.getElementById('DropDownList1_' + row);
+                        var rowId = rowSequence - 1;
+                        const selectElement1 = document.getElementById('DropDownList1_' + rowId);
                         selectElement1.innerHTML = '<option value="">Select</option>';
 
                         for (let i = 0; i < items.length; i += 2) {
@@ -413,8 +418,9 @@
                             </td>`;
 
             tableBody.appendChild(newRow);
+            var categoryVal = document.getElementById('userType').value;
 
-            selectCategory('', rowSequence);
+            selectCategory(categoryVal, rowSequence);
 
             var strengthInput = document.getElementById("Strength_" + rowSequence);
             var strengthID = "Strength_" + rowSequence;
@@ -448,11 +454,6 @@
             row.parentNode.removeChild(row);
         }
 
-        //document.addEventListener("DOMContentLoaded", function () {
-        //    var rows = document.querySelectorAll("#tableBody tr");
-        //    rows.forEach(fetchItemCategories);
-        //});
-
         function checkReceivedFrom(selectElement) {
             var parentTd = selectElement.parentNode;
             var othersInput = parentTd.querySelector('input[name="otherReceivedFrom"]');
@@ -473,38 +474,6 @@
         }
 
         var scaleAmountsByCategory = {};
-        //function fetchItemCategories() {
-        //    fetch('IssueMaster.aspx/GetItemCategories', {
-        //        method: 'POST',
-        //        headers: {
-        //            'Content-Type': 'application/json'
-        //        }
-        //    })
-        //        .then(response => response.json())
-        //        .then(data => {
-        //            if (data.d && data.d.length) {
-
-        //                var dropdown = document.getElementById('itemcategory');
-
-        //                // Clear existing options
-        //                dropdown.innerHTML = '<option value="">Select</option>';
-
-        //                data.d.forEach(function (item) {
-        //                    var option = document.createElement('option');
-        //                    option.value = item.Value;
-        //                    option.textContent = item.Text;
-        //                    option.setAttribute('data-scaleamount', item.ScaleAmount);
-        //                    dropdown.appendChild(option);
-
-        //                    scaleAmountsByCategory[item.Value] = parseFloat(item.ScaleAmount);
-        //                });
-        //            }
-        //        })
-        //        .catch(error => {
-        //            console.error('Error fetching item categories:', error);
-        //        });
-        //}
-
 
         function populateDropDown(data) {
             var dropdown = $('#itemcategory');
@@ -515,52 +484,28 @@
         }
         var selectedCategoryValue = '';
 
-        //function itemcategory_SelectedIndexChanged(element) {
-        //    selectedCategoryValue = element.value;
-        //    document.querySelector('input[name="Strength"]').value = '';
-        //    document.getElementById('EntitledStrength').textContent = '';
-        //    var selectedCategory = document.getElementById('itemcategory').value;
-        //    //var selectedCategory = document.querySelector('.itemcategory').value;
-        //    var ScalAmount = document.getElementById('ScalAmount_Val');
-        //    $('#ItemCategory_Val').val(selectedCategory);
-        //    fetchItemNames(selectedCategory, '');
-
-        //    var scaleAmount = scaleAmountsByCategory[selectedCategory];
-        //    ScalAmount.value = scaleAmount;
-        //}
-
-        //function fetchItemNames(category, val) {
-        //    fetch('IssueMaster.aspx/GetItemNamesByCategory', {
-        //        method: 'POST',
-        //        headers: {
-        //            'Content-Type': 'application/json'
-        //        },
-        //        body: JSON.stringify({ category: category })
-        //    })
-        //        .then(response => response.json())
-        //        .then(data => {
-        //            if (val == '' || val == null) {
-        //                var dropdown = document.getElementById('DropDownList1');
-        //            } else {
-        //                var dropdown = document.getElementById('DropDownList1' + '_' + val);
-        //            }
-        //            dropdown.innerHTML = '';
-        //            var itemNames = JSON.parse(data.d);
-        //            itemNames.forEach(function (itemName) {
-        //                var option = document.createElement('option');
-        //                option.value = itemName;
-        //                option.textContent = itemName;
-        //                dropdown.appendChild(option);
-        //            });
-        //        })
-        //        .catch(error => {
-        //            console.error('Error fetching item names:', error);
-        //        });
-        //}
 
         function freezDiv() {
             var type = document.getElementById("userType");
             type.disabled = true;
         }
+
+        function showSuccessToast(message) {
+            toastr.success(message, 'Success', {
+                progressBar: true,
+                positionClass: 'toast-bottom-right',
+                timeOut: 3000 
+            });
+        }
+
+        function showErrorToast(message) {
+            toastr.error(message, 'Error', {
+                progressBar: true,
+                positionClass: 'toast-bottom-right',
+                timeOut: 3000
+            });
+        }
+
+
     </script>
 </asp:Content>

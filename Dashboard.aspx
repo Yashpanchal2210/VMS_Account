@@ -44,10 +44,10 @@
             <h2>Page 2 To 7</h2>
             <%-- <asp:GridView ID="GridViewP2to7" runat="server" CssClass="table table-bordered table-striped">
             </asp:GridView>--%>
-            <div style="height: 355px;">
+            <%--<div style="height: 355px;">
                 <canvas id="myPieChartP2to7" width="60" height="60"></canvas>
                 <asp:HiddenField ID="hfChartDataPage2to7" runat="server" />
-            </div>
+            </div>--%>
             <%--<div style="height: 355px;">
                 <canvas id="myPieChartP2to7" width="60" height="60"></canvas>
                 <asp:HiddenField ID="HiddenField1" runat="server" />
@@ -71,12 +71,12 @@
         </div>
         <asp:Label ID="lblStatus" runat="server"></asp:Label>
 
-        <div class="container mt-3">
+        <%--<div class="container mt-3">
             <h2>Divers</h2>
             <asp:Button ID="ExportDiversStockButton" runat="server" Text="Export to Excel" OnClick="ExportDiversStockButton_Click" CssClass="btn btn-primary" />
             <asp:GridView ID="GridViewExtraIssueDivers" runat="server" CssClass="table table-bordered table-striped">
             </asp:GridView>
-        </div>
+        </div>--%>
 
         <div class="container mt-3">
             <h2>Officers</h2>
@@ -99,7 +99,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
 
-        document.addEventListener('DOMContentLoaded', function () {
+        <%--document.addEventListener('DOMContentLoaded', function () {
             // Page 2 to 7 Pie Chart
             var ctxP2to7 = document.getElementById('myPieChartP2to7').getContext('2d');
             var chartDataP2to7 = JSON.parse(document.getElementById('<%= hfChartDataPage2to7.ClientID %>').value);
@@ -119,7 +119,7 @@
                     }
                 }
             });
-        });
+        });--%>
 
         function addAlternativeItem() {
             var tableBody = document.getElementById("Table2");

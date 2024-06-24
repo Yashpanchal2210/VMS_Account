@@ -226,7 +226,7 @@
             <a href="ReportsGenerate.aspx">Strength Report(Page 13)</a>
             <a href="Page14.aspx">Page14</a>
             <a href="transfervoucher.aspx">Transfer Voucher</a>
-            <a href="DiversReport.aspx">Diver Report</a>
+            <%--<a href="DiverReport.aspx">Diver Report</a>--%>
             <a href="Cat-ISchool.aspx">Cat-I School</a>
             <a href="Cat-IISchool.aspx">Cat-II School</a>
             <a href="Overdrawal.aspx">OverDrawal</a>
@@ -314,7 +314,7 @@
                             <a class="dropdown-item" href="ReportsGenerate.aspx">Strength Report(Page 13)</a>
                             <a class="dropdown-item" href="Page14.aspx">Page14</a>
                             <a class="dropdown-item" href="transfervoucher.aspx">Transfer Voucher</a>
-                            <a class="dropdown-item" href="DiversReport.aspx">Diver Report</a>
+                            <%--<a class="dropdown-item" href="DiverReport.aspx">Diver Report</a>--%>
                             <a class="dropdown-item" href="VictuallingManagement.aspx">Victualling Account Reports</a>
                             <%--<a class="dropdown-item" href="Cat-ISchool.aspx">Cat-I School</a>--%>
                             <%--<a class="dropdown-item" href="Cat-IISchool.aspx">Cat-II School</a>--%>

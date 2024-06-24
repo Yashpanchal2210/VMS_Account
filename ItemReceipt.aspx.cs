@@ -10,6 +10,7 @@ using System.Web.Script.Services;
 using System.Web.Security;
 using System.Web.Services;
 using System.Web.UI.WebControls;
+using System.Windows.Controls;
 
 namespace VMS_1
 {
@@ -333,7 +334,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT Dates, referenceNos, receivedFrom, itemnames, denominations, quantities FROM ReceiptMaster ORDER By itemId DESC", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT itemid, Dates, referenceNos, receivedFrom, itemnames, denominations, quantities FROM ReceiptMaster ORDER By itemId DESC", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 
@@ -360,13 +361,21 @@ namespace VMS_1
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
 
             GridViewRow row = GridView.Rows[e.RowIndex];
-            //int id = Convert.ToInt32(GridView.DataKeys[e.RowIndex].Values[0]);
-            string date = ((TextBox)row.FindControl("lblDate")).Text;
-            string referenceNos = ((TextBox)row.FindControl("lblreferenceNos")).Text;
-            string receivedFrom = ((TextBox)row.FindControl("txtreceivedFrom")).Text;
-            string itemnames = ((TextBox)row.FindControl("txtitemnames")).Text;
-            string denominations = ((TextBox)row.FindControl("txtDenomination")).Text;
-            string quantities = ((TextBox)row.FindControl("txtquantities")).Text;
+            int id = Convert.ToInt32(GridView.DataKeys[e.RowIndex].Values[0]);
+
+            System.Web.UI.WebControls.TextBox dateTextBox = (System.Web.UI.WebControls.TextBox)row.FindControl("lblDate");
+            string date = dateTextBox.Text;
+
+            System.Web.UI.WebControls.TextBox dateTextBox1 = (System.Web.UI.WebControls.TextBox)row.FindControl("lblreferenceNos");
+            string referenceNos = dateTextBox1.Text;
+            System.Web.UI.WebControls.TextBox dateTextBox2 = (System.Web.UI.WebControls.TextBox)row.FindControl("txtreceivedFrom");
+            string receivedFrom = dateTextBox2.Text;
+            System.Web.UI.WebControls.TextBox dateTextBox3 = (System.Web.UI.WebControls.TextBox)row.FindControl("txtitemnames");
+            string itemnames = dateTextBox3.Text;
+            System.Web.UI.WebControls.TextBox dateTextBox4 = (System.Web.UI.WebControls.TextBox)row.FindControl("txtDenomination");
+            string denominations = dateTextBox4.Text;
+            System.Web.UI.WebControls.TextBox dateTextBox5 = (System.Web.UI.WebControls.TextBox)row.FindControl("txtquantities");
+            string quantities = dateTextBox5.Text;
 
             try
             {
@@ -375,7 +384,7 @@ namespace VMS_1
                     conn.Open();
 
                     SqlCommand cmd = new SqlCommand("UPDATE ReceiptMaster SET Dates=@Date, referenceNos=@ReferenceNos, receivedFrom=@ReceivedFrom, itemnames=@ItemNames, denominations=@Denominations, quantities=@Quantities WHERE itemid=@ID", conn);
-                    cmd.Parameters.AddWithValue("@ID", e.RowIndex);
+                    cmd.Parameters.AddWithValue("@ID", id);
                     cmd.Parameters.AddWithValue("@Date", date);
                     cmd.Parameters.AddWithValue("@ReferenceNos", referenceNos);
                     cmd.Parameters.AddWithValue("@ReceivedFrom", receivedFrom);
@@ -405,26 +414,86 @@ namespace VMS_1
         {
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
 
-            //int id = Convert.ToInt32(GridView.DataKeys[e.RowIndex].Values[0]);
 
-            try
+            int id = Convert.ToInt32(GridView.DataKeys[e.RowIndex].Value);
+            string quantities = "";
+            string itemname = "";
+            string date = "";
+
+          
+
+            using (SqlConnection conn = new SqlConnection(connStr))
             {
-                using (SqlConnection conn = new SqlConnection(connStr))
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("SELECT quantities, itemnames, Dates FROM ReceiptMaster WHERE itemid=@Id", conn))
                 {
-                    conn.Open();
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            quantities = reader["quantities"].ToString();
+                            itemname = reader["itemnames"].ToString();
+                            date = reader["Dates"].ToString();
+                        }
+                    }
+                }
 
-                    SqlCommand cmd = new SqlCommand("DELETE FROM ReceiptMaster WHERE ID=@ID", conn);
-                    cmd.Parameters.AddWithValue("@ID", e);
+                if (quantities != null)
+                {
+                    DateTime dateTime = DateTime.Parse(date);
+                    int month = dateTime.Month;
+                    int year = dateTime.Year;
 
+                    SqlCommand checkItemCmd = new SqlCommand("SELECT COUNT(*) FROM PresentStockMaster WHERE ItemName = @ItemName", conn);
+                    checkItemCmd.Parameters.AddWithValue("@ItemName", itemname);
+
+                    int itemCount = (int)checkItemCmd.ExecuteScalar();
+
+                    if (itemCount > 0)
+                    {
+                        // If item exists, update the quantity
+                        SqlCommand updatePresentStockCmd = new SqlCommand("UPDATE PresentStockMaster SET Qty = Qty - @Quantity WHERE ItemName = @ItemName", conn);
+                        updatePresentStockCmd.Parameters.AddWithValue("@ItemName", itemname);
+                        updatePresentStockCmd.Parameters.AddWithValue("@Quantity", quantities);
+
+                        updatePresentStockCmd.ExecuteNonQuery();
+                    }
+
+                    SqlCommand checkCmd = new SqlCommand(
+                    "SELECT COUNT(*) FROM MonthEndStockMaster WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year AND ItemName = @ItemName", conn);
+                    checkCmd.Parameters.AddWithValue("@Month", month);
+                    checkCmd.Parameters.AddWithValue("@Year", year);
+                    checkCmd.Parameters.AddWithValue("@ItemName", itemname);
+
+                    int count = (int)checkCmd.ExecuteScalar();
+
+                    if (count > 0)
+                    {
+                        SqlCommand updateCmd = new SqlCommand(
+                            "UPDATE MonthEndStockMaster SET Qty = Qty - @Quantity WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year AND ItemName = @ItemName", conn);
+                        updateCmd.Parameters.AddWithValue("@Month", month);
+                        updateCmd.Parameters.AddWithValue("@Year", year);
+                        updateCmd.Parameters.AddWithValue("@ItemName", itemname);
+                        updateCmd.Parameters.AddWithValue("@Quantity", quantities);
+
+                        updateCmd.ExecuteNonQuery();
+                    }
+                }
+            }
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("DELETE FROM ReceiptMaster WHERE itemid=@Id", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Id", id);
                     cmd.ExecuteNonQuery();
                 }
-                BindGridView();
-                lblStatus.Text = "Record deleted successfully.";
             }
-            catch (Exception ex)
-            {
-                lblStatus.Text = ("An error occurred while deleting the record: " + ex.Message);
-            }
+
+
+            BindGridView();
         }
     }
 }

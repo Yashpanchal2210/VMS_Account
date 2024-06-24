@@ -171,5 +171,86 @@ namespace VMS_1
 
             return items;
         }
+
+        protected void GridViewExtraPatients_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        {
+
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+
+            int id = Convert.ToInt32(GridViewPatients.DataKeys[e.RowIndex].Value);
+            string quantities = "";
+            string itemname = "";
+            string date = "";
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("SELECT Qty, Itemname, Date FROM Patients WHERE Id=@Id", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            quantities = reader["Qty"].ToString();
+                            itemname = reader["ItemName"].ToString();
+                            date = reader["Date"].ToString();
+                        }
+                    }
+                }
+
+                if (quantities != null)
+                {
+                    DateTime dateTime = DateTime.Parse(date);
+                    int month = dateTime.Month;
+                    int year = dateTime.Year;
+
+                    SqlCommand checkItemCmd = new SqlCommand("SELECT COUNT(*) FROM PresentStockMaster WHERE ItemName = @ItemName", conn);
+                    checkItemCmd.Parameters.AddWithValue("@ItemName", itemname);
+
+                    int itemCount = (int)checkItemCmd.ExecuteScalar();
+
+                    if (itemCount > 0)
+                    {
+                        // If item exists, update the quantity
+                        SqlCommand updatePresentStockCmd = new SqlCommand("UPDATE PresentStockMaster SET Qty = Qty + @Quantity WHERE ItemName = @ItemName", conn);
+                        updatePresentStockCmd.Parameters.AddWithValue("@ItemName", itemname);
+                        updatePresentStockCmd.Parameters.AddWithValue("@Quantity", quantities);
+
+                        updatePresentStockCmd.ExecuteNonQuery();
+                    }
+
+                    SqlCommand checkCmd = new SqlCommand(
+                    "SELECT COUNT(*) FROM MonthEndStockMaster WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year AND ItemName = @ItemName", conn);
+                    checkCmd.Parameters.AddWithValue("@Month", month);
+                    checkCmd.Parameters.AddWithValue("@Year", year);
+                    checkCmd.Parameters.AddWithValue("@ItemName", itemname);
+
+                    int count = (int)checkCmd.ExecuteScalar();
+
+                    if (count > 0)
+                    {
+                        SqlCommand updateCmd = new SqlCommand(
+                            "UPDATE MonthEndStockMaster SET Qty = Qty + @Quantity WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year AND ItemName = @ItemName", conn);
+                        updateCmd.Parameters.AddWithValue("@Month", month);
+                        updateCmd.Parameters.AddWithValue("@Year", year);
+                        updateCmd.Parameters.AddWithValue("@ItemName", itemname);
+                        updateCmd.Parameters.AddWithValue("@Quantity", quantities);
+
+                        updateCmd.ExecuteNonQuery();
+                    }
+                }
+
+
+
+                using (SqlCommand cmd = new SqlCommand("DELETE FROM Patients WHERE Id=@Id", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+            LoadGridView(); // Rebind the GridView to show the updated data
+        }
     }
 }

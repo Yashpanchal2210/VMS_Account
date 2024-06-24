@@ -42,12 +42,12 @@ namespace VMS_1
                     for (int i = 0; i < date.Length; i++)
                     {
                         // Insert Lime Fresh data
-                        InsertItemData(conn, date[i], strengths[i], "Milk Fresh", tea[i]);
+                        InsertItemData(conn, date[i], strengths[i], "Milk Fresh", milk[i]);
 
                         // Insert Sugar data
-                        InsertItemData(conn, date[i], strengths[i], "Sugar", milk[i]);
-                        
-                        InsertItemData(conn, date[i], strengths[i], "Tea", sugar[i]);
+                        InsertItemData(conn, date[i], strengths[i], "Sugar", sugar[i]);
+
+                        InsertItemData(conn, date[i], strengths[i], "Tea", tea[i]);
                     }
                 }
                 lblStatus.Text = "Data entered successfully.";

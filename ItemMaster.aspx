@@ -34,7 +34,7 @@
                                 </select>
                             </td>
                             <td>
-                                <select class="form-control" name="basicItem" id="basicnameVal" onchange="fetchBasicDenom()" >
+                                <select class="form-control" name="basicItem" id="basicnameVal" onchange="fetchBasicDenom()">
                                     <option value="">Select</option>
                                 </select>
                                 <%--<asp:DropDownList ID="basicItem" runat="server" CssClass="form-control" required>
@@ -69,14 +69,14 @@
                     <tbody id="Tbody1" runat="server">
                         <tr>
                             <td>
-                                <select class="form-control" name="inlieuItem" id="inlieuItemVal">
+                                <select class="form-control" name="inlieuItem" id="inlieuItemVal" onchange="changeInlieuItem(this.value)">
                                     <option value="">Select</option>
                                 </select>
                             </td>
                             <td>
                                 <input type="text" class="form-control" name="categoryIlue" id="categoryIlue" readonly /></td>
                             <td>
-                                <input type="text" class="form-control" name="denoms" readonly />
+                                <input type="text" class="form-control" id="denoms" name="denoms" readonly />
                             </td>
                             <td>
                                 <input type="number" class="form-control" name="vegscaleIlue" min="0" step="0.00000001" />
@@ -127,7 +127,17 @@
                                 <asp:TextBox ID="txtNonVegScale" runat="server" Text='<%# Bind("InLieuItemNonVegScale") %>'></asp:TextBox>
                             </EditItemTemplate>
                         </asp:TemplateField>
-                        <asp:CommandField ShowEditButton="True" ShowDeleteButton="True" />
+
+                        <asp:TemplateField HeaderText="Actions">
+                            <ItemTemplate>
+                                <asp:LinkButton ID="EditButton" runat="server" CommandName="Edit" Text="Edit"></asp:LinkButton>
+                                <asp:LinkButton ID="DeleteButton" runat="server" CommandName="Delete" Text="Delete"></asp:LinkButton>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:LinkButton ID="UpdateButton" runat="server" CommandName="Update" Text="Update"></asp:LinkButton>
+                                <asp:LinkButton ID="CancelButton" runat="server" CommandName="Cancel" Text="Cancel"></asp:LinkButton>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
                     </Columns>
                 </asp:GridView>
 
@@ -142,25 +152,52 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
+
         var rowSequence = 1;
         function addAlternativeItem() {
+            if (rowSequence == 1) {
+                var inlieuItemVal = document.getElementById("inlieuItemVal").value;
+                var categoryIlue = document.getElementById("categoryIlue").value;
+                var denoms = document.getElementById("denoms").value;
+                var vegscaleIlue = document.getElementsByName("vegscaleIlue")[0].value;
+                var nonvegscaleIlue = document.getElementsByName("nonvegscaleIlue")[0].value;
+
+                if (inlieuItemVal.trim() === "" || categoryIlue.trim() === "" || denoms.trim() === "" || vegscaleIlue.trim() === "" || nonvegscaleIlue.trim() === "") {
+                    alert("Please fill in all fields in the current row before adding a new row.");
+                    return;
+                }
+            } else {
+                var rowId = rowSequence - 1;
+                var inlieuItemVal = document.getElementById("inlieuItemVal_" + rowId).value;
+                var categoryIlue = document.getElementById("categoryIlue_" + rowId).value;
+                var denoms = document.getElementById("denoms_" + rowId).value;
+                var vegscaleIlue = document.getElementsByName("vegscaleIlue_" + rowId)[0].value;
+                var nonvegscaleIlue = document.getElementsByName("nonvegscaleIlue_" + rowId)[0].value;
+
+                if (inlieuItemVal.trim() === "" || categoryIlue.trim() === "" || denoms.trim() === "" || vegscaleIlue.trim() === "" || nonvegscaleIlue.trim() === "") {
+                    alert("Please fill in all fields in the current row before adding a new row.");
+                    return;
+                }
+            }
+            
+
             var tableBody = document.getElementById("MainContent_Tbody1");
             var newRow = document.createElement("tr");
             newRow.innerHTML = `<td>
-                                    <select class="form-control" name="inlieuItem" id="inlieuItemVal_${rowSequence}">
+                                    <select class="form-control" name="inlieuItem" id="inlieuItemVal_${rowSequence}" onchange="changeInlieuItem(this.value)">
                                         <option value="">Select</option>
                                     </select>
                                 </td>
                                 <td>
                                     <input type="text" class="form-control" name="categoryIlue" id="categoryIlue_${rowSequence}" readonly /></td>
                                 <td>
-                                    <input type="text" class="form-control" name="denoms" readonly/>
+                                    <input type="text" class="form-control" id="denoms_${rowSequence}" name="denoms" readonly/>
                                 </td>
                                 <td>
-                                    <input type="number" class="form-control" name="vegscaleIlue" min="0" step="0.00000001" />
+                                    <input type="number" class="form-control" name="vegscaleIlue" id="vegscaleIlue_${rowSequence}" min="0" step="0.00000001" />
                                 </td>
                                 <td>
-                                    <input type="number" class="form-control" name="nonvegscaleIlue" min="0" step="0.00000001" />
+                                    <input type="number" class="form-control" name="nonvegscaleIlue" id="nonvegscaleIlue_${rowSequence}" min="0" step="0.00000001" />
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>`;
@@ -236,6 +273,13 @@
             hiddenCategory.value = val;
             var caregoryField = document.getElementById("categoryIlue");
             caregoryField.value = val;
+
+            document.getElementById(`inlieuItemVal`).value = "";
+            if (rowSequence > 1) {
+                document.getElementById(`inlieuItemVal_` + rowSequence).value = "";
+            }
+
+            document.getElementById("denomsVal").value = "";
 
             var basicVal = document.getElementById("basicnameVal");
 
@@ -318,6 +362,34 @@
 
 
 
+        function changeInlieuItem(inlieuItems) {
+            fetch('ItemMaster.aspx/GetInLieuBasicDenom', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ basicItem: inlieuItems })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.d) {
+                        var InLieudenomsDropdown;
+                        if (rowSequence == 1) {
+                            InLieudenomsDropdown = document.getElementById("denoms");
+                            InLieudenomsDropdown.value = data.d;
+                        } else {
+                            var valueRow = rowSequence - 1;
+                            InLieudenomsDropdown = document.getElementById("denoms_" + valueRow);
+                            InLieudenomsDropdown.value = data.d;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching in-lieu items:', error);
+                });
+        }
+
+
         function setTheme(theme) {
             var gridView = document.getElementById("GridView1");
 
@@ -341,6 +413,7 @@
         }
 
         function deleteRow(btn) {
+            rowSequence - 1;
             var row = btn.parentNode.parentNode;
             row.parentNode.removeChild(row);
         }
