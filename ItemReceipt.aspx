@@ -60,19 +60,21 @@
             <div class="text-left">
                 <h5>Upload CRV</h5>
                 <label class="col-form-label" for="fileDate">Date</label>
-                <input type="month" class="form-control " name="fileDate" id="fileDate" style="width:auto;"/>
+                <input type="date" class="form-control " name="fileDate" id="fileDate" style="width: auto;" />
 
                 <label class="col-form-label" for="FileUpload1">File</label>
                 <asp:FileUpload CssClass="form-control mt-2" Width="20%" ID="FileUpload1" runat="server" ToolTip="Select Only Excel File" />
 
-                <asp:Button CssClass="btn btn-dark mt-2" Width="10%" ID="Button1" runat="server" Text="Upload" onclick="UploadFileButton_Click" />
+                <asp:Button CssClass="btn btn-dark mt-2" Width="10%" ID="Button1" runat="server" Text="Upload" OnClick="UploadFileButton_Click" />
             </div>
             <div>
                 <asp:Label ID="lblStatus" runat="server" Text=""></asp:Label>
             </div>
             <div class="text-center">
                 <button type="button" class="btn btn-primary mr-2" onclick="addRow()">Add Row</button>
-                <asp:Button ID="SubmitButton" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-success mr-2" Width="107px" Height="38px" />
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#infoModal">
+                    Submit
+                </button>
             </div>
             <div>
                 <h2 class="mt-4">Search Receipt</h2>
@@ -81,6 +83,10 @@
                 <label for="monthYear">Select Month and Year:</label>
                 <input type="month" id="monthYear" name="monthYear" class="form-control" onchange="filterData()" /><br />
                 &nbsp;
+            </div>
+            <div class="form-group">
+                <label for="monthYear">Files</label>
+                <asp:GridView runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="false"></asp:GridView>
             </div>
             <div>
                 <asp:GridView ID="GridView" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowEditing="GridView_RowEditing" OnRowUpdating="GridView_RowUpdating" OnRowCancelingEdit="GridView_RowCancelingEdit"
@@ -148,6 +154,26 @@
                     </Columns>
                 </asp:GridView>
             </div>
+            <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="infoModalLabel">Entitled Strength</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Data once submitted cannot be changed</p>
+                        </div>
+                        <div class="modal-footer">
+                            <asp:Button ID="SubmitButton" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-success mr-2" Width="107px" Height="38px" />
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </form>
     </div>
 

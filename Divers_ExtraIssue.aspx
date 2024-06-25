@@ -3,6 +3,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
         <h2 class="mt-4">Extra Issue - Divers</h2>
+        <span class="text-danger-">WORK IN PROGRESS</span>
         <form id="extraIssueForm" runat="server">
             <div class="table-responsive">
                 <table class="table" id="extraissueTable">
@@ -13,7 +14,8 @@
                             <th class="heading">Rank</th>
                             <th class="heading">P.No.</th>
                             <th class="heading">NO. OF DAYS ENTILED</th>
-                            <th class="heading">Item</th>
+                            <th class="heading">Item 1</th>
+                            <th class="heading">Item 2</th>
                             <th class="heading">Qty</th>
                             <th>Action</th>
                         </tr>
@@ -54,9 +56,21 @@
                                 <input type="text" class="form-control days" id="days" name="days" required />
                             </td>
                             <td>
-                                <select class="form-control" name="itemname" id="itemname" required>
+                                <select class="form-control" name="itemname1" id="itemname1" required>
                                     <option value="">Select</option>
-                                    <option value=""></option>
+                                    <option value="Milk Fresh">Milk Fresh (200 ml)</option>
+                                    <option value="Milk Tinned">Milk Tinned (80 gms)</option>
+                                    <option value="Milk Powder">Milk Powder (28 gms)</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-control" name="itemname2" id="itemname2" required>
+                                    <option value="">Select</option>
+                                    <option value="Eggs">Eggs (2 Nos)</option>
+                                    <option value="Milk Fresh">Milk Fresh (150 ml)</option>
+                                    <option value="Milk Tinned">Milk Tinned (55 gms)</option>
+                                    <option value="Milk Powder">Milk Powder (20 gms)</option>
+                                    <option value="Cheese Tinned">Cheese Tinned (50 gms)</option>
                                 </select>
                             </td>
                             <td>
@@ -253,9 +267,6 @@
                     console.error('Error fetching item names:', error);
                 });
         }
-
-}
-
 
     </script>
 </asp:Content>

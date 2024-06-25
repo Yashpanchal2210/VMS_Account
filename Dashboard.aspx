@@ -41,7 +41,7 @@
         </div>
 
         <div class="container">
-            <h2>Page 2 To 7</h2>
+            <%--<h2>Page 2 To 7</h2>--%>
             <%-- <asp:GridView ID="GridViewP2to7" runat="server" CssClass="table table-bordered table-striped">
             </asp:GridView>--%>
             <%--<div style="height: 355px;">
@@ -54,21 +54,21 @@
             </div>--%>
         </div>
 
-        <div class="container">
+        <%--<div class="container">
             <h2>Present Stock</h2>
             <asp:GridView ID="GridViewPresentStock" runat="server" CssClass="table table-bordered table-striped">
             </asp:GridView>
             <asp:Button ID="ExportPresentStockButton" runat="server" Text="Export Present Stock to Excel" OnClick="ExportPresentStockButton_Click" CssClass="btn btn-primary" />
-        </div>
+        </div>--%>
 
-        <div class="container">
+        <%--<div class="container">
             <h2 class="mt-4">Export Issue</h2>
             <div class="form-group">
                 <label for="monthYearPicker">Select Month and Year:</label>
                 <input type="month" id="monthYearPicker" runat="server" class="form-control date-picker" />
             </div>
             <asp:Button ID="ExportToExcelButton" runat="server" Text="Export to Excel" OnClick="ExportToExcelButton_Click" CssClass="btn btn-primary" />
-        </div>
+        </div>--%>
         <asp:Label ID="lblStatus" runat="server"></asp:Label>
 
         <%--<div class="container mt-3">
@@ -78,7 +78,7 @@
             </asp:GridView>
         </div>--%>
 
-        <div class="container mt-3">
+        <%--<div class="container mt-3">
             <h2>Officers</h2>
             <asp:Button ID="Button2" runat="server" Text="Export to Excel" OnClick="ExportOfficersButton_Click" CssClass="btn btn-primary" />
             <asp:GridView ID="GridViewOfficersSheet" runat="server" CssClass="table table-bordered table-striped">
@@ -90,7 +90,7 @@
             <asp:Button ID="Button3" runat="server" Text="Export to Excel" OnClick="ExportExtraIssueButton_Click" CssClass="btn btn-primary" />
             <asp:GridView ID="GridViewExtraIssue" runat="server" CssClass="table table-bordered table-striped">
             </asp:GridView>
-        </div>
+        </div>--%>
     </form>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

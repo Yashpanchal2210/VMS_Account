@@ -213,8 +213,8 @@ namespace VMS_1
                         }
                     }
                 }
-
-                lblStatus.Text = "Data entered successfully.";
+                //Response.Write("<script>alert('Data once submitted cannot be changed');</script>");
+                //lblStatus.Text = "Data entered successfully.";
                 BindGridView();
             }
             catch (Exception ex)
@@ -342,6 +342,32 @@ namespace VMS_1
                     //GridView1.DataBind();
                     GridView.DataSource = dt;
                     GridView.DataBind();
+                }
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
+            }
+        }
+
+        private void BindFiles()
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM PDFfiles ORDER By itemId DESC", conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    //GridView1.DataSource = dt;
+                    //GridView1.DataBind();
+                    //GridView.DataSource = dt;
+                    //GridView.DataBind();
                 }
             }
             catch (Exception ex)

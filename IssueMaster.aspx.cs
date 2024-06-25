@@ -208,7 +208,7 @@ namespace VMS_1
                         if (result == null || result == DBNull.Value)
                         {
                             lblStatus.Text = $"No data found for item {itemName} in PresentStockMaster.";
-                            //continue;
+                            continue;
                         }
                         else
                         {
@@ -287,7 +287,7 @@ namespace VMS_1
                 }
 
                 LoadGridView();
-
+                Response.Redirect(Request.RawUrl);
             }
             catch (Exception)
             {

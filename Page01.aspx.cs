@@ -223,6 +223,8 @@ namespace VMS_1
                 // Adjust column widths
                 worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
 
+                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Italic\"&16Watermark Text";
+
                 // Save and download the Excel file
                 string fileName = $"Page1_Report_{DateTime.Now.ToString("yyyyMMddHHmmss")}.xlsx";
                 FileInfo excelFile = new FileInfo(Server.MapPath($"~/{fileName}"));

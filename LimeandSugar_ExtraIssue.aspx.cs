@@ -48,9 +48,8 @@ namespace VMS_1
                     }
                 }
 
-                lblStatus.Text = "Data entered successfully.";
-
                 LoadGridView();
+                Response.Redirect(Request.RawUrl);
             }
             catch (Exception ex)
             {
@@ -84,7 +83,30 @@ namespace VMS_1
             cmd.Parameters.AddWithValue("@Type", "LimeJuiceandSugar");
             cmd.Parameters.AddWithValue("@Qty", qty);
 
+            decimal qtyIssued = decimal.Parse(qty);
+            SqlCommand checkReceiptCmd = new SqlCommand(
+                "SELECT SUM(Qty) FROM PresentStockMaster WHERE ItemName = @ItemName", conn);
+            checkReceiptCmd.Parameters.AddWithValue("@ItemName", itemName);
+
+            object result = checkReceiptCmd.ExecuteScalar();
+            if (result == null || result == DBNull.Value)
+            {
+                lblStatus.Text = $"No data found for item {itemName} in PresentStockMaster.";
+                return;
+            }
+            else
+            {
+                decimal availableQty = Convert.ToDecimal(result);
+
+                if (availableQty < qtyIssued)
+                {
+                    lblStatus.Text = $"Insufficient quantity for item.";
+                    return;
+                }
+            }
+
             cmd.ExecuteNonQuery();
+            lblStatus.Text = "Data entered successfully.";
 
             // Update PresentStockMaster table if ItemName exists
             SqlCommand updatePresentStockCmd = new SqlCommand("UPDATE PresentStockMaster SET Qty = Qty - @Quantity WHERE ItemName = @ItemName", conn);

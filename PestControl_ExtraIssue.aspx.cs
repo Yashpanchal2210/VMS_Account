@@ -67,6 +67,28 @@ namespace VMS_1
                         cmd.Parameters.AddWithValue("@Type", "PestControl");
                         cmd.Parameters.AddWithValue("@Qty", milk[i]);
 
+                        decimal qtyIssued = decimal.Parse(milk[i]);
+                        SqlCommand checkReceiptCmd = new SqlCommand(
+                            "SELECT SUM(Qty) FROM PresentStockMaster WHERE ItemName = @ItemName", conn);
+                        checkReceiptCmd.Parameters.AddWithValue("@ItemName", "Milk Fresh");
+
+                        object result = checkReceiptCmd.ExecuteScalar();
+                        if (result == null || result == DBNull.Value)
+                        {
+                            lblStatus.Text = $"No data found for item Milk Fresh in PresentStockMaster.";
+                            continue;
+                        }
+                        else
+                        {
+                            decimal availableQty = Convert.ToDecimal(result);
+
+                            if (availableQty < qtyIssued)
+                            {
+                                lblStatus.Text = $"Insufficient quantity for item.";
+                                continue;
+                            }
+                        }
+
                         cmd.ExecuteNonQuery();
 
                         lblStatus.Text = "Data entered successfully.";
@@ -116,8 +138,8 @@ namespace VMS_1
                         }
                     }
                 }
-
                 LoadGridView();
+                Response.Redirect(Request.RawUrl);
             }
             catch (Exception ex)
             {

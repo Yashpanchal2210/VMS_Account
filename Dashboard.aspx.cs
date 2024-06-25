@@ -30,12 +30,12 @@ namespace VMS_1
             {
                 FormsAuthentication.RedirectToLoginPage();
             }
-            LoadGridViewPresentStock();
+            //LoadGridViewPresentStock();
             LoadGridViewPage2to7();
             LoadGridViewMonthStock();
             //LoadGridViewDivers();
-            LoadOfficerSheet();
-            LoadGridViewExtraIssue();
+            //LoadOfficerSheet();
+            //LoadGridViewExtraIssue();
             FilterDataByMonth(Convert.ToString(DateTime.Now.Month));
         }
 
@@ -126,28 +126,28 @@ namespace VMS_1
             return filteredData;
         }
 
-        private void LoadGridViewPresentStock()
-        {
-            try
-            {
-                string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-                using (SqlConnection conn = new SqlConnection(connStr))
-                {
-                    conn.Open();
+        //private void LoadGridViewPresentStock()
+        //{
+        //    try
+        //    {
+        //        string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+        //        using (SqlConnection conn = new SqlConnection(connStr))
+        //        {
+        //            conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM PresentStockMaster", conn);
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
+        //            SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM PresentStockMaster", conn);
+        //            DataTable dt = new DataTable();
+        //            da.Fill(dt);
 
-                    GridViewPresentStock.DataSource = dt;
-                    GridViewPresentStock.DataBind();
-                }
-            }
-            catch (Exception ex)
-            {
-                lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
-            }
-        }
+        //            GridViewPresentStock.DataSource = dt;
+        //            GridViewPresentStock.DataBind();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
+        //    }
+        //}
 
         private void LoadGridViewPage2to7()
         {
@@ -210,238 +210,238 @@ namespace VMS_1
             return new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(chartData);
         }
 
-        protected void ExportPresentStockButton_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        //protected void ExportPresentStockButton_Click(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-                DataTable dt = new DataTable();
-                foreach (TableCell cell in GridViewPresentStock.HeaderRow.Cells)
-                {
-                    dt.Columns.Add(cell.Text);
-                }
-                foreach (GridViewRow row in GridViewPresentStock.Rows)
-                {
-                    DataRow dr = dt.NewRow();
-                    for (int i = 0; i < row.Cells.Count; i++)
-                    {
-                        dr[i] = row.Cells[i].Text;
-                    }
-                    dt.Rows.Add(dr);
-                }
+        //        DataTable dt = new DataTable();
+        //        foreach (TableCell cell in GridViewPresentStock.HeaderRow.Cells)
+        //        {
+        //            dt.Columns.Add(cell.Text);
+        //        }
+        //        foreach (GridViewRow row in GridViewPresentStock.Rows)
+        //        {
+        //            DataRow dr = dt.NewRow();
+        //            for (int i = 0; i < row.Cells.Count; i++)
+        //            {
+        //                dr[i] = row.Cells[i].Text;
+        //            }
+        //            dt.Rows.Add(dr);
+        //        }
 
-                using (ExcelPackage excelPackage = new ExcelPackage())
-                {
-                    ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("PresentStock");
-                    worksheet.Cells["A1"].LoadFromDataTable(dt, true);
+        //        using (ExcelPackage excelPackage = new ExcelPackage())
+        //        {
+        //            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("PresentStock");
+        //            worksheet.Cells["A1"].LoadFromDataTable(dt, true);
 
-                    // Save the file
-                    string fileName = $"PresentStock_{DateTime.Now.ToString("MMMM_yyyy")}.xlsx";
-                    FileInfo excelFile = new FileInfo(Server.MapPath($"~/{fileName}"));
-                    excelPackage.SaveAs(excelFile);
+        //            // Save the file
+        //            string fileName = $"PresentStock_{DateTime.Now.ToString("MMMM_yyyy")}.xlsx";
+        //            FileInfo excelFile = new FileInfo(Server.MapPath($"~/{fileName}"));
+        //            excelPackage.SaveAs(excelFile);
 
-                    // Provide download link
-                    Response.Clear();
-                    Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                    Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
-                    Response.TransmitFile(excelFile.FullName);
-                    Response.Flush();
-                    Response.End();
-                }
-            }
-            catch (ThreadAbortException)
-            {
-                // Catch the ThreadAbortException to prevent it from propagating
-                // This exception is expected when using Response.End()
-            }
-            catch (Exception ex)
-            {
-                lblStatus.Text = "An error occurred while exporting data: " + ex.Message;
-            }
-        }
+        //            // Provide download link
+        //            Response.Clear();
+        //            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        //            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+        //            Response.TransmitFile(excelFile.FullName);
+        //            Response.Flush();
+        //            Response.End();
+        //        }
+        //    }
+        //    catch (ThreadAbortException)
+        //    {
+        //        // Catch the ThreadAbortException to prevent it from propagating
+        //        // This exception is expected when using Response.End()
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        lblStatus.Text = "An error occurred while exporting data: " + ex.Message;
+        //    }
+        //}
 
-        protected void ExportToExcelButton_Click(object sender, EventArgs e)
-        {
-            string monthYear = monthYearPicker.Value; // Assuming monthYearPicker.Value holds the selected month and year in YYYY-MM format
-            DataTable dt = FetchStrengthData(monthYear);
-            object sumNonEntitledOfficer = dt.Compute("SUM(NonEntitled_Officer)", "");
-            object sumNonEntitledSailor = dt.Compute("SUM(NonEntitled_Sailor)", "");
-            object sumCivilian = dt.Compute("SUM(Civilian)", "");
-            dt.Columns.Remove("NonEntitled_Officer");
-            dt.Columns.Remove("NonEntitled_Sailor");
-            dt.Columns.Remove("Civilian");
+        //protected void ExportToExcelButton_Click(object sender, EventArgs e)
+        //{
+        //    string monthYear = monthYearPicker.Value; // Assuming monthYearPicker.Value holds the selected month and year in YYYY-MM format
+        //    DataTable dt = FetchStrengthData(monthYear);
+        //    object sumNonEntitledOfficer = dt.Compute("SUM(NonEntitled_Officer)", "");
+        //    object sumNonEntitledSailor = dt.Compute("SUM(NonEntitled_Sailor)", "");
+        //    object sumCivilian = dt.Compute("SUM(Civilian)", "");
+        //    dt.Columns.Remove("NonEntitled_Officer");
+        //    dt.Columns.Remove("NonEntitled_Sailor");
+        //    dt.Columns.Remove("Civilian");
 
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            // Export to Excel
-            using (ExcelPackage excelPackage = new ExcelPackage())
-            {
-                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Strength Report");
-                worksheet.Cells.Style.Font.Name = "Arial";
-                worksheet.Cells.Style.Font.Size = 12;
+        //    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        //    // Export to Excel
+        //    using (ExcelPackage excelPackage = new ExcelPackage())
+        //    {
+        //        ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Strength Report");
+        //        worksheet.Cells.Style.Font.Name = "Arial";
+        //        worksheet.Cells.Style.Font.Size = 12;
 
-                // Setting the column widths and header values
-                for (int i = 0; i < dt.Columns.Count; i++)
-                {
-                    worksheet.Cells[4, i + 1].Value = dt.Columns[i].ColumnName;
-                    worksheet.Column(i + 1).Width = 15;
-                }
+        //        // Setting the column widths and header values
+        //        for (int i = 0; i < dt.Columns.Count; i++)
+        //        {
+        //            worksheet.Cells[4, i + 1].Value = dt.Columns[i].ColumnName;
+        //            worksheet.Column(i + 1).Width = 15;
+        //        }
 
-                // Formatting for header rows
-                ExcelRange headerRange = worksheet.Cells["A1:J1"];
-                headerRange.Merge = true;
-                headerRange.Style.Font.Bold = true;
-                headerRange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                headerRange.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                headerRange.Value = "PAGE 13";
+        //        // Formatting for header rows
+        //        ExcelRange headerRange = worksheet.Cells["A1:J1"];
+        //        headerRange.Merge = true;
+        //        headerRange.Style.Font.Bold = true;
+        //        headerRange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        headerRange.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        headerRange.Value = "PAGE 13";
 
-                worksheet.Cells["A2:J2"].Merge = true;
-                worksheet.Cells["A2:J2"].Style.Font.Bold = true;
-                worksheet.Cells["A2:J2"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells["A2:J2"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Cells["A2:J2"].Value = DateTime.Parse(monthYear).ToString("MMMM yyyy").ToUpper();
+        //        worksheet.Cells["A2:J2"].Merge = true;
+        //        worksheet.Cells["A2:J2"].Style.Font.Bold = true;
+        //        worksheet.Cells["A2:J2"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        worksheet.Cells["A2:J2"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        worksheet.Cells["A2:J2"].Value = DateTime.Parse(monthYear).ToString("MMMM yyyy").ToUpper();
 
-                worksheet.Cells["A3:J3"].Merge = true;
-                worksheet.Cells["A3:J3"].Style.Font.Bold = true;
-                worksheet.Cells["A3:J3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells["A3:J3"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Cells["A3:J3"].Value = "NUMBER VICTUALLED";
+        //        worksheet.Cells["A3:J3"].Merge = true;
+        //        worksheet.Cells["A3:J3"].Style.Font.Bold = true;
+        //        worksheet.Cells["A3:J3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        worksheet.Cells["A3:J3"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        worksheet.Cells["A3:J3"].Value = "NUMBER VICTUALLED";
 
-                worksheet.Cells["A4:J4"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells["A4:J4"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Cells["A4:J4"].Style.Font.Bold = true;
-                worksheet.Cells["A4"].Value = "Date";
-                worksheet.Cells["B4:F4"].Merge = true;
-                worksheet.Cells["B4:F4"].Value = "OFFICERS";
-                worksheet.Cells["G4:J4"].Merge = true;
-                worksheet.Cells["G4:J4"].Value = "SAILORS";
+        //        worksheet.Cells["A4:J4"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        worksheet.Cells["A4:J4"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        worksheet.Cells["A4:J4"].Style.Font.Bold = true;
+        //        worksheet.Cells["A4"].Value = "Date";
+        //        worksheet.Cells["B4:F4"].Merge = true;
+        //        worksheet.Cells["B4:F4"].Value = "OFFICERS";
+        //        worksheet.Cells["G4:J4"].Merge = true;
+        //        worksheet.Cells["G4:J4"].Value = "SAILORS";
 
-                worksheet.Cells["A5:J5"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells["A5:J5"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Cells["A5:J5"].Style.Font.Bold = true;
-                worksheet.Cells["A5"].Value = "";
-                worksheet.Cells["B5"].Value = "S";
-                worksheet.Cells["C5"].Value = "V";
-                worksheet.Cells["D5"].Value = "RIK";
-                worksheet.Cells["E5"].Value = "Hon.";
-                worksheet.Cells["F5"].Value = "Total";
-                worksheet.Cells["G5"].Value = "S";
-                worksheet.Cells["H5"].Value = "V";
-                worksheet.Cells["I5"].Value = "RIK";
-                worksheet.Cells["J5"].Value = "Total";
+        //        worksheet.Cells["A5:J5"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        worksheet.Cells["A5:J5"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        worksheet.Cells["A5:J5"].Style.Font.Bold = true;
+        //        worksheet.Cells["A5"].Value = "";
+        //        worksheet.Cells["B5"].Value = "S";
+        //        worksheet.Cells["C5"].Value = "V";
+        //        worksheet.Cells["D5"].Value = "RIK";
+        //        worksheet.Cells["E5"].Value = "Hon.";
+        //        worksheet.Cells["F5"].Value = "Total";
+        //        worksheet.Cells["G5"].Value = "S";
+        //        worksheet.Cells["H5"].Value = "V";
+        //        worksheet.Cells["I5"].Value = "RIK";
+        //        worksheet.Cells["J5"].Value = "Total";
 
-                worksheet.Cells["A37:C37"].Merge = true;
-                worksheet.Cells["A37:C37"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells["A37:C37"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Cells["A37:C37"].Value = "NON ENTITLED";
-                worksheet.Cells["D37:E37"].Merge = true;
-                worksheet.Cells["D37:E37"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells["D37:E37"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Cells["D37:E37"].Value = "OFFICERS";
-                worksheet.Cells["G37:I37"].Merge = true;
-                worksheet.Cells["G37:I37"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells["G37:I37"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Cells["G37:I37"].Value = "SAILORS";
-                worksheet.Cells["A38:I38"].Merge = true;
-                worksheet.Cells["A38:I38"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells["A38:I38"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Cells["A38:I38"].Value = "NON ENTITLED CIVILIANS";
-                worksheet.Cells["A39"].Style.Font.Bold = true;
-                worksheet.Cells["A39"].Value = "TOTAL";
-                worksheet.Cells["F37"].Value = sumNonEntitledOfficer;
-                worksheet.Cells["F37"].Style.Font.Bold = true;
-                worksheet.Cells["F37"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells["F37"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Cells["J37"].Value = sumNonEntitledSailor;
-                worksheet.Cells["J37"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells["J37"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Cells["J37"].Style.Font.Bold = true;
-                worksheet.Cells["J38"].Value = sumCivilian;
-                worksheet.Cells["J38"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells["J38"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Cells["J38"].Style.Font.Bold = true;
-                worksheet.Cells["B39"].Formula = string.Format("SUM(B6:B36)");
-                worksheet.Cells["B39"].Style.Font.Bold = true;
-                worksheet.Cells["B39"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells["B39"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Cells["C39"].Formula = string.Format("SUM(C6:C36)");
-                worksheet.Cells["C39"].Style.Font.Bold = true;
-                worksheet.Cells["C39"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells["C39"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Cells["D39"].Formula = string.Format("SUM(D6:D36)");
-                worksheet.Cells["D39"].Style.Font.Bold = true;
-                worksheet.Cells["D39"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells["D39"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Cells["F39"].Formula = string.Format("SUM(F6:F36)");
-                worksheet.Cells["F39"].Style.Font.Bold = true;
-                worksheet.Cells["F39"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells["F39"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Cells["G39"].Formula = string.Format("SUM(G6:G36)");
-                worksheet.Cells["G39"].Style.Font.Bold = true;
-                worksheet.Cells["G39"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells["G39"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Cells["H39"].Formula = string.Format("SUM(H6:H36)");
-                worksheet.Cells["H39"].Style.Font.Bold = true;
-                worksheet.Cells["H39"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells["H39"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Cells["I39"].Formula = string.Format("SUM(I6:I36)");
-                worksheet.Cells["I39"].Style.Font.Bold = true;
-                worksheet.Cells["I39"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells["I39"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Cells["J39"].Formula = string.Format("SUM(J6:J38)");
-                worksheet.Cells["J39"].Style.Font.Bold = true;
-                worksheet.Cells["J39"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells["J39"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        worksheet.Cells["A37:C37"].Merge = true;
+        //        worksheet.Cells["A37:C37"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        worksheet.Cells["A37:C37"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        worksheet.Cells["A37:C37"].Value = "NON ENTITLED";
+        //        worksheet.Cells["D37:E37"].Merge = true;
+        //        worksheet.Cells["D37:E37"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        worksheet.Cells["D37:E37"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        worksheet.Cells["D37:E37"].Value = "OFFICERS";
+        //        worksheet.Cells["G37:I37"].Merge = true;
+        //        worksheet.Cells["G37:I37"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        worksheet.Cells["G37:I37"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        worksheet.Cells["G37:I37"].Value = "SAILORS";
+        //        worksheet.Cells["A38:I38"].Merge = true;
+        //        worksheet.Cells["A38:I38"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        worksheet.Cells["A38:I38"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        worksheet.Cells["A38:I38"].Value = "NON ENTITLED CIVILIANS";
+        //        worksheet.Cells["A39"].Style.Font.Bold = true;
+        //        worksheet.Cells["A39"].Value = "TOTAL";
+        //        worksheet.Cells["F37"].Value = sumNonEntitledOfficer;
+        //        worksheet.Cells["F37"].Style.Font.Bold = true;
+        //        worksheet.Cells["F37"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        worksheet.Cells["F37"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        worksheet.Cells["J37"].Value = sumNonEntitledSailor;
+        //        worksheet.Cells["J37"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        worksheet.Cells["J37"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        worksheet.Cells["J37"].Style.Font.Bold = true;
+        //        worksheet.Cells["J38"].Value = sumCivilian;
+        //        worksheet.Cells["J38"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        worksheet.Cells["J38"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        worksheet.Cells["J38"].Style.Font.Bold = true;
+        //        worksheet.Cells["B39"].Formula = string.Format("SUM(B6:B36)");
+        //        worksheet.Cells["B39"].Style.Font.Bold = true;
+        //        worksheet.Cells["B39"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        worksheet.Cells["B39"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        worksheet.Cells["C39"].Formula = string.Format("SUM(C6:C36)");
+        //        worksheet.Cells["C39"].Style.Font.Bold = true;
+        //        worksheet.Cells["C39"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        worksheet.Cells["C39"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        worksheet.Cells["D39"].Formula = string.Format("SUM(D6:D36)");
+        //        worksheet.Cells["D39"].Style.Font.Bold = true;
+        //        worksheet.Cells["D39"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        worksheet.Cells["D39"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        worksheet.Cells["F39"].Formula = string.Format("SUM(F6:F36)");
+        //        worksheet.Cells["F39"].Style.Font.Bold = true;
+        //        worksheet.Cells["F39"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        worksheet.Cells["F39"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        worksheet.Cells["G39"].Formula = string.Format("SUM(G6:G36)");
+        //        worksheet.Cells["G39"].Style.Font.Bold = true;
+        //        worksheet.Cells["G39"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        worksheet.Cells["G39"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        worksheet.Cells["H39"].Formula = string.Format("SUM(H6:H36)");
+        //        worksheet.Cells["H39"].Style.Font.Bold = true;
+        //        worksheet.Cells["H39"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        worksheet.Cells["H39"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        worksheet.Cells["I39"].Formula = string.Format("SUM(I6:I36)");
+        //        worksheet.Cells["I39"].Style.Font.Bold = true;
+        //        worksheet.Cells["I39"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        worksheet.Cells["I39"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        worksheet.Cells["J39"].Formula = string.Format("SUM(J6:J38)");
+        //        worksheet.Cells["J39"].Style.Font.Bold = true;
+        //        worksheet.Cells["J39"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //        worksheet.Cells["J39"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
 
-                // Set the row height
-                for (int i = 1; i <= 39; i++)
-                {
-                    worksheet.Row(i).Height = 15;
-                }
+        //        // Set the row height
+        //        for (int i = 1; i <= 39; i++)
+        //        {
+        //            worksheet.Row(i).Height = 15;
+        //        }
 
-                // Formatting for data rows and header rows
-                using (ExcelRange rng = worksheet.Cells["A1:J39"])
-                {
-                    rng.Style.Border.Top.Style = ExcelBorderStyle.Medium;
-                    rng.Style.Border.Bottom.Style = ExcelBorderStyle.Medium;
-                    rng.Style.Border.Left.Style = ExcelBorderStyle.Medium;
-                    rng.Style.Border.Right.Style = ExcelBorderStyle.Medium;
-                    rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    rng.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                }
+        //        // Formatting for data rows and header rows
+        //        using (ExcelRange rng = worksheet.Cells["A1:J39"])
+        //        {
+        //            rng.Style.Border.Top.Style = ExcelBorderStyle.Medium;
+        //            rng.Style.Border.Bottom.Style = ExcelBorderStyle.Medium;
+        //            rng.Style.Border.Left.Style = ExcelBorderStyle.Medium;
+        //            rng.Style.Border.Right.Style = ExcelBorderStyle.Medium;
+        //            rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //            rng.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //        }
 
-                int rowIndex = 6; // Starting row for data
-                foreach (DataRow row in dt.Rows)
-                {
-                    DateTime dateValue = (DateTime)row["Date"];
-                    worksheet.Cells[rowIndex, 1].Value = dateValue.ToString("dd MMM yyyy");
-                    worksheet.Cells[rowIndex, 2].Value = row["Veg_Officer"];
-                    worksheet.Cells[rowIndex, 3].Value = row["NonVeg_Officer"];
-                    worksheet.Cells[rowIndex, 4].Value = row["RIK_Officer"];
-                    worksheet.Cells[rowIndex, 6].Value = row["Total_day_officer"];
-                    worksheet.Cells[rowIndex, 6].Style.Font.Bold = true;
-                    worksheet.Cells[rowIndex, 7].Value = row["Veg_Sailor"];
-                    worksheet.Cells[rowIndex, 8].Value = row["NonVeg_Sailor"];
-                    worksheet.Cells[rowIndex, 9].Value = row["RIK_Sailor"];
-                    worksheet.Cells[rowIndex, 10].Value = row["Total_day_sailor"];
-                    worksheet.Cells[rowIndex, 10].Style.Font.Bold = true;
-                    rowIndex++;
-                }
+        //        int rowIndex = 6; // Starting row for data
+        //        foreach (DataRow row in dt.Rows)
+        //        {
+        //            DateTime dateValue = (DateTime)row["Date"];
+        //            worksheet.Cells[rowIndex, 1].Value = dateValue.ToString("dd MMM yyyy");
+        //            worksheet.Cells[rowIndex, 2].Value = row["Veg_Officer"];
+        //            worksheet.Cells[rowIndex, 3].Value = row["NonVeg_Officer"];
+        //            worksheet.Cells[rowIndex, 4].Value = row["RIK_Officer"];
+        //            worksheet.Cells[rowIndex, 6].Value = row["Total_day_officer"];
+        //            worksheet.Cells[rowIndex, 6].Style.Font.Bold = true;
+        //            worksheet.Cells[rowIndex, 7].Value = row["Veg_Sailor"];
+        //            worksheet.Cells[rowIndex, 8].Value = row["NonVeg_Sailor"];
+        //            worksheet.Cells[rowIndex, 9].Value = row["RIK_Sailor"];
+        //            worksheet.Cells[rowIndex, 10].Value = row["Total_day_sailor"];
+        //            worksheet.Cells[rowIndex, 10].Style.Font.Bold = true;
+        //            rowIndex++;
+        //        }
 
-                // Save the file
-                string fileName = $"Strength_{DateTime.Parse(monthYear).ToString("MMMM_yyyy")}.xlsx";
-                FileInfo excelFile = new FileInfo(Server.MapPath($"~/{fileName}"));
-                excelPackage.SaveAs(excelFile);
+        //        // Save the file
+        //        string fileName = $"Strength_{DateTime.Parse(monthYear).ToString("MMMM_yyyy")}.xlsx";
+        //        FileInfo excelFile = new FileInfo(Server.MapPath($"~/{fileName}"));
+        //        excelPackage.SaveAs(excelFile);
 
-                // Provide download link
-                Response.Clear();
-                Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
-                Response.TransmitFile(excelFile.FullName);
-                Response.Flush();
-                Response.End();
-            }
-        }
+        //        // Provide download link
+        //        Response.Clear();
+        //        Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        //        Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+        //        Response.TransmitFile(excelFile.FullName);
+        //        Response.Flush();
+        //        Response.End();
+        //    }
+        //}
 
         private DataTable FetchStrengthData(string monthYear)
         {
@@ -487,203 +487,203 @@ namespace VMS_1
         //    }
         //}
 
-        private void LoadOfficerSheet()
-        {
-            try
-            {
-                string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-                using (SqlConnection conn = new SqlConnection(connStr))
-                {
-                    conn.Open();
+        //private void LoadOfficerSheet()
+        //{
+        //    try
+        //    {
+        //        string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+        //        using (SqlConnection conn = new SqlConnection(connStr))
+        //        {
+        //            conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("WITH ItemDetails AS (SELECT i.ItemID, i.ItemName, i.RationScaleOfficer FROM Items i) SELECT id.ItemName, id.RationScaleOfficer, STUFF((SELECT ', ' + a.AltItemName + ' (' + CAST(a.AltRationScaleOfficer AS VARCHAR) + ')'FROM AlternateItem a WHERE a.ItemID = id.ItemID FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 2, '') AS AlternateItems FROM ItemDetails id GROUP BY id.ItemName, id.RationScaleOfficer, id.ItemID", conn);
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
+        //            SqlDataAdapter da = new SqlDataAdapter("WITH ItemDetails AS (SELECT i.ItemID, i.ItemName, i.RationScaleOfficer FROM Items i) SELECT id.ItemName, id.RationScaleOfficer, STUFF((SELECT ', ' + a.AltItemName + ' (' + CAST(a.AltRationScaleOfficer AS VARCHAR) + ')'FROM AlternateItem a WHERE a.ItemID = id.ItemID FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 2, '') AS AlternateItems FROM ItemDetails id GROUP BY id.ItemName, id.RationScaleOfficer, id.ItemID", conn);
+        //            DataTable dt = new DataTable();
+        //            da.Fill(dt);
 
-                    GridViewOfficersSheet.DataSource = dt;
-                    GridViewOfficersSheet.DataBind();
-                }
-            }
-            catch (Exception ex)
-            {
-                lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
-            }
-        }
+        //            GridViewOfficersSheet.DataSource = dt;
+        //            GridViewOfficersSheet.DataBind();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
+        //    }
+        //}
 
-        protected void ExportOfficersButton_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-                DataTable strengthData = new DataTable();
-                int sumVegOfficer = 0;
-                int sumNonVegOfficer = 0;
-                int sumRikOfficer = 0;
-                int sumNonEntitledOfficer = 0;
-                using (SqlConnection conn = new SqlConnection(connStr))
-                {
-                    conn.Open();
-                    SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM Strength", conn);
-                    dataAdapter.Fill(strengthData);
+        //protected void ExportOfficersButton_Click(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+        //        DataTable strengthData = new DataTable();
+        //        int sumVegOfficer = 0;
+        //        int sumNonVegOfficer = 0;
+        //        int sumRikOfficer = 0;
+        //        int sumNonEntitledOfficer = 0;
+        //        using (SqlConnection conn = new SqlConnection(connStr))
+        //        {
+        //            conn.Open();
+        //            SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM Strength", conn);
+        //            dataAdapter.Fill(strengthData);
 
-                    sumVegOfficer = strengthData.AsEnumerable().Sum(row => row.Field<int>("Veg_Officer"));
-                    sumNonVegOfficer = strengthData.AsEnumerable().Sum(row => row.Field<int>("NonVeg_Officer"));
-                    sumRikOfficer = strengthData.AsEnumerable().Sum(row => row.Field<int>("RIK_Officer"));
-                    sumNonEntitledOfficer = strengthData.AsEnumerable().Sum(row => row.Field<int>("NonEntitled_Officer"));
+        //            sumVegOfficer = strengthData.AsEnumerable().Sum(row => row.Field<int>("Veg_Officer"));
+        //            sumNonVegOfficer = strengthData.AsEnumerable().Sum(row => row.Field<int>("NonVeg_Officer"));
+        //            sumRikOfficer = strengthData.AsEnumerable().Sum(row => row.Field<int>("RIK_Officer"));
+        //            sumNonEntitledOfficer = strengthData.AsEnumerable().Sum(row => row.Field<int>("NonEntitled_Officer"));
 
-                }
+        //        }
 
-                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        //        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-                using (ExcelPackage excelPackage = new ExcelPackage())
-                {
-                    ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("WKSHT OFFICERS -DEC 23");
+        //        using (ExcelPackage excelPackage = new ExcelPackage())
+        //        {
+        //            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("WKSHT OFFICERS -DEC 23");
 
-                    // Set the title
+        //            // Set the title
 
-                    worksheet.Cells["A1"].Value = $"WKSHT OFFICERS - {DateTime.Now.ToString("MMMM yyyy")}";
-                    worksheet.Cells["A1:I1"].Merge = true;
-                    worksheet.Cells["A1:I1"].Style.Font.Bold = true;
-                    worksheet.Cells["A1:I1"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //            worksheet.Cells["A1"].Value = $"WKSHT OFFICERS - {DateTime.Now.ToString("MMMM yyyy")}";
+        //            worksheet.Cells["A1:I1"].Merge = true;
+        //            worksheet.Cells["A1:I1"].Style.Font.Bold = true;
+        //            worksheet.Cells["A1:I1"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
-                    // Set the 'S', 'V', and Total columns
-                    worksheet.Cells["C2"].Value = "'S'";
-                    worksheet.Cells["C2"].Style.Font.Bold = true;
-                    worksheet.Cells["E2"].Value = "'V'";
-                    worksheet.Cells["E2"].Style.Font.Bold = true;
-                    worksheet.Cells["G2"].Value = "Total";
-                    worksheet.Cells["G2"].Style.Font.Bold = true;
-                    worksheet.Cells["C2:G2"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //            // Set the 'S', 'V', and Total columns
+        //            worksheet.Cells["C2"].Value = "'S'";
+        //            worksheet.Cells["C2"].Style.Font.Bold = true;
+        //            worksheet.Cells["E2"].Value = "'V'";
+        //            worksheet.Cells["E2"].Style.Font.Bold = true;
+        //            worksheet.Cells["G2"].Value = "Total";
+        //            worksheet.Cells["G2"].Style.Font.Bold = true;
+        //            worksheet.Cells["C2:G2"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
-                    // Set the values for 'S', 'V', and Total columns
-                    worksheet.Cells["B3"].Value = "GEN";
-                    worksheet.Cells["B4"].Value = "RIK + HON. OFFICER";
-                    worksheet.Cells["B5"].Value = "NON ENTITLED MESSING";
-                    worksheet.Cells["B6"].Value = "Total";
-                    worksheet.Cells["B6"].Style.Font.Bold = true;
+        //            // Set the values for 'S', 'V', and Total columns
+        //            worksheet.Cells["B3"].Value = "GEN";
+        //            worksheet.Cells["B4"].Value = "RIK + HON. OFFICER";
+        //            worksheet.Cells["B5"].Value = "NON ENTITLED MESSING";
+        //            worksheet.Cells["B6"].Value = "Total";
+        //            worksheet.Cells["B6"].Style.Font.Bold = true;
 
-                    worksheet.Cells["C3"].Value = sumVegOfficer;
-                    worksheet.Cells["E3"].Value = sumNonVegOfficer;
-                    worksheet.Cells["F3"].Value = "=";
-                    worksheet.Cells["C3:F3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    worksheet.Cells["G3"].Formula = "C3 + E3";
-                    worksheet.Cells["G3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+        //            worksheet.Cells["C3"].Value = sumVegOfficer;
+        //            worksheet.Cells["E3"].Value = sumNonVegOfficer;
+        //            worksheet.Cells["F3"].Value = "=";
+        //            worksheet.Cells["C3:F3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //            worksheet.Cells["G3"].Formula = "C3 + E3";
+        //            worksheet.Cells["G3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
 
-                    worksheet.Cells["C4"].Value = "";
-                    worksheet.Cells["E4"].Value = "";
-                    worksheet.Cells["F4"].Value = "=";
-                    worksheet.Cells["C4:F4"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    worksheet.Cells["G4"].Value = sumRikOfficer;
-                    worksheet.Cells["G4"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+        //            worksheet.Cells["C4"].Value = "";
+        //            worksheet.Cells["E4"].Value = "";
+        //            worksheet.Cells["F4"].Value = "=";
+        //            worksheet.Cells["C4:F4"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //            worksheet.Cells["G4"].Value = sumRikOfficer;
+        //            worksheet.Cells["G4"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
 
-                    worksheet.Cells["C5"].Value = "";
-                    worksheet.Cells["E5"].Value = "";
-                    worksheet.Cells["F5"].Value = "=";
-                    worksheet.Cells["C5:F5"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    worksheet.Cells["G5"].Value = sumNonEntitledOfficer;
-                    worksheet.Cells["G5"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+        //            worksheet.Cells["C5"].Value = "";
+        //            worksheet.Cells["E5"].Value = "";
+        //            worksheet.Cells["F5"].Value = "=";
+        //            worksheet.Cells["C5:F5"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //            worksheet.Cells["G5"].Value = sumNonEntitledOfficer;
+        //            worksheet.Cells["G5"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
 
-                    worksheet.Cells["C6"].Formula = "SUM(C3:C5)";
-                    worksheet.Cells["E6"].Formula = "SUM(E3:E5)";
-                    worksheet.Cells["F6"].Value = "=";
-                    worksheet.Cells["C6:F6"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    worksheet.Cells["G6"].Formula = "SUM(G3:G5)";
-                    worksheet.Cells["G6"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-                    worksheet.Cells["G3:G6"].Style.Font.Bold = true;
+        //            worksheet.Cells["C6"].Formula = "SUM(C3:C5)";
+        //            worksheet.Cells["E6"].Formula = "SUM(E3:E5)";
+        //            worksheet.Cells["F6"].Value = "=";
+        //            worksheet.Cells["C6:F6"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //            worksheet.Cells["G6"].Formula = "SUM(G3:G5)";
+        //            worksheet.Cells["G6"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+        //            worksheet.Cells["G3:G6"].Style.Font.Bold = true;
 
-                    DataTable gridViewData = new DataTable();
-                    gridViewData.Columns.Add("Item");
-                    gridViewData.Columns.Add("Strength");
-                    gridViewData.Columns.Add("Scale");
+        //            DataTable gridViewData = new DataTable();
+        //            gridViewData.Columns.Add("Item");
+        //            gridViewData.Columns.Add("Strength");
+        //            gridViewData.Columns.Add("Scale");
 
-                    foreach (GridViewRow row in GridViewOfficersSheet.Rows)
-                    {
-                        DataRow dataRow = gridViewData.NewRow();
-                        dataRow["Item"] = row.Cells[0].Text;
-                        dataRow["Strength"] = row.Cells[1].Text;
-                        dataRow["Scale"] = row.Cells[2].Text;
-                        gridViewData.Rows.Add(dataRow);
-                    }
+        //            foreach (GridViewRow row in GridViewOfficersSheet.Rows)
+        //            {
+        //                DataRow dataRow = gridViewData.NewRow();
+        //                dataRow["Item"] = row.Cells[0].Text;
+        //                dataRow["Strength"] = row.Cells[1].Text;
+        //                dataRow["Scale"] = row.Cells[2].Text;
+        //                gridViewData.Rows.Add(dataRow);
+        //            }
 
-                    // Group by ItemName and process data
-                    var groupedData = gridViewData.AsEnumerable()
-                        .GroupBy(row => row.Field<string>("Item"))
-                        .Select(group => new
-                        {
-                            ItemName = Convert.ToString(group.Key),
-                            Strength = Convert.ToString(group.Sum(row => Convert.ToInt32(row.Field<string>("Strength")))),
-                            Scale = Convert.ToString(group.Average(row => Convert.ToDecimal(row.Field<string>("Scale")))),
-                            QtyEntitled = Convert.ToString(group.Sum(row => Convert.ToDecimal(row.Field<string>("QtyEntitled")))),
-                            QtyIssued = Convert.ToString(group.Sum(row => Convert.ToDecimal(row.Field<string>("QtyIssued")))),
-                            AlternateItems = Convert.ToString(group.Select(row => row.Field<string>("AlternateItemName"))).Distinct().ToList()
-                        });
+        //            // Group by ItemName and process data
+        //            var groupedData = gridViewData.AsEnumerable()
+        //                .GroupBy(row => row.Field<string>("Item"))
+        //                .Select(group => new
+        //                {
+        //                    ItemName = Convert.ToString(group.Key),
+        //                    Strength = Convert.ToString(group.Sum(row => Convert.ToInt32(row.Field<string>("Strength")))),
+        //                    Scale = Convert.ToString(group.Average(row => Convert.ToDecimal(row.Field<string>("Scale")))),
+        //                    QtyEntitled = Convert.ToString(group.Sum(row => Convert.ToDecimal(row.Field<string>("QtyEntitled")))),
+        //                    QtyIssued = Convert.ToString(group.Sum(row => Convert.ToDecimal(row.Field<string>("QtyIssued")))),
+        //                    AlternateItems = Convert.ToString(group.Select(row => row.Field<string>("AlternateItemName"))).Distinct().ToList()
+        //                });
 
-                    int currentRow = 9; // Start after the headers
-                    int serNumber = 1;
-                    foreach (var group in groupedData)
-                    {
-                        worksheet.Cells[currentRow, 1].Value = Convert.ToString(serNumber++);
-                        worksheet.Cells[currentRow, 2].Value = Convert.ToString(group.ItemName);
-                        worksheet.Cells[currentRow, 3].Value = Convert.ToString(group.Strength);
-                        worksheet.Cells[currentRow, 4].Value = "x";
-                        worksheet.Cells[currentRow, 5].Value = Convert.ToString(group.Scale);
-                        worksheet.Cells[currentRow, 6].Value = "=";
-                        worksheet.Cells[currentRow, 7].Value = Convert.ToString(group.QtyEntitled);
-                        worksheet.Cells[currentRow, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+        //            int currentRow = 9; // Start after the headers
+        //            int serNumber = 1;
+        //            foreach (var group in groupedData)
+        //            {
+        //                worksheet.Cells[currentRow, 1].Value = Convert.ToString(serNumber++);
+        //                worksheet.Cells[currentRow, 2].Value = Convert.ToString(group.ItemName);
+        //                worksheet.Cells[currentRow, 3].Value = Convert.ToString(group.Strength);
+        //                worksheet.Cells[currentRow, 4].Value = "x";
+        //                worksheet.Cells[currentRow, 5].Value = Convert.ToString(group.Scale);
+        //                worksheet.Cells[currentRow, 6].Value = "=";
+        //                worksheet.Cells[currentRow, 7].Value = Convert.ToString(group.QtyEntitled);
+        //                worksheet.Cells[currentRow, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
 
-                        currentRow++;
+        //                currentRow++;
 
-                        // Alternate items
-                        foreach (var altItem in group.AlternateItems)
-                        {
-                            worksheet.Cells[currentRow, 2].Value = ""; // Blank for alternate item rows
-                            worksheet.Cells[currentRow, 3].Value = ""; // Blank for alternate item rows
-                            worksheet.Cells[currentRow, 4].Value = ""; // Blank for alternate item rows
-                            worksheet.Cells[currentRow, 5].Value = ""; // Blank for alternate item rows
-                            worksheet.Cells[currentRow, 6].Value = "=";
-                            worksheet.Cells[currentRow, 7].Value = 0; // Example value, replace with actual logic if needed
-                            worksheet.Cells[currentRow, 8].Value = altItem;
-                            currentRow++;
-                        }
+        //                // Alternate items
+        //                foreach (var altItem in group.AlternateItems)
+        //                {
+        //                    worksheet.Cells[currentRow, 2].Value = ""; // Blank for alternate item rows
+        //                    worksheet.Cells[currentRow, 3].Value = ""; // Blank for alternate item rows
+        //                    worksheet.Cells[currentRow, 4].Value = ""; // Blank for alternate item rows
+        //                    worksheet.Cells[currentRow, 5].Value = ""; // Blank for alternate item rows
+        //                    worksheet.Cells[currentRow, 6].Value = "=";
+        //                    worksheet.Cells[currentRow, 7].Value = 0; // Example value, replace with actual logic if needed
+        //                    worksheet.Cells[currentRow, 8].Value = altItem;
+        //                    currentRow++;
+        //                }
 
-                        // Total row for the group
-                        worksheet.Cells[currentRow, 2].Value = "Total";
-                        worksheet.Cells[currentRow, 2].Style.Font.Bold = true;
-                        worksheet.Cells[currentRow, 6].Value = "=";
-                        worksheet.Cells[currentRow, 7].Value = group.QtyEntitled;
-                        worksheet.Cells[currentRow, 7].Style.Font.Bold = true;
-                        worksheet.Cells[currentRow, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+        //                // Total row for the group
+        //                worksheet.Cells[currentRow, 2].Value = "Total";
+        //                worksheet.Cells[currentRow, 2].Style.Font.Bold = true;
+        //                worksheet.Cells[currentRow, 6].Value = "=";
+        //                worksheet.Cells[currentRow, 7].Value = group.QtyEntitled;
+        //                worksheet.Cells[currentRow, 7].Style.Font.Bold = true;
+        //                worksheet.Cells[currentRow, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
 
-                        currentRow++;
+        //                currentRow++;
 
-                        // Add a blank row for spacing
-                        currentRow++;
-                    }
+        //                // Add a blank row for spacing
+        //                currentRow++;
+        //            }
 
-                    // Save the file
-                    string fileName = $"Officers_{DateTime.Now.ToString("MMMM_yyyy")}.xlsx";
-                    FileInfo excelFile = new FileInfo(Server.MapPath($"~/{fileName}"));
-                    excelPackage.SaveAs(excelFile);
+        //            // Save the file
+        //            string fileName = $"Officers_{DateTime.Now.ToString("MMMM_yyyy")}.xlsx";
+        //            FileInfo excelFile = new FileInfo(Server.MapPath($"~/{fileName}"));
+        //            excelPackage.SaveAs(excelFile);
 
-                    // Provide download link
-                    Response.Clear();
-                    Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                    Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
-                    Response.TransmitFile(excelFile.FullName);
-                    Response.Flush();
-                    Response.End();
-                }
-            }
-            catch (ThreadAbortException)
-            {
-                // Catch the ThreadAbortException to prevent it from propagating
-                // This exception is expected when using Response.End()
-            }
-            catch (Exception ex)
-            {
-                lblStatus.Text = "An error occurred while exporting data: " + ex.Message;
-            }
-        }
+        //            // Provide download link
+        //            Response.Clear();
+        //            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        //            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+        //            Response.TransmitFile(excelFile.FullName);
+        //            Response.Flush();
+        //            Response.End();
+        //        }
+        //    }
+        //    catch (ThreadAbortException)
+        //    {
+        //        // Catch the ThreadAbortException to prevent it from propagating
+        //        // This exception is expected when using Response.End()
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        lblStatus.Text = "An error occurred while exporting data: " + ex.Message;
+        //    }
+        //}
 
         //protected void ExportDiversStockButton_Click(object sender, EventArgs e)
         //{
@@ -1130,27 +1130,27 @@ namespace VMS_1
         }
 
 
-        private void LoadGridViewExtraIssue()
-        {
-            try
-            {
-                string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-                using (SqlConnection conn = new SqlConnection(connStr))
-                {
-                    conn.Open();
+        //private void LoadGridViewExtraIssue()
+        //{
+        //    try
+        //    {
+        //        string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+        //        using (SqlConnection conn = new SqlConnection(connStr))
+        //        {
+        //            conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("Select * from ExtraIssueCategory order by Date ASC", conn);
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
+        //            SqlDataAdapter da = new SqlDataAdapter("Select * from ExtraIssueCategory order by Date ASC", conn);
+        //            DataTable dt = new DataTable();
+        //            da.Fill(dt);
 
-                    GridViewExtraIssue.DataSource = dt;
-                    GridViewExtraIssue.DataBind();
-                }
-            }
-            catch (Exception ex)
-            {
-                lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
-            }
-        }
+        //            GridViewExtraIssue.DataSource = dt;
+        //            GridViewExtraIssue.DataBind();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
+        //    }
+        //}
     }
 }
