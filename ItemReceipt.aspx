@@ -72,9 +72,40 @@
             </div>
             <div class="text-center">
                 <button type="button" class="btn btn-primary mr-2" onclick="addRow()">Add Row</button>
+                <%
+                    if (IsUserInRoleRecepit("Store Keeper"))
+                    {
+                %>
                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#infoModal">
                     Submit
                 </button>
+                <%
+                    }
+                    else if (IsUserInRoleRecepit("Logistic Officer"))
+                    {
+                %>
+                <asp:Button ID="Button2" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-success mr-2" Width="107px" Height="38px" />
+                <%
+                    }%>
+
+                <%
+                    bool IsUserLoggedIn()
+                    {
+                        // Check if the user is logged in
+                        return HttpContext.Current.Session["Role"] != null;
+                    }
+
+                    bool IsUserInRoleRecepit(string role)
+                    {
+                        // Check if the user is in the specified role
+                        return HttpContext.Current.Session["Role"] != null && HttpContext.Current.Session["Role"].ToString() == role;
+                    }
+
+                    string GetUserName()
+                    {
+                        return HttpContext.Current.Session["UserName"] != null ? HttpContext.Current.Session["UserName"].ToString() : "Admin";
+                    }
+                %>
             </div>
             <div>
                 <h2 class="mt-4">Search Receipt</h2>

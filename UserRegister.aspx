@@ -139,13 +139,13 @@
         </div>--%>
     </div>
     <form id="formRegister" runat="server">
-        <h2>USER REGISTERATION</h2>
+        <h2>USER REGISTRATION</h2>
         <div>
-            <label for="txtName">Name:</label>
+            <label for="txtName">Name</label>
             <asp:TextBox ID="Name" runat="server" placeholder="Enter your name" required></asp:TextBox>
         </div>
         <div>
-            <label for="ddlRank">Rank:</label>
+            <label for="ddlRank">Rank</label>
             <asp:DropDownList ID="Rank" runat="server" Width="100%">
                 <asp:ListItem>Cmde</asp:ListItem>
                 <asp:ListItem>Capt</asp:ListItem>
@@ -159,26 +159,28 @@
             </asp:DropDownList>
         </div>
         <div>
-            <label for="txtDesignation">Designation:</label>
+            <label for="txtDesignation">Designation</label>
             <asp:TextBox ID="Designation" runat="server" placeholder="Enter your designation" MaxLength="10" required></asp:TextBox>
         </div>
         <div>
-            <label for="txtNudID">NUD ID:</label>
+            <label for="txtNudID">NUD ID</label>
             <asp:TextBox ID="NudID" runat="server" placeholder="Enter your NUD ID" required></asp:TextBox>
+            <asp:RegularExpressionValidator ID="RegularExpressionValidator2" runat="server" ControlToValidate="NudID" ErrorMessage="Please enter correct NUD ID" ValidationExpression="^\d{5,}[A-Za-z]$" Display="Dynamic">
+            </asp:RegularExpressionValidator>
         </div>
         <div>
-            <label for="txtPassword">Password:</label>
+            <label for="txtPassword">Password</label>
             <asp:TextBox ID="Password" runat="server" TextMode="Password" placeholder="Enter your password" required></asp:TextBox>
-            <asp:RegularExpressionValidator ID="PasswordValidator" runat="server" ControlToValidate="Password" ErrorMessage="Password should be minimum 8 characters with at least one letter, one numeral, and one special character" ValidationExpression="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$"></asp:RegularExpressionValidator>
+            <asp:RegularExpressionValidator ID="PasswordValidator" runat="server" ControlToValidate="Password" ErrorMessage="Password should be minimum 8 characters with at least one letter, one numeral, and one special character" ValidationExpression="^(?=.[A-Za-z])(?=.\d)(?=.[@$!%#?&])[A-Za-z\d@$!%*#?&]{8,}$"></asp:RegularExpressionValidator>
         </div>
         <div>
-            <label for="txtPassword">Confirm Password:</label>
+            <label for="txtPassword">Confirm Password</label>
             <asp:TextBox ID="ConfirmPassword" runat="server" TextMode="Password" placeholder="Re-Enter your password" required></asp:TextBox>
-            <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ControlToValidate="ConfirmPassword" ErrorMessage="Password should be minimum 8 characters with at least one letter, one numeral, and one special character" ValidationExpression="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$"></asp:RegularExpressionValidator><br />
+            <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ControlToValidate="ConfirmPassword" ErrorMessage="Password should be minimum 8 characters with at least one letter, one numeral, and one special character" ValidationExpression="^(?=.[A-Za-z])(?=.\d)(?=.[@$!%#?&])[A-Za-z\d@$!%*#?&]{8,}$"></asp:RegularExpressionValidator><br />
             <asp:CompareValidator ID="CompareValidator1" runat="server" ControlToValidate="ConfirmPassword" ControlToCompare="Password" ErrorMessage="Entered passwords are not matching"></asp:CompareValidator>
         </div>
         <div>
-            <label for="role">Role:</label>
+            <label for="role">Role</label>
             <asp:DropDownList ID="Role" runat="server" Width="100%">
                 <asp:ListItem Text="-- Select Role --"></asp:ListItem>
                 <asp:ListItem Text="Commanding Officer"></asp:ListItem>
@@ -188,7 +190,7 @@
             </asp:DropDownList>
         </div>
         <div>
-            <label for="ddlSecretQuestion">Select Secret Question for password recovery:</label>
+            <label for="ddlSecretQuestion">Select Secret Question for password recovery</label>
             <asp:DropDownList ID="SecretQuestion" runat="server" Width="100%">
                 <asp:ListItem Text="-- Select Secret Question --"></asp:ListItem>
                 <asp:ListItem Text="Name of your First School"></asp:ListItem>
@@ -198,7 +200,7 @@
             </asp:DropDownList>
         </div>
         <div>
-            <label for="txtAnswer">Answer:</label>
+            <label for="txtAnswer">Answer</label>
             <asp:TextBox ID="Answer" runat="server" placeholder="Enter your answer" required></asp:TextBox>
         </div>
         <div>
@@ -211,10 +213,10 @@
     </form>
 
     <script>
-        document.getElementById("ddlTheme").addEventListener("change", function () {
-            var selectedTheme = this.value;
-            setTheme(selectedTheme);
-        });
+        //document.getElementById("ddlTheme").addEventListener("change", function () {
+        //    var selectedTheme = this.value;
+        //    setTheme(selectedTheme);
+        //});
 
         // Initial theme setup
         setTheme("blue");
