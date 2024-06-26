@@ -3,7 +3,6 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
         <h2 class="mt-4">Strength Module</h2>
-        <span class="text-warning" style="background-color:white;">Please re-enter the value on particular data to update.</span>
         <form id="strengthForm" runat="server">
             <%--<div class="text-right">
                 <asp:LinkButton ID="DashboardButton" runat="server" Text="Go to Dashboard" CssClass="btn btn-info" PostBackUrl="~/Dashboard.aspx"></asp:LinkButton>
@@ -22,7 +21,7 @@
                             <th class="heading veg-staff" colspan="2">&nbsp;Civilian</th>
                         </tr>
                         <tr>
-                            <th class="heading date" style="width: 123px">Date</th>
+                            <th class="heading date" style="width: 123px">Date <i class="fa fa-info-circle" data-toggle="modal" data-target="#exampleModal"></i></th>
                             <th class="heading veg-officer" style="width: 123px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
                             <th class="heading non-veg-officer" style="width: 123px">&nbsp;&nbsp; NonVeg</th>
                             <th class="heading rik-officer" style="width: 123px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
@@ -42,7 +41,7 @@
                     <tbody id="tableBody" runat="server">
                         <tr>
                             <td style="width: 123px">
-                                <input type="date" class="form-control" name="date" required style="width: 98%" /></td>
+                                <input type="date" class="form-control" id="dateVal" name="date" required style="width: 98%" onchange="fetchDate(this.id)" /></td>
                             <td style="width: 123px">
                                 <input type="text" class="form-control" name="VegOfficer" required min="0" /></td>
                             <td style="width: 123px">
@@ -105,9 +104,27 @@
                         <asp:BoundField DataField="vegNonEntitledSailor" HeaderText="vegNonEntitledSailor" ReadOnly="True" />
                         <asp:BoundField DataField="NonVegNonEntitledSailor" HeaderText="NonVegNonEntitledSailor" ReadOnly="True" />
                         <asp:BoundField DataField="civilians" HeaderText="civilians" ReadOnly="True" />
-                        <asp:CommandField ShowDeleteButton="True" DeleteText="Delete Row"/>
+                        <asp:CommandField ShowDeleteButton="True" DeleteText="Delete Row" />
                     </Columns>
                 </asp:GridView>
+            </div>
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Strength</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Data entered for the same date will be overwritten.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
@@ -143,7 +160,7 @@
             var tableBody = document.getElementById("MainContent_tableBody");
             var newRow = document.createElement("tr");
             newRow.innerHTML = `<td style="width: 123px">
-                                    <input type="date" class="form-control" name="date" required style="width: 98%" /></td>
+                                    <input type="date" class="form-control" name="date" id="dateVal_${rowSequence}" required style="width: 98%" onchange="fetchDate(this.id)" /></td>
                                 <td style="width: 123px">
                                     <input type="text" class="form-control" name="VegOfficer" required min="0" /></td>
                                 <td style="width: 123px">
@@ -173,11 +190,18 @@
                                 <td style="width: 124px">
                                     <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>`;
             tableBody.appendChild(newRow);
+            rowSequence++;
         }
 
         function deleteRow(btn) {
             var row = btn.parentNode.parentNode;
             row.parentNode.removeChild(row);
+        }
+
+        function fetchDate(value) {
+            var getDate = document.getElementById("dateVal").value;
+
+
         }
 
     </script>

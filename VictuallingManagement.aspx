@@ -27,13 +27,13 @@
                 <label for="monthYearPicker">Select Month and Year:</label>
                 <input type="month" id="monthYearPicker" runat="server" required class="form-control date-picker" style="width: 21%" />
 
-                <label class="col-form-label">Commanding Officer:</label>
+                <label class="col-form-label">Please enter Name and Rank of Commanding Officer:</label>
                 <input type="text" class="form-control" id="coVal" name="coVal" style="width: 50%;" />
 
-                <label class="col-form-label">Logistic Officer:</label>
+                <label class="col-form-label">Please enter Name and Rank of Logistic Officer:</label>
                 <input type="text" class="form-control" id="loVal" name="loVal" style="width: 50%;" />
 
-                <label class="col-form-label">Accounting Officer:</label>
+                <label class="col-form-label">Please enter Name and Rank of Accounting Officer:</label>
                 <input type="text" class="form-control" id="aoVal" name="aoVal" style="width: 50%;" />
             </div>
             <asp:Button ID="GenerateHTMLViewButton" CssClass="btn btn-primary" runat="server" Text="Generate HTML View" OnClick="GenerateHTMLViewButton_Click" />
@@ -49,8 +49,8 @@
                 <%--End Page02--%>
 
                 <%--Start Page2to7--%>
-                <div id="tablesContainerPage2to7" runat="server">
-                </div>
+             <%--   <div id="tablesContainerPage2to7" runat="server">
+                </div>--%>
                 <%--End Page2to7--%>
 
                 <%--Start Page8--%>

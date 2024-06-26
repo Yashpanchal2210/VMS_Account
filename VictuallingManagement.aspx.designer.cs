@@ -105,15 +105,6 @@ namespace VMS_1
         protected global::System.Web.UI.WebControls.Literal HTMLContentLiteralP2;
 
         /// <summary>
-        /// tablesContainerPage2to7 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl tablesContainerPage2to7;
-
-        /// <summary>
         /// HTMLContentLiteralP8 control.
         /// </summary>
         /// <remarks>

@@ -18,6 +18,10 @@ using DocumentFormat.OpenXml.Vml.Spreadsheet;
 using OfficeOpenXml.Drawing.Vml;
 using ClosedXML.Excel;
 using System.Linq;
+using System.Web.Script.Serialization;
+using System.Collections.Generic;
+using System.Web.Services;
+using Newtonsoft.Json;
 
 namespace VMS_1
 {
@@ -37,6 +41,14 @@ namespace VMS_1
             //LoadOfficerSheet();
             //LoadGridViewExtraIssue();
             FilterDataByMonth(Convert.ToString(DateTime.Now.Month));
+            string chartDataR = GenerateReceiptChartData();
+            string chartDataI = GenerateIssueChartData();
+            string chartDataP = GetChartDataPresentStock();
+            string chartDataST = GetChartDataStrengthStockLast10Days();
+            ClientScript.RegisterStartupScript(this.GetType(), "chartDataR", "<script>var chartDataR = " + chartDataR + ";</script>");
+            ClientScript.RegisterStartupScript(this.GetType(), "chartDataI", "<script>var chartDataI = " + chartDataI + ";</script>");
+            ClientScript.RegisterStartupScript(this.GetType(), "chartDataP", "<script>var chartDataP = " + chartDataP + ";</script>");
+            ClientScript.RegisterStartupScript(this.GetType(), "chartDataST", "<script>var chartDataST = " + chartDataST + ";</script>");
         }
 
         private void LoadGridViewMonthStock()
@@ -172,7 +184,7 @@ namespace VMS_1
                     //GridViewP2to7.DataBind();
 
                     // Generate chart data
-                    string chartData = GenerateChartData(dt);
+                    //string chartData = GenerateChartData(dt);
                     //hfChartDataPage2to7.Value = chartData;
                 }
             }
@@ -182,33 +194,290 @@ namespace VMS_1
             }
         }
 
-        private string GenerateChartData(DataTable dt)
+        private string GenerateReceiptChartData()
         {
-            var dataPoints = dt.AsEnumerable().Select(row => new
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            string query = @"
+            SELECT 
+                RM.itemnames,
+                SUM(RM.quantities) AS TotalQuantity,
+                CASE WHEN BLI.Fresh = 'True' THEN 'Fresh' ELSE 'Not Fresh' END AS FreshStatus
+            FROM 
+                ReceiptMaster RM
+            LEFT JOIN 
+                BasicLieuItems BLI ON RM.itemnames = BLI.iLueItem
+            WHERE 
+                RM.Dates >= GETDATE() - 10
+            AND 
+                RM.receivedFrom = 'BV Yard'
+            GROUP BY 
+                RM.itemnames, 
+                BLI.Fresh;
+        ";
+            using (SqlConnection conn = new SqlConnection(connStr))
             {
-                label = row["ItemName"].ToString(),
-                value = Convert.ToDouble(row["Qty"])
-            }).ToList();
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
 
-            var chartData = new
-            {
-                labels = dataPoints.Select(dp => dp.label).ToArray(),
-                datasets = new[]
-                {
-            new
-            {
-                label = "Stock",
-                data = dataPoints.Select(dp => dp.value).ToArray(),
-                backgroundColor = new[]
-                {
-                    "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40"
+                        // Prepare data for the chart
+                        var labels = new string[dt.Rows.Count];
+                        var freshData = new int[dt.Rows.Count];
+                        var notFreshData = new int[dt.Rows.Count];
+
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            labels[i] = dt.Rows[i]["itemnames"].ToString();
+                            if (dt.Rows[i]["FreshStatus"].ToString() == "Fresh")
+                            {
+                                freshData[i] = Convert.ToInt32(dt.Rows[i]["TotalQuantity"]);
+                                notFreshData[i] = 0;
+                            }
+                            else
+                            {
+                                freshData[i] = 0;
+                                notFreshData[i] = Convert.ToInt32(dt.Rows[i]["TotalQuantity"]);
+                            }
+                        }
+
+                        // Create a JavaScript array for the chart
+                        var chartData = new
+                        {
+                            labels = labels,
+                            datasets = new object[] {
+                            new
+                            {
+                                label = "Fresh",
+                                data = freshData,
+                                backgroundColor = "rgba(54, 162, 235, 0.2)",
+                                borderColor = "rgba(54, 162, 235, 1)",
+                                borderWidth = 1
+                            },
+                            new
+                            {
+                                label = "Not Fresh",
+                                data = notFreshData,
+                                backgroundColor = "rgba(255, 99, 132, 0.2)",
+                                borderColor = "rgba(255, 99, 132, 1)",
+                                borderWidth = 1
+                            }
+                        }
+                        };
+
+                        // Serialize to JSON
+                        JavaScriptSerializer serializer = new JavaScriptSerializer();
+                        return serializer.Serialize(chartData);
+                    }
                 }
             }
         }
-            };
 
-            return new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(chartData);
+        private string GenerateIssueChartData()
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            string queryIssueMaster = @"
+            SELECT 
+                IM.ItemName,
+                SUM(CAST(IM.QtyIssued AS decimal)) AS TotalQuantity,
+                IM.Role AS Role
+            FROM 
+                IssueMaster IM
+            WHERE 
+                IM.Role IN ('Wardroom', 'Galley')
+                AND IM.Date >= GETDATE() - 10
+            GROUP BY 
+                IM.ItemName, 
+                IM.Role;
+        ";
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();
+
+                using (SqlCommand cmdIssueMaster = new SqlCommand(queryIssueMaster, conn))
+                {
+                    using (SqlDataAdapter daIssueMaster = new SqlDataAdapter(cmdIssueMaster))
+                    {
+                        DataTable dtIssueMaster = new DataTable();
+                        daIssueMaster.Fill(dtIssueMaster);
+
+                        // Prepare data for the chart from IssueMaster
+                        var wardroomData = new Dictionary<string, decimal>();
+                        var galleyData = new Dictionary<string, decimal>();
+                        var itemNames = new List<string>();
+
+                        foreach (DataRow row in dtIssueMaster.Rows)
+                        {
+                            string itemName = row["ItemName"].ToString();
+                            decimal totalQuantity = Convert.ToDecimal(row["TotalQuantity"]);
+                            string role = row["Role"].ToString();
+
+                            if (!itemNames.Contains(itemName))
+                            {
+                                itemNames.Add(itemName);
+                            }
+
+                            if (role == "Wardroom")
+                            {
+                                wardroomData[itemName] = totalQuantity;
+                            }
+                            else if (role == "Galley")
+                            {
+                                galleyData[itemName] = totalQuantity;
+                            }
+                        }
+
+                        // Convert dictionaries to arrays
+                        var wardroomArray = new decimal[itemNames.Count];
+                        var galleyArray = new decimal[itemNames.Count];
+
+                        for (int i = 0; i < itemNames.Count; i++)
+                        {
+                            string itemName = itemNames[i];
+                            wardroomArray[i] = wardroomData.ContainsKey(itemName) ? wardroomData[itemName] : 0;
+                            galleyArray[i] = galleyData.ContainsKey(itemName) ? galleyData[itemName] : 0;
+                        }
+
+                        // Create chart data object
+                        var chartData = new
+                        {
+                            labels = itemNames.ToArray(),
+                            datasets = new[]
+                            {
+                            new
+                            {
+                                label = "Wardroom",
+                                data = wardroomArray,
+                                backgroundColor = "rgba(54, 162, 235, 0.2)",
+                                borderColor = "rgba(54, 162, 235, 1)",
+                                borderWidth = 1
+                            },
+                            new
+                            {
+                                label = "Galley",
+                                data = galleyArray,
+                                backgroundColor = "rgba(255, 99, 132, 0.2)",
+                                borderColor = "rgba(255, 99, 132, 1)",
+                                borderWidth = 1
+                            }
+                        }
+                        };
+
+                        return JsonConvert.SerializeObject(chartData);
+                    }
+                }
+            }
         }
+
+        [WebMethod]
+        public static string GetChartDataPresentStock()
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            string queryIssueMaster = @"Select ItemName, Qty from PresentStockMaster";
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();
+
+                using (SqlCommand cmdPresentMaster = new SqlCommand(queryIssueMaster, conn))
+                {
+                    using (SqlDataAdapter daPresentMaster = new SqlDataAdapter(cmdPresentMaster))
+                    {
+                        DataTable dtPresentMaster = new DataTable();
+                        daPresentMaster.Fill(dtPresentMaster);
+
+                        // Prepare data for the chart from PresentStockMaster
+                        var chartData = new
+                        {
+                            labels = dtPresentMaster.AsEnumerable().Select(row => row["ItemName"].ToString()).ToArray(),
+                            datasets = new[]
+                            {
+                        new
+                        {
+                            label = "Quantity",
+                            data = dtPresentMaster.AsEnumerable().Select(row => Convert.ToDecimal(row["Qty"])).ToArray(),
+                            backgroundColor = "rgba(54, 162, 235, 0.2)",
+                            borderColor = "rgba(54, 162, 235, 1)",
+                            borderWidth = 1
+                        }
+                    }
+                        };
+
+                        return JsonConvert.SerializeObject(chartData);
+                    }
+                }
+            }
+        }
+
+        [WebMethod]
+        public static string GetChartDataStrengthStockLast10Days()
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            string queryStrengthMaster = @"SELECT * FROM Strength WHERE dates >= DATEADD(DAY, -10, GETDATE())";
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();
+
+                using (SqlCommand cmdStrengthMaster = new SqlCommand(queryStrengthMaster, conn))
+                {
+                    using (SqlDataAdapter daStrengthMaster = new SqlDataAdapter(cmdStrengthMaster))
+                    {
+                        DataTable dtStrengthMaster = new DataTable();
+                        daStrengthMaster.Fill(dtStrengthMaster);
+
+                        // Prepare data for the chart from Strength table
+                        var chartData = new
+                        {
+                            labels = dtStrengthMaster.AsEnumerable().Select(row => row["dates"].ToString()).ToArray(),
+                            datasets = new[]
+                            {
+                                new
+                                {
+                                    label = "Veg Officers",
+                                    data = dtStrengthMaster.AsEnumerable().Select(row => Convert.ToDecimal(row["vegOfficers"])).ToArray(),
+                                    backgroundColor = "rgba(54, 162, 235, 0.2)", // Blue
+                                    borderColor = "rgba(54, 162, 235, 1)",
+                                    borderWidth = 1
+                                },
+                                new
+                                {
+                                    label = "Non-Veg Officers",
+                                    data = dtStrengthMaster.AsEnumerable().Select(row => Convert.ToDecimal(row["nonVegOfficers"])).ToArray(),
+                                    backgroundColor = "rgba(255, 99, 132, 0.2)", // Red
+                                    borderColor = "rgba(255, 99, 132, 1)",
+                                    borderWidth = 1
+                                },
+                                new
+                                {
+                                    label = "Veg Sailor",
+                                    data = dtStrengthMaster.AsEnumerable().Select(row => Convert.ToDecimal(row["vegSailor"])).ToArray(),
+                                    backgroundColor = "rgba(255, 159, 64, 0.2)", // Orange
+                                    borderColor = "rgba(255, 159, 64, 1)",
+                                    borderWidth = 1
+                                },
+                                new
+                                {
+                                    label = "Non Veg Sailor",
+                                    data = dtStrengthMaster.AsEnumerable().Select(row => Convert.ToDecimal(row["nonVegSailor"])).ToArray(),
+                                    backgroundColor = "rgba(255, 206, 86, 0.2)", // Yellow
+                                    borderColor = "rgba(255, 206, 86, 1)",
+                                    borderWidth = 1
+                                }
+
+                            }
+                        };
+
+                        return JsonConvert.SerializeObject(chartData);
+                    }
+                }
+            }
+        }
+
 
         //protected void ExportPresentStockButton_Click(object sender, EventArgs e)
         //{

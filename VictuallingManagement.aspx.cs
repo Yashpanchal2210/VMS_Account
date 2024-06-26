@@ -163,7 +163,7 @@ namespace VMS_1
             HTMLContentLiteralP2.Text = htmlBuilder.ToString();
             GenerateHTMLViewP18(selectedDateP27);
             GenerateHTMLViewP8();
-            GenerateHTMLViewP2_7(selectedDateP27);
+            //GenerateHTMLViewP2_7(selectedDateP27);
             //BindData(selectedDateP27);
 
             bool hasData = !string.IsNullOrEmpty(HTMLContentLiteralP2.Text);
@@ -845,7 +845,7 @@ namespace VMS_1
             htmlTables += "</table></div>";
 
             // Assign the generated HTML to the container
-            tablesContainerPage2to7.InnerHtml = htmlTables;
+            //tablesContainerPage2to7.InnerHtml = htmlTables;
 
 
             //tablesContainerPage2to7.InnerHtml = htmlTables;

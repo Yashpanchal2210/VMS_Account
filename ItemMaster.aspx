@@ -3,7 +3,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
         <h2 class="mb-4">Enter Scale of Items</h2>
-        <p style="color:yellow; background-color:black; font-size:large;">This is a one-time activity to be updated only when there are revised orders concerning INBR 14. Items and scales can be added or updated exclusively with the permission of the Logistic Officer and Commanding Officer, using an admin ID login.</p>
+        <p style="color:yellow; background-color:black; font-size:large;">This is a one-time activity to be updated only when there are revised orders concerning INBR 14. Items and scales can be added or updated exclusively with the permission of the Logistic Officer and the Commanding Officer, using an admin ID login.</p>
 
         <form id="itemMasterForm" runat="server">
             <%--<div class="text-right">

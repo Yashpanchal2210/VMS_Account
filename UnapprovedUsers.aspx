@@ -69,7 +69,7 @@
             <div>
                 <h2 class="mt-4">Rejected Users</h2>
                 <asp:GridView ID="GridViewReject" runat="server" CssClass="table table-bordered table-striped"
-                    AutoGenerateColumns="False" OnRowDeleting="GridViewReject_RowDeleting" Width="100%" DataKeyNames="NudId">
+                    AutoGenerateColumns="False" Width="100%" DataKeyNames="NudId">
                     <Columns>
                         <asp:TemplateField HeaderText="Name">
                             <ItemTemplate>
@@ -94,11 +94,6 @@
                         <asp:TemplateField HeaderText="Role">
                             <ItemTemplate>
                                 <asp:Label ID="lblRole" runat="server" Text='<%# Eval("role") %>'></asp:Label>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Actions">
-                            <ItemTemplate>
-                                <asp:Button ID="btnReject" runat="server" Text="Delete" CommandName="Delete" CommandArgument='<%# Eval("NudId") %>' CssClass="btn btn-danger" />
                             </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>

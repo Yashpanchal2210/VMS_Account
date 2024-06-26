@@ -148,7 +148,7 @@ namespace VMS_1
                 string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
 
                 string[] date = Request.Form.GetValues("date");
-                string[] role = Request.Form.GetValues("Category");
+                string[] role = Request.Form.GetValues("userrole");
                 string[] itemname = Request.Form.GetValues("itemname");
                 string[] enterstrength = Request.Form.GetValues("Strength");
                 string[] qtyissued = Request.Form.GetValues("Qtyissued");
@@ -469,5 +469,7 @@ namespace VMS_1
                 }
             }
         }
+
+
     }
 }

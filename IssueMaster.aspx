@@ -58,9 +58,9 @@
                     <tbody id="tableBody" runat="server">
                         <tr>
                             <td>
-                                <input type="date" class="form-control" name="date" required /></td>
+                                <input type="date" class="form-control" name="date" /></td>
                             <td>
-                                <select class="form-control js-states" id="DropDownList1" name="itemname" onchange="fetchBasicDenom(this.id)" width="130px" required>
+                                <select class="form-control js-states" id="DropDownList1" name="itemname" onchange="fetchBasicDenom(this.id)" width="130px">
                                     <option value="">Select</option>
                                 </select>
                             </td>
@@ -75,9 +75,6 @@
                             </td>
                             <td>
                                 <input type="text" class="form-control" name="Qtyissued" /></td>
-
-                            <%--<td>
-                                <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>--%>
                         </tr>
                     </tbody>
                 </table>
@@ -123,12 +120,10 @@
                 %>
             </div>
             <div>
-                <h2 class="mt-4">Issue Details</h2>
-            </div>
-            <div>
                 <a class="btn" href="ExportIssueOfficerandSailor.aspx">Export Issue</a>
             </div>
             <div>
+
                 <asp:GridView ID="GridViewIssue" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" DataKeyNames="Id"
                     OnRowEditing="GridViewIssue_RowEditing"
                     OnRowUpdating="GridViewIssue_RowUpdating"
@@ -185,7 +180,6 @@
                         <asp:CommandField HeaderText="Action" ShowDeleteButton="True" DeleteText="Delete Row" />
                     </Columns>
                 </asp:GridView>
-
             </div>
 
 

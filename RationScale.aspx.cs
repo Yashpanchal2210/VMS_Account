@@ -70,7 +70,7 @@ namespace VMS_1
                         if (count > 0)
                         {
                             // Update the existing item
-                            SqlCommand updateCmd = new SqlCommand("UPDATE RationScale SET ItemName = @ItemName, Rate = @Rate, @Denomination WHERE ItemName = @ItemName", conn);
+                            SqlCommand updateCmd = new SqlCommand("UPDATE RationScale SET ItemName = @ItemName, Rate = @Rate, Denomination= @denom WHERE ItemName = @ItemName", conn);
                             updateCmd.Parameters.AddWithValue("@ItemName", itemName);
                             updateCmd.Parameters.AddWithValue("@Rate", decimal.Parse(rate[i]));
                             updateCmd.Parameters.AddWithValue("@denom", denomination[i]);

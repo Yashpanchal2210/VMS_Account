@@ -226,6 +226,40 @@ namespace VMS_1
         }
 
         [WebMethod]
+        public static string GetItemDenom(string ItemVal)
+        {
+            string Denomination = "";
+            string ItemName = "";
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();
+                string itemNameQuery = "Select ItemName from RationScale Where ItemId = @Id";
+                SqlCommand cmditem = new SqlCommand(itemNameQuery, conn);
+                cmditem.Parameters.AddWithValue("@Id", ItemVal);
+                SqlDataReader reader1 = cmditem.ExecuteReader();
+                if (reader1.Read())
+                {
+                    ItemName = reader1["ItemName"].ToString();
+                }
+                conn.Close();
+
+                conn.Open();
+                string query = "SELECT Denomination, VegScale, NonVegScale  FROM InLieuItems WHERE InLieuItem = @BasicItem";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@BasicItem", ItemName);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    Denomination = reader["Denomination"].ToString();
+                }
+            }
+
+            return Denomination;
+        }
+
+        [WebMethod]
         public static List<object> GetItems()
         {
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;

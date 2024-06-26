@@ -69,19 +69,19 @@ namespace VMS_1
             }
         }
 
-        protected void GridViewReject_RowDeleting(object sender, GridViewDeleteEventArgs e)
-        {
-            int rowIndex = e.RowIndex;
+        //protected void GridViewReject_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        //{
+        //    int rowIndex = e.RowIndex;
 
-            // Retrieve the key value of the row being deleted (NudId in this case)
-            string nudId = GridViewReject.DataKeys[rowIndex]["NudId"].ToString();
+        //    // Retrieve the key value of the row being deleted (NudId in this case)
+        //    string nudId = GridViewReject.DataKeys[rowIndex]["NudId"].ToString();
 
-            // Call a method to perform the deletion
-            DeleteUser(nudId);
+        //    // Call a method to perform the deletion
+        //    DeleteUser(nudId);
 
-            LoadGridView();
-            RejectedGridView();
-        }
+        //    LoadGridView();
+        //    RejectedGridView();
+        //}
 
         private void ApproveUser(string nudId)
         {

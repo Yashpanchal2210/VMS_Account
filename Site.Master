@@ -213,7 +213,7 @@
         </div>
         <% } %>
         <button class="dropdown-btn">
-            Report Generate <i class="fa fa-caret-down"></i>
+            Generate Report<i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-container">
             <a href="Page01.aspx">Page1</a>
@@ -329,7 +329,7 @@
                     { %>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Report Generate
+                        <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Generate Report 
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="Page01.aspx">Page1</a>

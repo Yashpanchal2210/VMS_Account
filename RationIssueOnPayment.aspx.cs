@@ -165,15 +165,26 @@ namespace VMS_1
         public static string GetItemDenom(string ItemVal)
         {
             string Denomination = "";
-
+            string ItemName = "";
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                string query = "SELECT Denomination, VegScale, NonVegScale  FROM InLieuItems WHERE Id = @BasicItem";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@BasicItem", ItemVal);
+                conn.Open();
+                string itemNameQuery = "Select ItemName from RationScale Where ItemId = @Id";
+                SqlCommand cmditem = new SqlCommand(itemNameQuery, conn);
+                cmditem.Parameters.AddWithValue("@Id", ItemVal);
+                SqlDataReader reader1 = cmditem.ExecuteReader();
+                if (reader1.Read())
+                {
+                    ItemName = reader1["ItemName"].ToString();
+                }
+                conn.Close();
 
                 conn.Open();
+                string query = "SELECT Denomination, VegScale, NonVegScale  FROM InLieuItems WHERE InLieuItem = @BasicItem";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@BasicItem", ItemName);
+
                 SqlDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {

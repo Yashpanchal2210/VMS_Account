@@ -4,6 +4,7 @@
     <div class="container">
         <h2 class="">Other Ships</h2>
         <form id="otherShipsForm" runat="server">
+            <input type="hidden" id="scaleAmount" />
             <div class="table-responsive">
                 <table class="table" id="myTable">
                     <thead>
@@ -22,18 +23,12 @@
                                 <input type="date" name="date" class="form-control" />
                             </td>
                             <td>
-                                <select class="form-control" name="itemname" id="itemname" required>
+                                <select class="form-control" name="itemname" id="itemname" onchange="fetchBasicDenom(this.id)" required>
                                     <option value="">Select</option>
                                 </select>
                             </td>
                             <td>
-                                <select class="form-control" name="denom" id="denom">
-                                    <option value="">Select</option>
-                                    <option value="Kgs">Kgs</option>
-                                    <option value="Ltr">Ltr</option>
-                                    <option value="Nos">Nos</option>
-                                    <option value="Other">Other</option>
-                                </select>
+                                <input type="text" class="form-control" id="denomsVal" name="denom" readonly />
                             </td>
                             <td>
                                 <input type="number" name="qty" id="qty" class="form-control" />
@@ -100,13 +95,13 @@
             <div>
                 <asp:GridView ID="GridViewOtherShips" runat="server" CssClass="table table-bordered table-striped"
                     AutoGenerateColumns="False" OnRowDeleting="GridViewExtraIssueOtherShip_RowDeleting" OnRowDataBound="GridViewOS_RowDataBound" DataKeyNames="Id">
-                    <Columns>
+                    <columns>
                         <asp:BoundField DataField="Id" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
                         <asp:BoundField DataField="Date" HeaderText="Date" DataFormatString="{0:yyyy-MM-dd}" />
                         <asp:BoundField DataField="ItemName" HeaderText="Item Name" />
                         <asp:BoundField DataField="Qty" HeaderText="Qty" />
                         <asp:CommandField ShowDeleteButton="True" DeleteText="Delete Row" />
-                    </Columns>
+                    </columns>
                 </asp:GridView>
             </div>
             <div class="modal fade" id="infoModalOS" tabindex="-1" role="dialog" aria-labelledby="infoModalOSLabel" aria-hidden="true">
@@ -140,6 +135,41 @@
             fetchItems('');
         });
 
+        function fetchBasicDenom(id) {
+            var ItemValue = document.getElementById(id).value;
+            document.getElementById("scaleAmount").value = "";
+
+            if (id != null) {
+                var value = id;  // Use 'var' instead of 'string'
+                var parts = value.split('_');  // Use JavaScript's 'split' method
+            }
+
+            var part1 = parts[1];
+
+            fetch('OtherShips.aspx/GetItemDenom', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ItemVal: ItemValue })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.d) {
+                        if (rowSequence >= 1) {
+                            var denomsDropdown = document.getElementById("denomsVal_" + part1);
+                            denomsDropdown.value = data.d;
+                        } else {
+                            var denomsDropdown = document.getElementById("denomsVal");
+                            denomsDropdown.value = data.d;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching basic denomination:', error);
+                });
+        }
+
         var rowSequence = 0;
         function addRow() {
             var tableBody = document.getElementById("MainContent_tableBody");
@@ -149,18 +179,12 @@
                 <input type="date" name="date" class="form-control" />
             </td>
              <td>
-                <select class="form-control itemname" name="itemname" id="itemname_${rowSequence}" required>
+                <select class="form-control itemname" name="itemname" id="itemname_${rowSequence}" onchange="fetchBasicDenom(this.id)" required>
                     <option value="">Select</option>
                 </select>
             </td>
             <td>
-                <select class="form-control" name="denom" id="denom">
-                    <option value="">Select</option>
-                    <option value="Kgs">Kgs</option>
-                    <option value="Ltr">Ltr</option>
-                    <option value="Nos">Nos</option>
-                    <option value="Other">Other</option>
-                </select>
+            <input type="text" class="form-control" id="denomsVal_${rowSequence}" name="denom" readonly />
             </td>
             <td>
                 <input type="number" name="qty" id="qty" class="form-control" />
@@ -182,7 +206,7 @@
         }
 
         function fetchItems(row) {
-            fetch('Divers_ExtraIssue.aspx/GetItemNames', {
+            fetch('OtherShips.aspx/GetItems', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

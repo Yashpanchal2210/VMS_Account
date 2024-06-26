@@ -81,6 +81,7 @@
                         </asp:TemplateField>
 
                         <asp:BoundField DataField="Rate" HeaderText="Rate" />
+                        <asp:BoundField DataField="Denomination" HeaderText="Denomination" />
                         <asp:CommandField HeaderText="Action" ShowEditButton="true" ShowDeleteButton="true" />
                     </Columns>
                 </asp:GridView>
