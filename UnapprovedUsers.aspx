@@ -2,7 +2,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
-        <h2 class="mt-4">Unapproved Users List</h2>
+        <h2 class="mt-4">Unapproved Users</h2>
 
         <form id="usersForm" runat="server">
             <asp:GridView ID="GridViewUser" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowCommand="GridViewUser_RowCommand" OnRowEditing="GridViewUser_RowEditing" OnRowCancelingEdit="GridViewUser_RowCancelingEdit" OnRowUpdating="GridViewUser_RowUpdating" Width="100%">
@@ -52,7 +52,7 @@
                             </asp:DropDownList>
                         </EditItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Approval">
+                    <asp:TemplateField HeaderText="Status">
                         <ItemTemplate>
                             <asp:Button ID="btnApprove" runat="server" Text="Approve" CommandName="Approve" CommandArgument='<%# Eval("NudId") %>' CssClass="btn btn-success" />
                             <asp:Button ID="btnReject" runat="server" Text="Reject" CommandName="Reject" CommandArgument='<%# Eval("NudId") %>' CssClass="btn btn-danger" />
@@ -65,6 +65,46 @@
                     </asp:TemplateField>
                 </Columns>
             </asp:GridView>
+
+            <div>
+                <h2 class="mt-4">Rejected Users</h2>
+                <asp:GridView ID="GridViewReject" runat="server" CssClass="table table-bordered table-striped"
+                    AutoGenerateColumns="False" OnRowDeleting="GridViewReject_RowDeleting" Width="100%" DataKeyNames="NudId">
+                    <Columns>
+                        <asp:TemplateField HeaderText="Name">
+                            <ItemTemplate>
+                                <asp:Label ID="lblName" runat="server" Text='<%# Eval("name") %>'></asp:Label>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Rank">
+                            <ItemTemplate>
+                                <asp:Label ID="lblRank" runat="server" Text='<%# Eval("rank") %>'></asp:Label>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Designation">
+                            <ItemTemplate>
+                                <asp:Label ID="lblDesignation" runat="server" Text='<%# Eval("designation") %>'></asp:Label>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Nuid">
+                            <ItemTemplate>
+                                <asp:Label ID="lblNuid" runat="server" Text='<%# Eval("NudId") %>'></asp:Label>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Role">
+                            <ItemTemplate>
+                                <asp:Label ID="lblRole" runat="server" Text='<%# Eval("role") %>'></asp:Label>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Actions">
+                            <ItemTemplate>
+                                <asp:Button ID="btnReject" runat="server" Text="Delete" CommandName="Delete" CommandArgument='<%# Eval("NudId") %>' CssClass="btn btn-danger" />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+                </asp:GridView>
+
+            </div>
         </form>
     </div>
 

@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Script.Serialization;
 using System.Web.Script.Services;
 using System.Web.Security;
 using System.Web.Services;
@@ -34,6 +35,7 @@ namespace VMS_1
                     ViewState["DataTable"] = new DataTable();
                 }
                 BindGridView();
+                BindFiles();
             }
         }
 
@@ -70,7 +72,28 @@ namespace VMS_1
             return itemNames.ToArray();
         }
 
+        [WebMethod]
+        public static string GetItemDenom(string ItemVal)
+        {
+            string Denomination = "";
 
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "SELECT Denomination, VegScale, NonVegScale  FROM InLieuItems WHERE InLieuItem = @BasicItem";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@BasicItem", ItemVal);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    Denomination = reader["Denomination"].ToString();
+                }
+            }
+
+            return Denomination;
+        }
         protected void SubmitButton_Click(object sender, EventArgs e)
         {
             try
@@ -155,6 +178,28 @@ namespace VMS_1
 
                         cmd.ExecuteNonQuery();
 
+                        if (FileUpload1.HasFile)
+                        {
+                            string fileName = Path.GetFileName(FileUpload1.FileName);
+                            string fileDateString = Request.Form["fileDate"];
+                            DateTime fileDate;
+
+                            if (DateTime.TryParse(fileDateString, out fileDate))
+                            {
+                                lblStatus.Text = "File date: " + fileDate.ToString("MMMM yyyy");
+                            }
+                            else
+                            {
+                                lblStatus.Text = "Invalid date format.";
+                            }
+
+                            SaveFileToDatabase(FileUpload1.PostedFile.InputStream, fileName, fileDate);
+                        }
+                        else
+                        {
+                            lblStatus.Text = "Please select a file to upload.";
+                        }
+
                         // Update PresentStockMaster table if ItemName exists
                         SqlCommand checkItemCmd = new SqlCommand("SELECT COUNT(*) FROM PresentStockMaster WHERE ItemName = @ItemName", conn);
                         checkItemCmd.Parameters.AddWithValue("@ItemName", itemName);
@@ -216,6 +261,7 @@ namespace VMS_1
                 //Response.Write("<script>alert('Data once submitted cannot be changed');</script>");
                 //lblStatus.Text = "Data entered successfully.";
                 BindGridView();
+                BindFiles();
             }
             catch (Exception ex)
             {
@@ -228,22 +274,18 @@ namespace VMS_1
             if (FileUpload1.HasFile)
             {
                 string fileName = Path.GetFileName(FileUpload1.FileName);
-                string fileDateString = Request.Form["fileDate"];  // Assuming fileDateTextBox is the ID of your input element for date selection
+                string fileDateString = Request.Form["fileDate"];
                 DateTime fileDate;
 
                 if (DateTime.TryParse(fileDateString, out fileDate))
                 {
-                    // Successfully parsed the date
-                    // Proceed with your logic
                     lblStatus.Text = "File date: " + fileDate.ToString("MMMM yyyy");
                 }
                 else
                 {
-                    // Handle invalid date format
                     lblStatus.Text = "Invalid date format.";
                 }
 
-                // Save the file to the database
                 SaveFileToDatabase(FileUpload1.PostedFile.InputStream, fileName, fileDate);
             }
             else
@@ -350,6 +392,95 @@ namespace VMS_1
             }
         }
 
+        protected void FilesGridView_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "DeleteFile")
+            {
+                int fileId = Convert.ToInt32(e.CommandArgument);
+
+                DeleteFileFromDatabase(fileId);
+
+                BindFiles();
+                BindGridView();
+            }
+        }
+
+        private void DeleteFileFromDatabase(int Id)
+        {
+            // Assuming you are using SqlConnection and SqlCommand for SQL Server
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+
+            using (SqlConnection connection = new SqlConnection(connStr))
+            {
+                // SQL command to delete a record from the database
+                string sql = "DELETE FROM PDFFiles WHERE Id = @Id";
+
+                SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@Id", Id);
+
+                try
+                {
+                    connection.Open();
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    // Check if any rows were affected (optional but good for validation)
+                    if (rowsAffected > 0)
+                    {
+                        lblStatus.Text = "File deleted successfully.";
+                    }
+                    else
+                    {
+                        lblStatus.Text = "File not deleted.";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle any exceptions that occur during the database operation
+                    // Log the exception or display an error message as needed
+                    throw new Exception("Error deleting file from database", ex);
+                }
+                finally
+                {
+                    // Ensure connection is properly closed
+                    connection.Close();
+                }
+            }
+        }
+
+        protected void GridViewFileReceipt_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("Row Type: " + e.Row.RowType.ToString());
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                if (Session["Role"] != null && Session["Role"].ToString() == "Store Keeper")
+                {
+                    // Find the delete button in the row and hide it
+                    LinkButton deleteButton = e.Row.Cells[e.Row.Cells.Count - 1].Controls.OfType<LinkButton>().FirstOrDefault(btn => btn.CommandName == "DeleteFile");
+                    if (deleteButton != null)
+                    {
+                        deleteButton.Visible = false;
+                    }
+                }
+            }
+        }
+
+        protected void GridViewReceipt_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("Row Type: " + e.Row.RowType.ToString());
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                if (Session["Role"] != null && Session["Role"].ToString() == "Store Keeper")
+                {
+                    // Find the delete button in the row and hide it
+                    LinkButton deleteButton = e.Row.Cells[e.Row.Cells.Count - 1].Controls.OfType<LinkButton>().FirstOrDefault(btn => btn.CommandName == "Delete");
+                    if (deleteButton != null)
+                    {
+                        deleteButton.Visible = false;
+                    }
+                }
+            }
+        }
+
         private void BindFiles()
         {
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
@@ -360,14 +491,12 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM PDFfiles ORDER By itemId DESC", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM PDFfiles Where Type = 'ReceiptCRV' ORDER By Id DESC", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 
-                    //GridView1.DataSource = dt;
-                    //GridView1.DataBind();
-                    //GridView.DataSource = dt;
-                    //GridView.DataBind();
+                    FilesGridView.DataSource = dt;
+                    FilesGridView.DataBind();
                 }
             }
             catch (Exception ex)
@@ -446,7 +575,7 @@ namespace VMS_1
             string itemname = "";
             string date = "";
 
-          
+
 
             using (SqlConnection conn = new SqlConnection(connStr))
             {

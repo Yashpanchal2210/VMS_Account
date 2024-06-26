@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Security;
@@ -254,6 +255,21 @@ namespace VMS_1
             }
         }
 
-
+        protected void GridViewStrengthView_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("Row Type: " + e.Row.RowType.ToString());
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                if (Session["Role"] != null && Session["Role"].ToString() == "Store Keeper")
+                {
+                    // Find the delete button in the row and hide it
+                    LinkButton deleteButton = e.Row.Cells[e.Row.Cells.Count - 1].Controls.OfType<LinkButton>().FirstOrDefault(btn => btn.CommandName == "Delete");
+                    if (deleteButton != null)
+                    {
+                        deleteButton.Visible = false;
+                    }
+                }
+            }
+        }
     }
 }

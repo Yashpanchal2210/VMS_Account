@@ -12,13 +12,14 @@
                 <asp:LinkButton ID="DashboardButton" runat="server" Text="Go to Dashboard" CssClass="btn btn-info" PostBackUrl="~/Dashboard.aspx"></asp:LinkButton>
             </div>--%>
             <div class="table-responsive">
+                <input type="hidden" id="scaleAmount" />
                 <table class="table" id="myTable">
                     <thead>
                         <tr>
                             <th class="heading ref">Reference/CRV No</th>
                             <th class="heading itemname">Item Name</th>
                             <th class="heading qty">Quantity</th>
-                            <%--<th class="heading denom">Denomination</th>--%>
+                            <th class="heading denom">Denomination</th>
                             <th class="heading rcvdfrom">Received From</th>
                             <th class="heading date">Date</th>
                             <th>Action</th>
@@ -27,18 +28,21 @@
                     <tbody id="tableBody" runat="server">
                         <tr>
                             <td>
-                                <input type="text" class="form-control" name="ref" />
+                                <input type="text" class="form-control" name="ref" required />
                             </td>
                             <td>
-                                <select class="form-control itemname js-states" id="itemname" name="itemname">
+                                <select class="form-control itemname js-states" id="itemname" name="itemname" onchange="fetchBasicDenom(this.id)" required>
                                     <option value="">Select</option>
                                 </select>
                             </td>
                             <td>
-                                <input type="text" class="form-control" name="qty" pattern="^\d+(\.\d+)?$" />
+                                <input type="text" class="form-control" name="qty" pattern="^\d+(\.\d+)?$" required />
                             </td>
                             <td>
-                                <select class="form-control" name="rcvdfrom" onchange="checkReceivedFrom(this)">
+                                <input type="text" class="form-control" id="denomsVal" name="denoms" readonly required />
+                            </td>
+                            <td>
+                                <select class="form-control" name="rcvdfrom" onchange="checkReceivedFrom(this)" required>
                                     <option value="">Select </option>
                                     <option value="BV Yard">BV Yard</option>
                                     <option value="Local Purchase">Local Purchase</option>
@@ -48,7 +52,7 @@
                             </td>
 
                             <td>
-                                <input type="date" class="form-control" name="date" />
+                                <input type="date" class="form-control" name="date" required />
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
@@ -60,12 +64,12 @@
             <div class="text-left">
                 <h5>Upload CRV</h5>
                 <label class="col-form-label" for="fileDate">Date</label>
-                <input type="date" class="form-control " name="fileDate" id="fileDate" style="width: auto;" />
+                <input type="date" class="form-control " name="fileDate" id="fileDate" style="width: auto;" required />
 
                 <label class="col-form-label" for="FileUpload1">File</label>
-                <asp:FileUpload CssClass="form-control mt-2" Width="20%" ID="FileUpload1" runat="server" ToolTip="Select Only Excel File" />
+                <asp:FileUpload CssClass="form-control mt-2" Width="20%" ID="FileUpload1" runat="server" ToolTip="Select Only Excel File" required />
 
-                <asp:Button CssClass="btn btn-dark mt-2" Width="10%" ID="Button1" runat="server" Text="Upload" OnClick="UploadFileButton_Click" />
+                <%--<asp:Button CssClass="btn btn-dark mt-2" Width="10%" ID="Button1" runat="server" Text="Upload" OnClick="UploadFileButton_Click" />--%>
             </div>
             <div>
                 <asp:Label ID="lblStatus" runat="server" Text=""></asp:Label>
@@ -107,6 +111,22 @@
                     }
                 %>
             </div>
+            <div class="form-group">
+                <label for="monthYear">Files</label>
+                <asp:GridView ID="FilesGridView" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="false" OnRowCommand="FilesGridView_RowCommand" OnRowDataBound="GridViewFileReceipt_RowDataBound">
+                    <Columns>
+                        <asp:BoundField DataField="Date" HeaderText="Date" ReadOnly="true" />
+                        <asp:BoundField DataField="Name" HeaderText="Name" ReadOnly="true" />
+                        <asp:TemplateField HeaderText="Actions">
+                            <ItemTemplate>
+                                <asp:LinkButton ID="DeleteButton" runat="server" CommandName="DeleteFile" CommandArgument='<%# Eval("Id") %>' Text="Delete"></asp:LinkButton>
+                                <%--<asp:Button runat="server" CommandName="ViewFile" CommandArgument='<%# Eval("Id") %>' Text="View" CssClass="btn btn-info btn-sm" />--%>
+                                <%--<asp:Button runat="server" CommandName="DeleteFile" CommandArgument='<%# Eval("Id") %>' Text="Delete" CssClass="btn btn-danger btn-sm" OnClientClick="return confirm('Are you sure you want to delete this file?');" />--%>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+                </asp:GridView>
+            </div>
             <div>
                 <h2 class="mt-4">Search Receipt</h2>
             </div>
@@ -115,13 +135,9 @@
                 <input type="month" id="monthYear" name="monthYear" class="form-control" onchange="filterData()" /><br />
                 &nbsp;
             </div>
-            <div class="form-group">
-                <label for="monthYear">Files</label>
-                <asp:GridView runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="false"></asp:GridView>
-            </div>
             <div>
                 <asp:GridView ID="GridView" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowEditing="GridView_RowEditing" OnRowUpdating="GridView_RowUpdating" OnRowCancelingEdit="GridView_RowCancelingEdit"
-                    OnRowDeleting="GridView_RowDeleting" DataKeyNames="itemid">
+                    OnRowDeleting="GridView_RowDeleting" OnRowDataBound="GridViewReceipt_RowDataBound" DataKeyNames="itemid">
                     <Columns>
                         <asp:BoundField DataField="itemid" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
                         <asp:TemplateField HeaderText="Date">
@@ -204,7 +220,7 @@
                     </div>
                 </div>
             </div>
-
+            
         </form>
     </div>
 
@@ -220,6 +236,7 @@
                 allowClear: true
             });
         });
+
         function setTheme(theme) {
             var gridView = document.getElementById("GridView1");
 
@@ -241,6 +258,42 @@
                 document.querySelector('.table').classList.add('dark-theme');
             }
         }
+
+        function fetchBasicDenom(id) {
+            var ItemValue = document.getElementById(id).value;
+            document.getElementById("scaleAmount").value = "";
+
+            if (id != null) {
+                var value = id;  // Use 'var' instead of 'string'
+                var parts = value.split('_');  // Use JavaScript's 'split' method
+            }
+
+            var part1 = parts[1];
+
+            fetch('ItemReceipt.aspx/GetItemDenom', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ItemVal: ItemValue })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.d) {
+                        if (rowSequence >= 1) {
+                            var denomsDropdown = document.getElementById("denomsVal_" + part1);
+                            denomsDropdown.value = data.d;
+                        } else {
+                            var denomsDropdown = document.getElementById("denomsVal");
+                            denomsDropdown.value = data.d;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching basic denomination:', error);
+                });
+        }
+
         var rowSequence = 0;
         function addRow() {
             var tableBody = document.getElementById("MainContent_tableBody");
@@ -251,10 +304,13 @@
             newRow.innerHTML = `
                                 <td><input type="text" class="form-control" value="${selectedRefNo}" disabled /></td>
                                  <td>
-                                      <select class="form-control itemname js-states" name="itemname" id="itemname_${rowSequence}" required>
+                                      <select class="form-control itemname js-states" name="itemname" id="itemname_${rowSequence}" onchange="fetchBasicDenom(this.id)" required>
                                      </select>
                                  </td>
                                 <td><input type="text" class="form-control" name="qty" required pattern="^\\d+(\\.\\d+)?$" /></td>
+                                <td>
+                                    <input type="text" class="form-control" id="denomsVal_${rowSequence}" name="denoms" readonly />
+                                </td>
                                 <td>
                                     <select class="form-control" name="rcvdfrom" required onchange="checkReceivedFrom(this)" disabled>
                                         <option value="">Select</option>

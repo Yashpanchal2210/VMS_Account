@@ -37,6 +37,7 @@ namespace VMS_1
                 // Get data from the form
                 string[] itemname = Request.Form.GetValues("itemname");
                 string[] rate = Request.Form.GetValues("rate");
+                string[] denomination = Request.Form.GetValues("denoms");
 
                 // Connect to the database
                 using (SqlConnection conn = new SqlConnection(connStr))
@@ -69,20 +70,22 @@ namespace VMS_1
                         if (count > 0)
                         {
                             // Update the existing item
-                            SqlCommand updateCmd = new SqlCommand("UPDATE RationScale SET ItemName = @ItemName, Rate = @Rate WHERE ItemName = @ItemName", conn);
+                            SqlCommand updateCmd = new SqlCommand("UPDATE RationScale SET ItemName = @ItemName, Rate = @Rate, @Denomination WHERE ItemName = @ItemName", conn);
                             updateCmd.Parameters.AddWithValue("@ItemName", itemName);
                             updateCmd.Parameters.AddWithValue("@Rate", decimal.Parse(rate[i]));
+                            updateCmd.Parameters.AddWithValue("@denom", denomination[i]);
 
                             updateCmd.ExecuteNonQuery();
                         }
                         else
                         {
-                            SqlCommand cmd = new SqlCommand("INSERT INTO RationScale (ItemId, ItemName, Rate) VALUES (@ItemId, @ItemName, @Rate)", conn);
+                            SqlCommand cmd = new SqlCommand("INSERT INTO RationScale (ItemId, ItemName, Rate, Denomination) VALUES (@ItemId, @ItemName, @Rate, @denom)", conn);
                             cmd.CommandType = CommandType.Text;
 
                             cmd.Parameters.AddWithValue("@ItemId", itemname[i]);
                             cmd.Parameters.AddWithValue("@ItemName", itemName);
                             cmd.Parameters.AddWithValue("@Rate", decimal.Parse(rate[i]));
+                            cmd.Parameters.AddWithValue("@denom", denomination[i]);
 
                             cmd.ExecuteNonQuery();
                         }
@@ -150,6 +153,29 @@ namespace VMS_1
             {
                 lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
             }
+        }
+
+        [WebMethod]
+        public static string GetItemDenom(string ItemVal)
+        {
+            string Denomination = "";
+
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "SELECT Denomination, VegScale, NonVegScale  FROM InLieuItems WHERE Id = @BasicItem";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@BasicItem", ItemVal);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    Denomination = reader["Denomination"].ToString();
+                }
+            }
+
+            return Denomination;
         }
 
         protected void GridViewRationScale_RowEditing(object sender, GridViewEditEventArgs e)
@@ -238,6 +264,25 @@ namespace VMS_1
             }
 
             BindGridView();
+        }
+
+        protected void GridViewRation_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("Row Type: " + e.Row.RowType.ToString());
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                if (Session["Role"] != null && Session["Role"].ToString() == "Store Keeper")
+                {
+                    // Find the delete button in the row and hide it
+                    LinkButton deleteButton = e.Row.Cells[e.Row.Cells.Count - 1].Controls.OfType<LinkButton>().FirstOrDefault(btn => btn.CommandName == "Delete");
+                    LinkButton editButton = e.Row.Cells[e.Row.Cells.Count - 1].Controls.OfType<LinkButton>().FirstOrDefault(btn => btn.CommandName == "Edit");
+                    if (deleteButton != null && editButton != null)
+                    {
+                        deleteButton.Visible = false;
+                        editButton.Visible = false;
+                    }
+                }
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GroupDocs.Annotation.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,7 +13,11 @@ namespace VMS_1
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            if (Session["Role"] == null || !HttpContext.Current.User.Identity.IsAuthenticated)
+            {
+                FormsAuthentication.SignOut();
+                Response.Redirect(FormsAuthentication.LoginUrl);
+            }
         }
 
     }

@@ -36,14 +36,20 @@
                 <label class="col-form-label">Accounting Officer:</label>
                 <input type="text" class="form-control" id="aoVal" name="aoVal" style="width: 50%;" />
             </div>
-            <asp:Button ID="GenerateHTMLViewButton" runat="server" Text="Generate HTML View" OnClick="GenerateHTMLViewButton_Click" />
+            <asp:Button ID="GenerateHTMLViewButton" CssClass="btn btn-primary" runat="server" Text="Generate HTML View" OnClick="GenerateHTMLViewButton_Click" />
+            <asp:Button ID="btnSendToLogistic" CssClass="btn btn-success" runat="server" Text="Send to Logistic" Visible="false"/>
+            <asp:Button ID="btnApprove1" CssClass="btn btn-success" runat="server" Text="Approve" Visible="false" />
+            <asp:Button ID="btnReject1" CssClass="btn btn-danger" runat="server" Text="Reject" Visible="false" />
+            <asp:Button ID="btnApprove2" CssClass="btn btn-success" runat="server" Text="Approve" Visible="false" />
+            <asp:Button ID="btnReject2" CssClass="btn btn-danger" runat="server" Text="Reject" Visible="false" />
+            <asp:Label ID="lblMessage" CssClass="text-success" runat="server"></asp:Label>
             <div id="htmlViewContainer">
                 <%--Start Page02--%>
                 <asp:Literal ID="HTMLContentLiteralP2" runat="server"></asp:Literal>
                 <%--End Page02--%>
 
                 <%--Start Page2to7--%>
-                 <div id="tablesContainerPage2to7" runat="server">
+                <div id="tablesContainerPage2to7" runat="server">
                 </div>
                 <%--End Page2to7--%>
 

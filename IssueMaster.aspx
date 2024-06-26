@@ -87,7 +87,40 @@
             </div>
             <div class="text-center">
                 <button type="button" class="btn btn-primary mr-2" onclick="addRow()">Add Row</button>
-                <asp:Button ID="SubmitButton" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-success mr-2" Width="107px" Height="38px" />
+                <%
+                    if (IsUserInRoleRecepit("Store Keeper"))
+                    {
+                %>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#infoModalIssue">
+                    Submit
+                </button>
+                <%
+                    }
+                    else if (IsUserInRoleRecepit("Logistic Officer"))
+                    {
+                %>
+                <asp:Button ID="Button1" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-success mr-2" Width="107px" Height="38px" />
+                <%
+                    }%>
+
+                <%
+                    bool IsUserLoggedIn()
+                    {
+                        // Check if the user is logged in
+                        return HttpContext.Current.Session["Role"] != null;
+                    }
+
+                    bool IsUserInRoleRecepit(string role)
+                    {
+                        // Check if the user is in the specified role
+                        return HttpContext.Current.Session["Role"] != null && HttpContext.Current.Session["Role"].ToString() == role;
+                    }
+
+                    string GetUserName()
+                    {
+                        return HttpContext.Current.Session["UserName"] != null ? HttpContext.Current.Session["UserName"].ToString() : "Admin";
+                    }
+                %>
             </div>
             <div>
                 <h2 class="mt-4">Issue Details</h2>
@@ -100,7 +133,8 @@
                     OnRowEditing="GridViewIssue_RowEditing"
                     OnRowUpdating="GridViewIssue_RowUpdating"
                     OnRowCancelingEdit="GridViewIssue_RowCancelingEdit"
-                    OnRowDeleting="GridViewIssue_RowDeleting">
+                    OnRowDeleting="GridViewIssue_RowDeleting"
+                    OnRowDataBound="GridViewIssue_RowDataBound">
                     <Columns>
                         <asp:BoundField DataField="Id" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
                         <%--<asp:TemplateField HeaderText="Date">
@@ -148,7 +182,7 @@
                                 <asp:TextBox ID="txtstrength" runat="server" Text='<%# Bind("EntitledStrength") %>'></asp:TextBox>
                             </EditItemTemplate>
                         </asp:TemplateField>
-                        <asp:CommandField ShowDeleteButton="True" DeleteText="Delete Row" />
+                        <asp:CommandField HeaderText="Action" ShowDeleteButton="True" DeleteText="Delete Row" />
                     </Columns>
                 </asp:GridView>
 
@@ -187,6 +221,7 @@
                         </div>
                         <div class="modal-body">
                             Entitled Strength = ("Approximate Daily Strength" * "Number Of Days") 
+                       
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -194,7 +229,25 @@
                     </div>
                 </div>
             </div>
-
+            <div class="modal fade" id="infoModalIssue" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="infoModalIssueLabel">Daily Issue</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Data once submitted cannot be changed</p>
+                        </div>
+                        <div class="modal-footer">
+                            <asp:Button ID="SubmitButton" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-success mr-2" Width="107px" Height="38px" />
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </form>
 
@@ -494,7 +547,7 @@
             toastr.success(message, 'Success', {
                 progressBar: true,
                 positionClass: 'toast-bottom-right',
-                timeOut: 3000 
+                timeOut: 3000
             });
         }
 

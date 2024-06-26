@@ -57,7 +57,40 @@
             </div>
             <div class="text-center">
                 <button type="button" class="btn btn-primary mr-2" onclick="addRow()">Add Row</button>
+                <%
+                    if (IsUserInRoleRecepit("Store Keeper"))
+                    {
+                %>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#infoModalOS">
+                    Submit
+                </button>
+                <%
+                    }
+                    else if (IsUserInRoleRecepit("Logistic Officer"))
+                    {
+                %>
                 <asp:Button ID="SubmitButton" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-success mr-2" Width="107px" Height="38px" />
+                <%
+                    }%>
+
+                <%
+                    bool IsUserLoggedIn()
+                    {
+                        // Check if the user is logged in
+                        return HttpContext.Current.Session["Role"] != null;
+                    }
+
+                    bool IsUserInRoleRecepit(string role)
+                    {
+                        // Check if the user is in the specified role
+                        return HttpContext.Current.Session["Role"] != null && HttpContext.Current.Session["Role"].ToString() == role;
+                    }
+
+                    string GetUserName()
+                    {
+                        return HttpContext.Current.Session["UserName"] != null ? HttpContext.Current.Session["UserName"].ToString() : "Admin";
+                    }
+                %>
             </div>
             <asp:Label ID="lblStatus" runat="server" Text=""></asp:Label>
 
@@ -66,7 +99,7 @@
             </div>
             <div>
                 <asp:GridView ID="GridViewOtherShips" runat="server" CssClass="table table-bordered table-striped"
-                    AutoGenerateColumns="False" OnRowDeleting="GridViewExtraIssueOtherShip_RowDeleting" DataKeyNames="Id">
+                    AutoGenerateColumns="False" OnRowDeleting="GridViewExtraIssueOtherShip_RowDeleting" OnRowDataBound="GridViewOS_RowDataBound" DataKeyNames="Id">
                     <Columns>
                         <asp:BoundField DataField="Id" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
                         <asp:BoundField DataField="Date" HeaderText="Date" DataFormatString="{0:yyyy-MM-dd}" />
@@ -76,6 +109,26 @@
                     </Columns>
                 </asp:GridView>
             </div>
+            <div class="modal fade" id="infoModalOS" tabindex="-1" role="dialog" aria-labelledby="infoModalOSLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="infoModalPestLabel">Extra Issue: Other Ships</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Data once submitted cannot be changed</p>
+                        </div>
+                        <div class="modal-footer">
+                            <asp:Button ID="Button2" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-success mr-2" Width="107px" Height="38px" />
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </form>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

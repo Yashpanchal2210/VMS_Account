@@ -55,7 +55,7 @@ namespace VMS_1
                     Label1.Text = "Record saved successfully.";
 
                     // Wait for 5 seconds before redirecting to the login page
-                    Response.AddHeader("REFRESH", "5;URL=LOGIN.aspx");
+                    Response.AddHeader("REFRESH", "2;URL=LOGIN.aspx");
                 }
                 else
                 {

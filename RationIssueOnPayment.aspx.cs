@@ -161,7 +161,28 @@ namespace VMS_1
                 lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
             }
         }
+        [WebMethod]
+        public static string GetItemDenom(string ItemVal)
+        {
+            string Denomination = "";
 
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "SELECT Denomination, VegScale, NonVegScale  FROM InLieuItems WHERE Id = @BasicItem";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@BasicItem", ItemVal);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    Denomination = reader["Denomination"].ToString();
+                }
+            }
+
+            return Denomination;
+        }
         [WebMethod]
         public static List<object> GetItems()
         {
@@ -331,6 +352,21 @@ namespace VMS_1
             LoadGridView(); // Rebind the GridView to show the updated data
         }
 
-
+        protected void GridViewRIP_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("Row Type: " + e.Row.RowType.ToString());
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                if (Session["Role"] != null && Session["Role"].ToString() == "Store Keeper")
+                {
+                    // Find the delete button in the row and hide it
+                    LinkButton deleteButton = e.Row.Cells[e.Row.Cells.Count - 1].Controls.OfType<LinkButton>().FirstOrDefault(btn => btn.CommandName == "Delete");
+                    if (deleteButton != null)
+                    {
+                        deleteButton.Visible = false;
+                    }
+                }
+            }
+        }
     }
 }

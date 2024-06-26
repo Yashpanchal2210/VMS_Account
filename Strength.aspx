@@ -88,7 +88,7 @@
 
             </div>
             <div class="table-responsive">
-                <asp:GridView ID="GridViewStrength" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowEditing="GridViewStrength_RowEditing" OnRowDeleting="GridViewStrength_RowDeleting" DataKeyNames="Id">
+                <asp:GridView ID="GridViewStrength" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowEditing="GridViewStrength_RowEditing" OnRowDeleting="GridViewStrength_RowDeleting" DataKeyNames="Id" OnRowDataBound="GridViewStrengthView_RowDataBound">
                     <Columns>
                         <asp:BoundField DataField="Id" Visible="false" HeaderText="ID" ReadOnly="True" />
                         <asp:BoundField DataField="dates" HeaderText="Date" ReadOnly="True" />

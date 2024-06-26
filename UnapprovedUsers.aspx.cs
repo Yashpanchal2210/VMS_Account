@@ -23,6 +23,7 @@ namespace VMS_1
             if (!IsPostBack)
             {
                 LoadGridView();
+                RejectedGridView();
             }
         }
 
@@ -30,13 +31,27 @@ namespace VMS_1
         {
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                string query = "SELECT name, rank, Designation, NudId, Password, Role, IsApproved FROM usermaster WHERE NudId <> 'admin' AND (IsApproved IS NULL OR IsApproved = 0)";
+                string query = "SELECT name, rank, Designation, NudId, Password, Role, IsApproved FROM usermaster WHERE NudId <> 'admin' AND (IsApproved = 0)";
                 SqlCommand cmd = new SqlCommand(query, conn);
 
                 conn.Open();
                 SqlDataReader reader = cmd.ExecuteReader();
                 GridViewUser.DataSource = reader;
                 GridViewUser.DataBind();
+            }
+        }
+
+        private void RejectedGridView()
+        {
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "SELECT name, rank, Designation, NudId, Password, Role, IsApproved FROM usermaster WHERE NudId <> 'admin' AND (IsRejected = 1)";
+                SqlCommand cmd = new SqlCommand(query, conn);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                GridViewReject.DataSource = reader;
+                GridViewReject.DataBind();
             }
         }
 
@@ -54,6 +69,20 @@ namespace VMS_1
             }
         }
 
+        protected void GridViewReject_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        {
+            int rowIndex = e.RowIndex;
+
+            // Retrieve the key value of the row being deleted (NudId in this case)
+            string nudId = GridViewReject.DataKeys[rowIndex]["NudId"].ToString();
+
+            // Call a method to perform the deletion
+            DeleteUser(nudId);
+
+            LoadGridView();
+            RejectedGridView();
+        }
+
         private void ApproveUser(string nudId)
         {
             using (SqlConnection conn = new SqlConnection(connStr))
@@ -67,9 +96,10 @@ namespace VMS_1
             }
 
             LoadGridView();
+            RejectedGridView();
         }
 
-        private void RejectUser(string nudId)
+        private void DeleteUser(string nudId)
         {
             using (SqlConnection conn = new SqlConnection(connStr))
             {
@@ -80,8 +110,22 @@ namespace VMS_1
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
+        }
+
+        private void RejectUser(string nudId)
+        {
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "update usermaster Set IsRejected = 1, IsApproved = null WHERE NudId = @NudId";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@NudId", nudId);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
 
             LoadGridView();
+            RejectedGridView();
         }
 
         protected void GridViewUser_RowEditing(object sender, GridViewEditEventArgs e)

@@ -30,36 +30,77 @@ namespace VMS_1
             {
                 string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
 
-                string[] date = Request.Form.GetValues("date");
-                string[] name = Request.Form.GetValues("name");
-                string[] rank = Request.Form.GetValues("rank");
-                string[] pno = Request.Form.GetValues("pno");
-                string[] days = Request.Form.GetValues("days");
-                string[] itemnameId = Request.Form.GetValues("itemname");
-                string[] qty = Request.Form.GetValues("qty");
+                string date = Request.Form["date"];
+                string name = Request.Form["name"];
+                string rank = Request.Form["rank"];
+                string category = Request.Form["category"];
+                string pno = Request.Form["pno"];
+                string days = Request.Form["days"];
+
+                string[] itemNames = new string[]
+                {
+                    Request.Form["itemname1"],
+                    Request.Form["itemname2"],
+                    Request.Form["itemname3"],
+                    "Sugar",
+                    "Ground Nut",
+                    "Chocolate",
+                    "Horlicks"
+                };
+
+                decimal[] quantities = new decimal[]
+                {
+                    GetQuantity(itemNames[0], "Dropdown1") * Convert.ToDecimal(days),
+                    GetQuantity(itemNames[1], "Dropdown2") * Convert.ToDecimal(days),
+                    GetQuantity(itemNames[2], "Dropdown3") * Convert.ToDecimal(days),
+                    0.05m * Convert.ToDecimal(days),
+                    0.05m * Convert.ToDecimal(days),
+                    0.05m * Convert.ToDecimal(days),
+                    0.05m * Convert.ToDecimal(days)
+                };
 
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
 
-                    // Iterate through each row and insert data into the database
-                    for (int i = 0; i < itemnameId.Length; i++)
+                    for (int i = 0; i < itemNames.Length; i++)
                     {
-                        (string itemName, string denomination) = GetItemNameById(conn, itemnameId[i]);
+                        (string itemName, string denomination) = GetItemNameById(conn, itemNames[i]);
+                        int itemId = 0;
+                        using (SqlCommand cmd1 = new SqlCommand("select TOP 1 Id from InLieuItems where InLieuItem = @ItemName AND Category = @Category", conn))
+                        {
+                            cmd1.Parameters.AddWithValue("@ItemName", itemNames[i]);
+                            cmd1.Parameters.AddWithValue("@Category", category);
+                            using (SqlDataReader reader = cmd1.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+                                    itemId = Convert.ToInt32(reader["Id"]);
+                                }
+                            }
+                        }
 
+                        string dateString = date;
+                        string UserName = name;
+                        string RankVal = rank;
+                        string PNOVal = pno;
+                        string Days = days;
+                        DateTime dateParse = DateTime.Parse(dateString);
+
+                        decimal qty = quantities[i];
                         SqlCommand cmd = new SqlCommand("INSERT INTO ExtraIssue (Date, Name, Rank, PNo, Days, ItemId, ItemName, Qty, Type) VALUES (@Date, @Name, @Rank, @PNo, @Days, @ItemId, @ItemName, @Qty, @Type)", conn);
 
-                        cmd.Parameters.AddWithValue("@Date", i < date.Length ? date[i] : date[0]);
-                        cmd.Parameters.AddWithValue("@Name", i < name.Length ? name[i] : name[0]);
-                        cmd.Parameters.AddWithValue("@Rank", i < rank.Length ? rank[i] : rank[0]);
-                        cmd.Parameters.AddWithValue("@PNo", i < pno.Length ? pno[i] : pno[0]);
-                        cmd.Parameters.AddWithValue("@Days", i < days.Length ? days[i] : days[0]);
-                        cmd.Parameters.AddWithValue("@ItemName", itemName);
-                        cmd.Parameters.AddWithValue("@ItemId", itemnameId[i]);
-                        cmd.Parameters.AddWithValue("@Qty", decimal.Parse(qty[i]));
+                        cmd.Parameters.AddWithValue("@Date", dateParse);
+                        cmd.Parameters.AddWithValue("@Name", UserName);
+                        cmd.Parameters.AddWithValue("@Rank", RankVal);
+                        cmd.Parameters.AddWithValue("@PNo", PNOVal);
+                        cmd.Parameters.AddWithValue("@Days", Days);
+                        cmd.Parameters.AddWithValue("@ItemName", itemNames[i]);
+                        cmd.Parameters.AddWithValue("@ItemId", itemId);
+                        cmd.Parameters.AddWithValue("@Qty", qty);
                         cmd.Parameters.AddWithValue("@Type", "DiversIssue");
 
-                        decimal qtyIssued = decimal.Parse(qty[i]);
+                        decimal qtyIssued = qty;
                         SqlCommand checkReceiptCmd = new SqlCommand(
                             "SELECT SUM(Qty) FROM PresentStockMaster WHERE ItemName = @ItemName", conn);
                         checkReceiptCmd.Parameters.AddWithValue("@ItemName", itemName);
@@ -87,23 +128,23 @@ namespace VMS_1
 
                         // Update PresentStockMaster table if ItemName exists
                         SqlCommand updatePresentStockCmd = new SqlCommand("UPDATE PresentStockMaster SET Qty = Qty - @Quantity WHERE ItemName = @ItemName", conn);
-                        updatePresentStockCmd.Parameters.AddWithValue("@ItemName", "Milk Fresh");
-                        updatePresentStockCmd.Parameters.AddWithValue("@Quantity", decimal.Parse(qty[i]));
+                        updatePresentStockCmd.Parameters.AddWithValue("@ItemName", itemNames[i]);
+                        updatePresentStockCmd.Parameters.AddWithValue("@Quantity", qtyIssued);
                         updatePresentStockCmd.Parameters.AddWithValue("@Denos", denomination);
                         updatePresentStockCmd.ExecuteNonQuery();
 
                         SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM MonthEndStockMaster WHERE Date = @Date AND ItemName = @ItemName", conn);
-                        checkCmd.Parameters.AddWithValue("@Date", DateTime.Parse(date[i])); // Use current date
-                        checkCmd.Parameters.AddWithValue("@ItemName", itemName);
+                        checkCmd.Parameters.AddWithValue("@Date", dateParse); // Use current date
+                        checkCmd.Parameters.AddWithValue("@ItemName", itemNames[i]);
                         int count = (int)checkCmd.ExecuteScalar();
 
                         if (count > 0)
                         {
                             // If data exists, update the existing row
                             SqlCommand updateCmd = new SqlCommand("UPDATE MonthEndStockMaster SET Qty = CASE WHEN Qty - @Quantity >= 0 THEN Qty - @Quantity ELSE Qty END WHERE Date = @Date AND ItemName = @ItemName", conn);
-                            updateCmd.Parameters.AddWithValue("@Date", DateTime.Parse(date[i])); // Use current date
-                            updateCmd.Parameters.AddWithValue("@ItemName", itemName);
-                            updateCmd.Parameters.AddWithValue("@Quantity", decimal.Parse(qty[i]));
+                            updateCmd.Parameters.AddWithValue("@Date", dateParse); // Use current date
+                            updateCmd.Parameters.AddWithValue("@ItemName", itemNames[i]);
+                            updateCmd.Parameters.AddWithValue("@Quantity", qtyIssued);
 
                             updateCmd.ExecuteNonQuery();
                         }
@@ -111,9 +152,9 @@ namespace VMS_1
                         {
                             // If no data exists, insert a new row
                             SqlCommand insertCmd = new SqlCommand("INSERT INTO MonthEndStockMaster (Date, ItemName, Qty, Type) VALUES (@Date, @ItemName, @Quantity, @Type)", conn);
-                            insertCmd.Parameters.AddWithValue("@Date", DateTime.Parse(date[i])); // Use current date
-                            insertCmd.Parameters.AddWithValue("@ItemName", itemName);
-                            insertCmd.Parameters.AddWithValue("@Quantity", decimal.Parse(qty[i]));
+                            insertCmd.Parameters.AddWithValue("@Date", dateParse); // Use current date
+                            insertCmd.Parameters.AddWithValue("@ItemName", itemNames[i]);
+                            insertCmd.Parameters.AddWithValue("@Quantity", qtyIssued);
                             insertCmd.Parameters.AddWithValue("@Type", "Issue"); // Set the correct parameter name for Type
 
                             insertCmd.ExecuteNonQuery();
@@ -134,7 +175,7 @@ namespace VMS_1
         {
             string itemName = string.Empty;
             string denomination = string.Empty;
-            string query = "SELECT ILueItem, iLueDenom FROM BasicLieuItems WHERE Id = @ItemId";
+            string query = "SELECT ILueItem, iLueDenom FROM BasicLieuItems WHERE ILueItem = @ItemId";
 
             using (SqlCommand cmd = new SqlCommand(query, conn))
             {
@@ -150,6 +191,29 @@ namespace VMS_1
             }
 
             return (itemName, denomination);
+        }
+
+        private decimal GetQuantity(string itemId, string dropdownName)
+        {
+            switch (itemId)
+            {
+                case "Milk Fresh":
+                    return (dropdownName == "Dropdown1") ? 0.2m : 0.15m;
+                case "Milk Tinned":
+                    return (dropdownName == "Dropdown1") ? 0.08m : 0.055m;
+                case "Milk Powder":
+                    return (dropdownName == "Dropdown1") ? 0.028m : 0.02m;
+                case "Butter Tinned":
+                    return (dropdownName == "Dropdown3") ? 0.05m : 0.05m;
+                case "Butter Fresh":
+                    return (dropdownName == "Dropdown3") ? 0.05m : 0.05m;
+                case "Eggs":
+                    return 2;
+                case "Cheese Tinned":
+                    return 0.05m;
+                default:
+                    throw new ArgumentException("Invalid itemId");
+            }
         }
 
         [WebMethod]
@@ -267,7 +331,7 @@ namespace VMS_1
 
         protected void GridView_RowDataBound(object sender, GridViewRowEventArgs e)
         {
-            if (e.Row.RowType == DataControlRowType.DataRow && GridViewExtraIssueDivers.EditIndex == e.Row.RowIndex)
+            if (e.Row.RowType == DataControlRowType.DataRow /*&& GridViewExtraIssueDivers.EditIndex == e.Row.RowIndex*/)
             {
                 DropDownList ddlitemname = (DropDownList)e.Row.FindControl("ddlitemname");
                 if (ddlitemname != null)
@@ -278,9 +342,19 @@ namespace VMS_1
                     ddlitemname.DataValueField = "ItemId";
                     ddlitemname.DataBind();
 
+
                     // Set the selected value based on the current row's data
                     DataRowView drv = (DataRowView)e.Row.DataItem;
                     ddlitemname.SelectedValue = drv["ItemId"].ToString();
+                }
+                if (Session["Role"] != null && Session["Role"].ToString() == "Store Keeper")
+                {
+                    // Find the delete button in the row and hide it
+                    LinkButton deleteButton = e.Row.Cells[e.Row.Cells.Count - 1].Controls.OfType<LinkButton>().FirstOrDefault(btn => btn.CommandName == "Delete");
+                    if (deleteButton != null)
+                    {
+                        deleteButton.Visible = false;
+                    }
                 }
             }
         }

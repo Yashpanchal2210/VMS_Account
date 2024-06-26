@@ -1,6 +1,21 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="RationScale.aspx.cs" Inherits="VMS_1.RationScale" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    <style>
+        .input-group-text {
+            background-color: #fff; /* Match the background color with the input field */
+            border: 1px solid #ced4da; /* Match the border with the input field */
+        }
+
+        .input-group-prepend .input-group-text {
+            border-right: 0; /* Remove the right border of the prepend to blend with the input */
+        }
+
+        .input-group .form-control {
+            border-left: 0; /* Remove the left border of the input to blend with the prepend */
+        }
+    </style>
+
     <div class="container">
         <h2 class="mt-4">Item Rate</h2>
 
@@ -8,25 +23,32 @@
             <%--<div class="text-right">
                 <asp:LinkButton ID="DashboardButton" runat="server" Text="Go to Dashboard" CssClass="btn btn-info" PostBackUrl="~/Dashboard.aspx"></asp:LinkButton>
             </div>--%>
+            <input type="hidden" id="scaleAmount" />
             <div class="table-responsive">
                 <table class="table" id="myTable">
                     <thead>
                         <tr>
                             <th class="heading">Name</th>
                             <th class="heading">Rate</th>
+                            <th class="heading">Denomination</th>
                             <th class="heading">Action</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody" runat="server">
                         <tr>
                             <td>
-                                <select class="form-control itemname" id="itemname" name="itemname" required>
+                                <select class="form-control itemname" id="itemname" name="itemname" onchange="fetchBasicDenom(this.id)" required>
                                     <option value="">Select</option>
                                 </select>
                             </td>
                             <td>
-                                <input type="text" class="form-control" name="rate" required pattern="^\d+(\.\d+)?$" />Default Value 0</td>
-
+                                <div class="input-group-prepend" style="margin-bottom: -34px; margin-top: 3px;">
+                                    <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                </div>
+                                <input type="text" class="form-control" name="rate" required pattern="^\d+(\.\d+)?$" style="padding-left: 50px;" />Default Value 0</td>
+                            <td>
+                                <input type="text" class="form-control" id="denomsVal" name="denoms" readonly />
+                            </td>
                             <td>
                                 <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>
                         </tr>
@@ -43,7 +65,7 @@
                 <h2 class="mt-4">Entered Data</h2>
             </div>
             <div>
-                <asp:GridView ID="GridViewRationScale" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="false" AutoPostBack="true" DataKeyNames="ID" OnRowEditing="GridViewRationScale_RowEditing" OnRowUpdating="GridViewRationScale_RowUpdating" OnRowCancelingEdit="GridViewRationScale_RowCancelingEdit" OnRowDeleting="GridViewRationScale_RowDeleting">
+                <asp:GridView ID="GridViewRationScale" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="false" AutoPostBack="true" DataKeyNames="ID" OnRowEditing="GridViewRationScale_RowEditing" OnRowUpdating="GridViewRationScale_RowUpdating" OnRowCancelingEdit="GridViewRationScale_RowCancelingEdit" OnRowDeleting="GridViewRationScale_RowDeleting" OnRowDataBound="GridViewRation_RowDataBound">
                     <Columns>
                         <asp:BoundField DataField="ID" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
 
@@ -74,6 +96,7 @@
         $(document).ready(function () {
             fetchItems('');
         });
+       
         function setTheme(theme) {
             var gridView = document.getElementById("GridView1");
 
@@ -101,17 +124,60 @@
             var tableBody = document.getElementById("MainContent_tableBody");
             var newRow = document.createElement("tr");
             newRow.innerHTML = `<td>
-                    <select class="form-control itemname" id="itemname_${rowSequence}" name="itemname" required>
+
+                    <select class="form-control itemname" id="itemname_${rowSequence}" name="itemname" onchange="fetchBasicDenom(this.id)" required>
                         <option value="">Select</option>
                     </select>
                     </td>
 
-    <td><input type="number" class="form-control" name="rate" required min="0" step="0.01" />Default Value 0</td>
+    <td>
+     <div class="input-group-prepend" style="margin-bottom: -34px;margin-top: 3px;">
+     <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+ </div>
+    <input type="number" class="form-control" name="rate" required min="0" step="0.01" style="padding-left:50px;" />Default Value 0</td>
+   <td>
+    <input type="text" class="form-control" id="denomsVal_${rowSequence}" name="denoms" readonly />
+</td>
     <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>`;
             tableBody.appendChild(newRow);
             fetchItems(newRow);
+            rowSequence++;
         }
 
+        function fetchBasicDenom(id) {
+            var ItemValue = document.getElementById(id).value;
+            document.getElementById("scaleAmount").value = "";
+
+            if (id != null) {
+                var value = id;  // Use 'var' instead of 'string'
+                var parts = value.split('_');  // Use JavaScript's 'split' method
+            }
+
+            var part1 = parts[1];
+
+            fetch('RationScale.aspx/GetItemDenom', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ItemVal: ItemValue })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.d) {
+                        if (id == "itemname") {
+                            var denomsDropdown = document.getElementById("denomsVal");
+                            denomsDropdown.value = data.d;
+                        } else {
+                            var denomsDropdown = document.getElementById("denomsVal_" + part1);
+                            denomsDropdown.value = data.d;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching basic denomination:', error);
+                });
+        }
 
         function deleteRow(btn) {
             var row = btn.parentNode.parentNode;

@@ -11,6 +11,7 @@ using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace VMS_1
 {
@@ -28,7 +29,83 @@ namespace VMS_1
             Response.Cache.SetExpires(DateTime.UtcNow.AddHours(-1));
             Response.Cache.SetNoStore();
             Response.AppendHeader("Pragma", "no-cache");
+
+            if (!IsPostBack)
+            {
+                bool hasData = !string.IsNullOrEmpty(HTMLContentLiteralP2.Text);
+                if (hasData)
+                {
+                    // Determine which buttons to show based on the role (assuming role logic from previous example)
+                    string role = Session["Role"] as string;
+
+                    if (role == "Store Keeper")
+                    {
+                        btnSendToLogistic.Visible = true;
+                    }
+                    else if (role == "Logistic Officer")
+                    {
+                        btnApprove1.Visible = true;
+                        btnReject1.Visible = true;
+                    }
+                    else if (role == "Commanding Officer")
+                    {
+                        btnApprove2.Visible = true;
+                        btnReject2.Visible = true;
+                    }
+                    // else handle other roles or default visibility as needed
+                }
+            }
         }
+
+        //protected void SendToLogoButton_Click()
+        //{
+        //    UpdateSendToLogo();
+        //}
+
+        //private void UpdateSendToLogo()
+        //{
+        //    try
+        //    {
+        //        using (SqlConnection connection = new SqlConnection(connStr))
+        //        {
+        //            connection.Open();
+        //            var getMonth = DateTime.Now.Month;
+        //            var getYear = DateTime.Now.Year;
+        //            var getDay = DateTime.Now.Day;
+
+        //            string reportno = Convert.ToString(getYear + getYear + getDay);
+
+        //            string updateQuery = "INSERT INTO ApproveVMS (SK, SktoLogo, Logo, LogoReject, LogoApprove, LogotoCo, Co, CoReject, CoApprove, IsApproved, ReportNumber) VALUES (@SK, @SktoLogo, @Logo, @LogoReject, @LogoApprove, @LogotoCo, @Co, @CoReject, @CoApprove, @IsApproved, @ReportNumber)"; // Add your update query
+        //            string getReportNumber = "Select ReportNumber from ApproveVMS";
+        //            using (SqlCommand command = new SqlCommand(updateQuery, connection))
+        //            {
+        //                command.Parameters.AddWithValue("@SK", 0);
+        //                command.Parameters.AddWithValue("@SktoLogo", 1);
+        //                command.Parameters.AddWithValue("@Logo", 1);
+        //                command.Parameters.AddWithValue("@LogoReject", 0);
+        //                command.Parameters.AddWithValue("@LogoApprove", 0);
+        //                command.Parameters.AddWithValue("@LogotoCo", 0);
+        //                command.Parameters.AddWithValue("@Co", 0);
+        //                command.Parameters.AddWithValue("@CoReject", 0);
+        //                command.Parameters.AddWithValue("@CoApprove", 0);
+        //                command.Parameters.AddWithValue("@IsApproved", 0);
+        //                command.Parameters.AddWithValue("@ReportNumber", reportno);
+
+        //                // Execute the insert query
+        //                int rowsAffected = command.ExecuteNonQuery();
+
+        //                if (rowsAffected > 0)
+        //                {
+        //                    lblMessage.Text = "Report has been forwarded to Logistic officer";
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw; // Rethrow exception or handle as needed
+        //    }
+        //}
 
         protected void GenerateHTMLViewButton_Click(object sender, EventArgs e)
         {
@@ -88,6 +165,29 @@ namespace VMS_1
             GenerateHTMLViewP8();
             GenerateHTMLViewP2_7(selectedDateP27);
             //BindData(selectedDateP27);
+
+            bool hasData = !string.IsNullOrEmpty(HTMLContentLiteralP2.Text);
+            if (hasData)
+            {
+                // Determine which buttons to show based on the role (assuming role logic from previous example)
+                string role = Session["Role"] as string;
+
+                if (role == "Store Keeper")
+                {
+                    btnSendToLogistic.Visible = true;
+                }
+                else if (role == "Logistic Officer")
+                {
+                    btnApprove1.Visible = true;
+                    btnReject1.Visible = true;
+                }
+                else if (role == "Commanding Officer")
+                {
+                    btnApprove2.Visible = true;
+                    btnReject2.Visible = true;
+                }
+                // else handle other roles or default visibility as needed
+            }
         }
 
 
@@ -155,7 +255,7 @@ namespace VMS_1
             htmlTables += "</tr>";
 
             // Rows for ReceiptMaster data
-            
+
             htmlTables += "<tr><th>1</th><th>FULL STOWAGE</th>";
             foreach (DataRow receiptRow in inLieuItemsTable.Rows)
             {
@@ -196,7 +296,7 @@ namespace VMS_1
             }
             htmlTables += "</tr>";
 
-            
+
             int lineNumber = 4;
             foreach (DataRow receiptRow in receiptMasterTable.Rows)
             {
@@ -211,7 +311,7 @@ namespace VMS_1
                     if (row["InLieuItem"].Equals(receiptRow["itemnames"]))
                     {
                         htmlTables += $"<td>{receiptRow["quantities"]}</td>";
-                    }                    
+                    }
                     else
                     {
                         htmlTables += "<td></td>"; // If no match found, display empty cell
@@ -245,25 +345,510 @@ namespace VMS_1
                 htmlTables += "</tr>";
                 lineNumber++;
             }
-            htmlTables += $"<tr><th>{lineNumber}</th><th>FRESH RECEIPTS FROM  Pg - 12</th>"; // Display referenceNos in the second column
-            foreach (DataRow receiptRow in presentFreshStock.Rows)
+
+            htmlTables += $"<tr><th>{lineNumber}</th><th>FRESH RECEIPTS FROM Pg - 12</th>";
+
+            foreach (DataRow row in inLieuItemsTable.Rows)
             {
-                foreach (DataRow row in inLieuItemsTable.Rows)
+                bool matchFound = false;
+                foreach (DataRow receiptRow in presentFreshStock.Rows)
                 {
-                    // Find the row in receiptMasterTable where ItemName matches InLieuItem and referenceNos matches
                     if (row["InLieuItem"].Equals(receiptRow["itemnames"]))
                     {
-                        htmlTables += $"<th>{receiptRow["quantities"]}</th>";
+                        int quantity = Convert.ToInt32(receiptRow["quantities"]);
+                        htmlTables += $"<th>{quantity}</th>";
+                        matchFound = true;
+                        break;
                     }
+                }
+                if (!matchFound)
+                {
+                    htmlTables += "<th>0</th>";
                 }
             }
             htmlTables += "</tr>";
+            lineNumber++;
 
-            htmlTables += "</table>";
-            //}
-            htmlTables += "</div>";
+            // Add the sum row for "receiptMasterTable" and "presentFreshStock"
+            htmlTables += $"<tr><th>{lineNumber}</th><th>TOTAL RECEIPTS</th>";
+            for (int i = 0; i < inLieuItemsTable.Rows.Count; i++)
+            {
+                decimal totalval = 0;
+                foreach (DataRow row in receiptMasterTable.Rows)
+                {
+                    if (row["itemnames"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        totalval += Convert.ToDecimal(row["quantities"]);
+                    }
+                }
+                foreach (DataRow row in presentFreshStock.Rows)
+                {
+                    if (row["itemnames"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        totalval += Convert.ToDecimal(row["quantities"]);
+                    }
+                }
 
+                htmlTables += $"<td>{totalval}</td>";
+            }
+            htmlTables += "</tr>";
+            lineNumber++;
+            //Fetch Fresh Data
+            DataTable SailorIssueData = GetSailorIssueData(selectedDate);
+
+            htmlTables += $"<tr><th>{lineNumber}</th><th>ISSUE TO SHIP'S COY</th>";
+
+            foreach (DataRow row in inLieuItemsTable.Rows)
+            {
+                bool matchFound = false;
+                foreach (DataRow sailorRow in SailorIssueData.Rows)
+                {
+                    if (row["InLieuItem"].Equals(sailorRow["itemnames"]))
+                    {
+                        htmlTables += $"<th>{sailorRow["QtyIssued"]}</th>";
+                        matchFound = true;
+                        break;
+                    }
+                }
+                if (!matchFound)
+                {
+                    htmlTables += "<th></th>";
+                }
+            }
+            htmlTables += "</tr>";
+            lineNumber++;
+
+
+            //Officer Issue Data
+            DataTable officerIssueData = GetOfficerIssueData(selectedDate);
+
+            htmlTables += $"<tr><th>{lineNumber}</th><th>ISSUE TO OFFICERS</th>";
+
+            foreach (DataRow row in inLieuItemsTable.Rows)
+            {
+                bool matchFound = false;
+                foreach (DataRow officerIssue in officerIssueData.Rows)
+                {
+                    if (row["InLieuItem"].Equals(officerIssue["itemnames"]))
+                    {
+                        htmlTables += $"<th>{officerIssue["QtyIssued"]}</th>";
+                        matchFound = true;
+                        break;
+                    }
+                }
+                if (!matchFound)
+                {
+                    htmlTables += "<th></th>";
+                }
+            }
+            htmlTables += "</tr>";
+            lineNumber++;
+
+            //Officer Issue Data
+            DataTable extraIssueData = GetExtraIssueData(selectedDate);
+
+            htmlTables += $"<tr><th>{lineNumber}</th><th>EXTRA ISSUES from  Pg - 09</th>";
+
+            foreach (DataRow row in inLieuItemsTable.Rows)
+            {
+                bool matchFound = false;
+                foreach (DataRow extraIssue in extraIssueData.Rows)
+                {
+                    if (row["InLieuItem"].Equals(extraIssue["ItemName"]))
+                    {
+                        htmlTables += $"<th>{extraIssue["Qty"]}</th>";
+                        matchFound = true;
+                        break;
+                    }
+                }
+                if (!matchFound)
+                {
+                    htmlTables += "<th></th>";
+                }
+            }
+            htmlTables += "</tr>";
+            lineNumber++;
+
+            // RationPaymentIssue
+            DataTable PaymentIssue = GetRationPaymentIssueData(selectedDate);
+            htmlTables += $"<tr><th>{lineNumber}</th><th>PAYMENT ISSUE from Pg.10/11</th>";
+
+            foreach (DataRow row in inLieuItemsTable.Rows)
+            {
+                bool matchFound = false;
+                foreach (DataRow paymentIssue in PaymentIssue.Rows)
+                {
+                    if (row["InLieuItem"].Equals(paymentIssue["ItemName"]))
+                    {
+                        htmlTables += $"<th>{paymentIssue["Qty"]}</th>";
+                        matchFound = true;
+                        break;
+                    }
+                }
+                if (!matchFound)
+                {
+                    htmlTables += "<th></th>";
+                }
+            }
+            htmlTables += "</tr>";
+            lineNumber++;
+
+            // GetPatientsData
+            DataTable PatientsData = GetPatientsData(selectedDate);
+            htmlTables += $"<tr><th>{lineNumber}</th><th>ISSUE TO PATIENTS</th>";
+
+            foreach (DataRow row in inLieuItemsTable.Rows)
+            {
+                bool matchFound = false;
+                foreach (DataRow patientIssue in PatientsData.Rows)
+                {
+                    if (row["InLieuItem"].Equals(patientIssue["ItemName"]))
+                    {
+                        htmlTables += $"<th>{patientIssue["Qty"]}</th>";
+                        matchFound = true;
+                        break;
+                    }
+                }
+                if (!matchFound)
+                {
+                    htmlTables += "<th></th>";
+                }
+            }
+            htmlTables += "</tr>";
+            lineNumber++;
+
+            // GetOtherShipData
+            DataTable OtherShipData = GetOtherShipData(selectedDate);
+            htmlTables += $"<tr><th>{lineNumber}</th><th>ISSUE TO OTHER SHIPS</th>";
+
+            foreach (DataRow row in inLieuItemsTable.Rows)
+            {
+                bool matchFound = false;
+                foreach (DataRow otherShipIssue in OtherShipData.Rows)
+                {
+                    if (row["InLieuItem"].Equals(otherShipIssue["ItemName"]))
+                    {
+                        htmlTables += $"<th>{otherShipIssue["Qty"]}</th>";
+                        matchFound = true;
+                        break;
+                    }
+                }
+                if (!matchFound)
+                {
+                    htmlTables += "<th></th>";
+                }
+            }
+            htmlTables += "</tr>";
+            lineNumber++;
+
+            // GetDiversIssueData
+            DataTable DiversIssueData = GetDiversIssueData(selectedDate);
+            htmlTables += $"<tr><th>{lineNumber}</th><th>ISSUE TO DIVERS</th>";
+
+            foreach (DataRow row in inLieuItemsTable.Rows)
+            {
+                bool matchFound = false;
+                foreach (DataRow diverShipIssue in DiversIssueData.Rows)
+                {
+                    if (row["InLieuItem"].Equals(diverShipIssue["ItemName"]))
+                    {
+                        htmlTables += $"<th>{diverShipIssue["Qty"]}</th>";
+                        matchFound = true;
+                        break;
+                    }
+                }
+                if (!matchFound)
+                {
+                    htmlTables += "<th></th>";
+                }
+            }
+            htmlTables += "</tr>";
+            lineNumber++;
+
+            // WASTAGE
+            DataTable WastageData = GetWastageData(selectedDate);
+            htmlTables += $"<tr><th>{lineNumber}</th><th>WASTAGE</th>";
+
+            foreach (DataRow row in inLieuItemsTable.Rows)
+            {
+                bool matchFound = false;
+                foreach (DataRow wastageIssue in WastageData.Rows)
+                {
+                    if (row["InLieuItem"].Equals(wastageIssue["ItemName"]))
+                    {
+                        htmlTables += $"<th>{wastageIssue["Qty"]}</th>";
+                        matchFound = true;
+                        break;
+                    }
+                }
+                if (!matchFound)
+                {
+                    htmlTables += "<th></th>";
+                }
+            }
+            htmlTables += "</tr>";
+            lineNumber++;
+            /// Total Issue 
+            htmlTables += $"<tr><th>{lineNumber}</th><th>ISSUE GRAND TOTAL</th>";
+            for (int i = 0; i < inLieuItemsTable.Rows.Count; i++)
+            {
+                decimal totalIssue = 0;
+                foreach (DataRow row in SailorIssueData.Rows)
+                {
+                    if (row["itemnames"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        totalIssue += Convert.ToDecimal(row["QtyIssued"]);
+                    }
+                }
+                foreach (DataRow row in officerIssueData.Rows)
+                {
+                    if (row["itemnames"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        totalIssue += Convert.ToDecimal(row["QtyIssued"]);
+                    }
+                }
+                foreach (DataRow row in extraIssueData.Rows)
+                {
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        totalIssue += Convert.ToDecimal(row["Qty"]);
+                    }
+                }
+                foreach (DataRow row in PaymentIssue.Rows)
+                {
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        totalIssue += Convert.ToDecimal(row["Qty"]);
+                    }
+                }
+                foreach (DataRow row in PatientsData.Rows)
+                {
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        totalIssue += Convert.ToDecimal(row["Qty"]);
+                    }
+                }
+                foreach (DataRow row in OtherShipData.Rows)
+                {
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        totalIssue += Convert.ToDecimal(row["Qty"]);
+                    }
+                }
+                foreach (DataRow row in DiversIssueData.Rows)
+                {
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        totalIssue += Convert.ToDecimal(row["Qty"]);
+                    }
+                }
+                foreach (DataRow row in WastageData.Rows)
+                {
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        totalIssue += Convert.ToDecimal(row["Qty"]);
+                    }
+                }
+
+                htmlTables += $"<td>{totalIssue}</td>";
+            }
+            htmlTables += "</tr>";
+            lineNumber++;
+
+
+            /// BALANCE AS PER ACCOUNT
+            htmlTables += $"<tr><th>{lineNumber}</th><th>BALANCE AS PER ACCOUNT</th>";
+            for (int i = 0; i < inLieuItemsTable.Rows.Count; i++)
+            {
+                decimal total = 0, totalReceipt = 0;
+                foreach (DataRow row in SailorIssueData.Rows)
+                {
+                    if (row["itemnames"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        total += Convert.ToDecimal(row["QtyIssued"]);
+                    }
+                }
+                foreach (DataRow row in officerIssueData.Rows)
+                {
+                    if (row["itemnames"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        total += Convert.ToDecimal(row["QtyIssued"]);
+                    }
+                }
+                foreach (DataRow row in extraIssueData.Rows)
+                {
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        total += Convert.ToDecimal(row["Qty"]);
+                    }
+                }
+                foreach (DataRow row in PaymentIssue.Rows)
+                {
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        total += Convert.ToDecimal(row["Qty"]);
+                    }
+                }
+                foreach (DataRow row in PatientsData.Rows)
+                {
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        total += Convert.ToDecimal(row["Qty"]);
+                    }
+                }
+                foreach (DataRow row in OtherShipData.Rows)
+                {
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        total += Convert.ToDecimal(row["Qty"]);
+                    }
+                }
+                foreach (DataRow row in DiversIssueData.Rows)
+                {
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        total += Convert.ToDecimal(row["Qty"]);
+                    }
+                }
+                foreach (DataRow row in WastageData.Rows)
+                {
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        total += Convert.ToDecimal(row["Qty"]);
+                    }
+                }
+
+
+                //---------------//total Issue
+
+                totalReceipt = 0;
+                foreach (DataRow row in receiptMasterTable.Rows)
+                {
+                    if (row["itemnames"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        totalReceipt += Convert.ToDecimal(row["quantities"]);
+                    }
+                }
+                foreach (DataRow row in presentFreshStock.Rows)
+                {
+                    if (row["itemnames"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        totalReceipt += Convert.ToDecimal(row["quantities"]);
+                    }
+                }
+                htmlTables += $"<td>{totalReceipt - total}</td>";
+
+            }
+            htmlTables += "</tr>";
+            lineNumber++;
+
+            /// BALANCE AS PER ACCOUNT
+            htmlTables += $"<tr><th>{lineNumber}</th><th>BALANCE AS PER MUSTER</th>";
+            for (int i = 0; i < inLieuItemsTable.Rows.Count; i++)
+            {
+                decimal total = 0; decimal totalReceipt = 0;
+                foreach (DataRow row in SailorIssueData.Rows)
+                {
+                    if (row["itemnames"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        total += Convert.ToDecimal(row["QtyIssued"]);
+                    }
+                }
+                foreach (DataRow row in officerIssueData.Rows)
+                {
+                    if (row["itemnames"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        total += Convert.ToDecimal(row["QtyIssued"]);
+                    }
+                }
+                foreach (DataRow row in extraIssueData.Rows)
+                {
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        total += Convert.ToDecimal(row["Qty"]);
+                    }
+                }
+                foreach (DataRow row in PaymentIssue.Rows)
+                {
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        total += Convert.ToDecimal(row["Qty"]);
+                    }
+                }
+                foreach (DataRow row in PatientsData.Rows)
+                {
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        total += Convert.ToDecimal(row["Qty"]);
+                    }
+                }
+                foreach (DataRow row in OtherShipData.Rows)
+                {
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        total += Convert.ToDecimal(row["Qty"]);
+                    }
+                }
+                foreach (DataRow row in DiversIssueData.Rows)
+                {
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        total += Convert.ToDecimal(row["Qty"]);
+                    }
+                }
+                foreach (DataRow row in WastageData.Rows)
+                {
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        total += Convert.ToDecimal(row["Qty"]);
+                    }
+                }
+
+
+                //---------------//total Issue
+
+
+                foreach (DataRow row in receiptMasterTable.Rows)
+                {
+                    if (row["itemnames"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        totalReceipt += Convert.ToDecimal(row["quantities"]);
+                    }
+                }
+                foreach (DataRow row in presentFreshStock.Rows)
+                {
+                    if (row["itemnames"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    {
+                        totalReceipt += Convert.ToDecimal(row["quantities"]);
+                    }
+                }
+                htmlTables += $"<td>{totalReceipt - total}</td>";
+
+            }
+            htmlTables += "</tr>";
+            lineNumber++;
+
+            // CRV / LOSS STATEMENT
+            DataTable LossSttement = GetWastageData(selectedDate);
+            htmlTables += $"<tr><th>{lineNumber}</th><th>CRV / LOSS STATEMENT</th>";
+
+            foreach (DataRow row in inLieuItemsTable.Rows)
+            {
+                htmlTables += "<th></th>";
+            }
+            htmlTables += "</tr>";
+            lineNumber++;
+
+
+
+            // Close the table and div tags
+            htmlTables += "</table></div>";
+
+            // Assign the generated HTML to the container
             tablesContainerPage2to7.InnerHtml = htmlTables;
+
+
+            //tablesContainerPage2to7.InnerHtml = htmlTables;
         }
 
 
@@ -402,7 +987,7 @@ namespace VMS_1
             DataTable dataTable = new DataTable();
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                using (SqlCommand cmd = new SqlCommand("SELECT * FROM ExtraIssue WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year", conn))
+                using (SqlCommand cmd = new SqlCommand("SELECT ItemName,SUM(Qty)Qty FROM ExtraIssue WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year GROUP BY ItemName", conn))
                 {
                     cmd.Parameters.AddWithValue("@Month", selectedDate[1]);
                     cmd.Parameters.AddWithValue("@Year", selectedDate[0]);

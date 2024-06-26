@@ -5,6 +5,7 @@
     <div class="container">
         <h2 class="">Ration Issue On Payment</h2>
         <form id="limeFreshForm" runat="server">
+            <input type="hidden" id="scaleAmount" />
             <div class="table-responsive">
                 <table class="table" id="myTable">
                     <thead>
@@ -24,7 +25,7 @@
                                 <input type="date" name="date" class="form-control" />
                             </td>
                             <td>
-                                <select class="form-control item" name="item" id="item" required>
+                                <select class="form-control item" name="item" id="item" onchange="fetchBasicDenom(this.id)" required>
                                     <option value="">Select</option>
                                 </select>
                             </td>
@@ -35,13 +36,7 @@
                                 <input type="text" name="qty" id="qty" class="form-control" />
                             </td>
                             <td>
-                                <select name="denom" id="denom" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="Kgs">Kgs</option>
-                                    <option value="Ltrs">Ltrs</option>
-                                    <option value="Nos">Nos</option>
-                                    <option value="Others">Others</option>
-                                </select>
+                                <input type="text" class="form-control" id="denomsVal" name="denomsVal" readonly />
                             </td>
                             <td>
                                 <input type="text" class="form-control" name="refno" id="refno" />
@@ -62,7 +57,7 @@
             </div>
             <div>
                 <asp:GridView ID="GridViewRationPaymentIssue" runat="server" CssClass="table table-bordered table-striped"
-                    AutoGenerateColumns="False" OnRowDeleting="GridViewExtraIssuePayment_RowDeleting" DataKeyNames="Id">
+                    AutoGenerateColumns="False" OnRowDeleting="GridViewExtraIssuePayment_RowDeleting" OnRowDataBound="GridViewRIP_RowDataBound" DataKeyNames="Id">
                     <Columns>
                         <asp:BoundField DataField="Id" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
                         <asp:BoundField DataField="Date" HeaderText="Date" DataFormatString="{0:yyyy-MM-dd}" />
@@ -83,6 +78,40 @@
         $(document).ready(function () {
             fetchItems('item');
         });
+        function fetchBasicDenom(id) {
+            var ItemValue = document.getElementById(id).value;
+            document.getElementById("scaleAmount").value = "";
+
+            if (id != null) {
+                var value = id;  // Use 'var' instead of 'string'
+                var parts = value.split('_');  // Use JavaScript's 'split' method
+            }
+
+            var part1 = parts[1];
+
+            fetch('RationIssueOnPayment.aspx/GetItemDenom', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ItemVal: ItemValue })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.d) {
+                        if (rowSequence >= 1) {
+                            var denomsDropdown = document.getElementById("denomsVal_" + part1);
+                            denomsDropdown.value = data.d;
+                        } else {
+                            var denomsDropdown = document.getElementById("denomsVal");
+                            denomsDropdown.value = data.d;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching basic denomination:', error);
+                });
+        }
         var rowSequence = 0;
         function addRow() {
             var tableBody = document.getElementById("MainContent_tableBody");
@@ -92,7 +121,7 @@
                     <input type="date" name="date" class="form-control" />
                 </td>
                  <td>
-                    <select class="form-control item" name="item" id="item_${rowSequence}" required>
+                    <select class="form-control item" name="item" id="item_${rowSequence}" onchange="fetchBasicDenom(this.id)" required>
                         <option value="">Select</option>
                     </select>
                 </td>
@@ -103,13 +132,7 @@
                      <input type="text" name="qty" id="qty_${rowSequence}" class="form-control" />
                  </td>
                 <td>
-                    <select name="denom" id="denom" class="form-control">
-                        <option value="">Select</option>
-                        <option value="Kgs">Kgs</option>
-                        <option value="Ltrs">Ltrs</option>
-                        <option value="Nos">Nos</option>
-                        <option value="Others">Others</option>
-                    </select>
+                     <input type="text" class="form-control" id="denomsVal_${rowSequence}" name="denoms" readonly />
                 </td>
                 <td>
                     <input type="text" class="form-control" name="refno" id="refno_${rowSequence}"/>

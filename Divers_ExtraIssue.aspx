@@ -3,7 +3,6 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
         <h2 class="mt-4">Extra Issue - Divers</h2>
-        <span class="text-danger-">WORK IN PROGRESS</span>
         <form id="extraIssueForm" runat="server">
             <div class="table-responsive">
                 <table class="table" id="extraissueTable">
@@ -12,11 +11,13 @@
                             <th class="heading">Date</th>
                             <th class="heading">Name</th>
                             <th class="heading">Rank</th>
+                            <th class="heading">Category</th>
                             <th class="heading">P.No.</th>
                             <th class="heading">NO. OF DAYS ENTILED</th>
                             <th class="heading">Item 1</th>
                             <th class="heading">Item 2</th>
-                            <th class="heading">Qty</th>
+                            <th class="heading">Item 3</th>
+                            <th class="heading">Other Items</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -50,6 +51,13 @@
                                 </select>
                             </td>
                             <td>
+                                <select class="form-control" id="category" name="category" width="200px" required>
+                                    <option value="" selected>Select</option>
+                                    <option value="Officer">Officer</option>
+                                    <option value="Sailor">Sailor</option>
+                                </select>
+                            </td>
+                            <td>
                                 <input type="text" class="form-control pno" id="pno" name="pno" required style="text-transform: capitalize;" />
                             </td>
                             <td>
@@ -74,8 +82,16 @@
                                 </select>
                             </td>
                             <td>
-                                <input type="text" class="form-control" id="qty" name="qty" required />
+                                <select class="form-control" name="itemname3" id="itemname3" required>
+                                    <option value="">Select</option>
+                                    <option value="Butter Tinned">Butter Tinned (50 gms)</option>
+                                    <option value="Butter Fresh">Butter Fresh (50 gms)</option>
+                                </select>
                             </td>
+                            <td style="display: flex; justify-content: center; align-items: center; margin-top: 5px; margin-right: 25px;">
+                                <i class="fa fa-info-circle" style="font-size: 24px; color: #007bff;" data-toggle="modal" data-target="#exampleModal"></i>
+                            </td>
+
                             <%--<td>
                     <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>--%>
                         </tr>
@@ -86,8 +102,42 @@
                 <asp:Label ID="lblStatus" runat="server" Text=""></asp:Label>
             </div>
             <div class="text-center">
-                <button type="button" class="btn btn-primary mr-2" onclick="addRow()">Add Row</button>
+                <%--<button type="button" class="btn btn-primary mr-2" onclick="addRow()">Add Row</button>--%>
+                <%
+                    if (IsUserInRoleRecepit("Store Keeper"))
+                    {
+                %>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#infoModalDiver">
+                    Submit
+                </button>
+                <%
+                    }
+                    else if (IsUserInRoleRecepit("Logistic Officer"))
+                    {
+                %>
                 <asp:Button ID="SubmitButton" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-success mr-2" Width="107px" Height="38px" />
+
+                <%
+                    }%>
+
+                <%
+                    bool IsUserLoggedIn()
+                    {
+                        // Check if the user is logged in
+                        return HttpContext.Current.Session["Role"] != null;
+                    }
+
+                    bool IsUserInRoleRecepit(string role)
+                    {
+                        // Check if the user is in the specified role
+                        return HttpContext.Current.Session["Role"] != null && HttpContext.Current.Session["Role"].ToString() == role;
+                    }
+
+                    string GetUserName()
+                    {
+                        return HttpContext.Current.Session["UserName"] != null ? HttpContext.Current.Session["UserName"].ToString() : "Admin";
+                    }
+                %>
             </div>
             <div class="mt-3">
                 <%--<asp:GridView ID="GridViewExtraIssueDivers" runat="server" CssClass="table table-bordered table-striped">
@@ -164,6 +214,50 @@
                     </Columns>
                 </asp:GridView>
             </div>
+
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Other Issue Items</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <span>1) Butter Fresh Tinned (50 gms)</span><br />
+                            <span>2) Sugar (50 gms)</span><br />
+                            <span>3) Ground Nut (50 gms)</span><br />
+                            <span>4) Chocolate (50 gms)</span><br />
+                            <span>5) Complain/Horlicks (50 gms)</span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="infoModalDiver" tabindex="-1" role="dialog" aria-labelledby="infoModalPestLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="infoModalPestLabel">Extra Issue: Divers</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Data once submitted cannot be changed</p>
+                        </div>
+                        <div class="modal-footer">
+                            <asp:Button ID="Button1" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-success mr-2" Width="107px" Height="38px" />
+
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -171,102 +265,102 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         $(document).ready(function () {
-            fetchItems('');
+            //fetchItems('');
         });
         var rowSequence = 0;
-        function addRow() {
-            var tableBody = document.getElementById("MainContent_tableBody");
-            var newRow = document.createElement("tr");
-            var selectedDate = document.getElementById("dateVal").value;
-            var selectedName = document.getElementById("nameVal").value;
-            var selectedRank = document.getElementById("rank").value;
-            var selectedPno = document.getElementById("pno").value;
-            var selectedDays = document.getElementById("days").value;
-            newRow.innerHTML = `
-                        <td>
-                            <input type="date" class="form-control" name="date" value="${selectedDate}" required disabled />
-                        </td>
-                         <td>
-                             <input type="text" class="form-control" name="name" value="${selectedName}" required style="text-transform: capitalize;" disabled />
-                         </td>
-                         <td>
-                             <select class="form-control rank" id="rank" name="rank" value="${selectedRank}" width="130px" required disabled>
-                                  <option value="">Select</option>
-                                  <option value="Sub Lieutenant" ${selectedRank === "Sub Lieutenant" ? "selected" : ""}>Sub Lieutenant</option>
-                                  <option value="Lieutenant" ${selectedRank === "Lieutenant" ? "selected" : ""}>Lieutenant</option>
-                                  <option value="Lieutenant Commander" ${selectedRank === "Lieutenant Commander" ? "selected" : ""}>Lieutenant Commander</option>
-                                  <option value="Commander" ${selectedRank === "Commander" ? "selected" : ""}>Commander</option>
-                                  <option value="Captain" ${selectedRank === "Captain" ? "selected" : ""}>Captain</option>
-                                  <option value="Commodore" ${selectedRank === "Commodore" ? "selected" : ""}>Commodore</option>
-                                  <option value="Rear Admiral" ${selectedRank === "Rear Admiral" ? "selected" : ""}>Rear Admiral</option>
-                                  <option value="Vice Admiral" ${selectedRank === "Vice Admiral" ? "selected" : ""}>Vice Admiral</option>
-                                  <option value="Admiral" ${selectedRank === "Admiral" ? "selected" : ""}>Admiral</option>
-                                  <option value="Seaman 2nd Class" ${selectedRank === "Seaman 2nd Class" ? "selected" : ""}>Seaman 2nd Class</option>
-                                  <option value="Seaman Ist Class" ${selectedRank === "Seaman Ist Class" ? "selected" : ""}>Seaman Ist Class</option>
-                                  <option value="Leading Rate" ${selectedRank === "Leading Rate" ? "selected" : ""}>Leading</option>
-                                  <option value="Petty Officer" ${selectedRank === "Petty Officer" ? "selected" : ""}>Petty Officer</option>
-                                  <option value="Chief Petty Officer" ${selectedRank === "Chief Petty Officer" ? "selected" : ""}>Chief Petty Officer</option>
-                                  <option value="Master Chief Petty Officer IInd Class" ${selectedRank === "Master Chief Petty Officer IInd Class" ? "selected" : ""}>Master Chief Petty Officer IInd Class</option>
-                                  <option value="Master Chief Petty Officer Ist Class" ${selectedRank === "Master Chief Petty Officer Ist Class" ? "selected" : ""}>Master Chief Petty Officer Ist Class</option>
-                             </select>
-                         </td>
-                         <td>
-                             <input type="text" class="form-control pno" name="pno" value="${selectedPno}" required style="text-transform: capitalize;" disabled/>
-                         </td>
-                         <td>
-                            <input type="text" class="form-control days" id="days" value="${selectedDays}" name="days" required disabled/>
-                        </td>
-                         <td>
-                            <select class="form-control itemname" name="itemname" id="itemname_${rowSequence}" required>
-                                <option value="">Select</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input type="number" class="form-control" id="qty" name="qty" required />
-                        </td>
-                        <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>`;
-            tableBody.appendChild(newRow);
-            fetchItems(newRow);
-            rowSequence++;
-        }
+        //function addRow() {
+        //    var tableBody = document.getElementById("MainContent_tableBody");
+        //    var newRow = document.createElement("tr");
+        //    var selectedDate = document.getElementById("dateVal").value;
+        //    var selectedName = document.getElementById("nameVal").value;
+        //    var selectedRank = document.getElementById("rank").value;
+        //    var selectedPno = document.getElementById("pno").value;
+        //    var selectedDays = document.getElementById("days").value;
+        //    newRow.innerHTML = `
+        //                <td>
+        //                    <input type="date" class="form-control" name="date" value="${selectedDate}" required disabled />
+        //                </td>
+        //                 <td>
+        //                     <input type="text" class="form-control" name="name" value="${selectedName}" required style="text-transform: capitalize;" disabled />
+        //                 </td>
+        //                 <td>
+        //                     <select class="form-control rank" id="rank" name="rank" value="${selectedRank}" width="130px" required disabled>
+        //                          <option value="">Select</option>
+        //                          <option value="Sub Lieutenant" ${selectedRank === "Sub Lieutenant" ? "selected" : ""}>Sub Lieutenant</option>
+        //                          <option value="Lieutenant" ${selectedRank === "Lieutenant" ? "selected" : ""}>Lieutenant</option>
+        //                          <option value="Lieutenant Commander" ${selectedRank === "Lieutenant Commander" ? "selected" : ""}>Lieutenant Commander</option>
+        //                          <option value="Commander" ${selectedRank === "Commander" ? "selected" : ""}>Commander</option>
+        //                          <option value="Captain" ${selectedRank === "Captain" ? "selected" : ""}>Captain</option>
+        //                          <option value="Commodore" ${selectedRank === "Commodore" ? "selected" : ""}>Commodore</option>
+        //                          <option value="Rear Admiral" ${selectedRank === "Rear Admiral" ? "selected" : ""}>Rear Admiral</option>
+        //                          <option value="Vice Admiral" ${selectedRank === "Vice Admiral" ? "selected" : ""}>Vice Admiral</option>
+        //                          <option value="Admiral" ${selectedRank === "Admiral" ? "selected" : ""}>Admiral</option>
+        //                          <option value="Seaman 2nd Class" ${selectedRank === "Seaman 2nd Class" ? "selected" : ""}>Seaman 2nd Class</option>
+        //                          <option value="Seaman Ist Class" ${selectedRank === "Seaman Ist Class" ? "selected" : ""}>Seaman Ist Class</option>
+        //                          <option value="Leading Rate" ${selectedRank === "Leading Rate" ? "selected" : ""}>Leading</option>
+        //                          <option value="Petty Officer" ${selectedRank === "Petty Officer" ? "selected" : ""}>Petty Officer</option>
+        //                          <option value="Chief Petty Officer" ${selectedRank === "Chief Petty Officer" ? "selected" : ""}>Chief Petty Officer</option>
+        //                          <option value="Master Chief Petty Officer IInd Class" ${selectedRank === "Master Chief Petty Officer IInd Class" ? "selected" : ""}>Master Chief Petty Officer IInd Class</option>
+        //                          <option value="Master Chief Petty Officer Ist Class" ${selectedRank === "Master Chief Petty Officer Ist Class" ? "selected" : ""}>Master Chief Petty Officer Ist Class</option>
+        //                     </select>
+        //                 </td>
+        //                 <td>
+        //                     <input type="text" class="form-control pno" name="pno" value="${selectedPno}" required style="text-transform: capitalize;" disabled/>
+        //                 </td>
+        //                 <td>
+        //                    <input type="text" class="form-control days" id="days" value="${selectedDays}" name="days" required disabled/>
+        //                </td>
+        //                 <td>
+        //                    <select class="form-control itemname" name="itemname" id="itemname_${rowSequence}" required>
+        //                        <option value="">Select</option>
+        //                    </select>
+        //                </td>
+        //                <td>
+        //                    <input type="number" class="form-control" id="qty" name="qty" required />
+        //                </td>
+        //                <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>`;
+        //    tableBody.appendChild(newRow);
+        //    fetchItems(newRow);
+        //    rowSequence++;
+        //}
 
-        function deleteRow(button) {
-            var row = button.parentNode.parentNode;
-            row.parentNode.removeChild(row);
-        }
+        //function deleteRow(button) {
+        //    var row = button.parentNode.parentNode;
+        //    row.parentNode.removeChild(row);
+        //}
 
-        function fetchItems(row) {
-            fetch('Divers_ExtraIssue.aspx/GetItemNames', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.d && data.d.length) {
-                        if (row) {
-                            itemSelect = row.querySelector('.itemname');
-                        } else {
-                            itemSelect = document.getElementById('itemname');
-                        }
+        //function fetchItems(row) {
+        //    fetch('Divers_ExtraIssue.aspx/GetItemNames', {
+        //        method: 'POST',
+        //        headers: {
+        //            'Content-Type': 'application/json'
+        //        }
+        //    })
+        //        .then(response => response.json())
+        //        .then(data => {
+        //            if (data.d && data.d.length) {
+        //                if (row) {
+        //                    itemSelect = row.querySelector('.itemname');
+        //                } else {
+        //                    itemSelect = document.getElementById('itemname');
+        //                }
 
 
-                        // Clear existing options
-                        itemSelect.innerHTML = '<option value="">Select</option>';
+        //                // Clear existing options
+        //                itemSelect.innerHTML = '<option value="">Select</option>';
 
-                        data.d.forEach(function (item) {
-                            var option = document.createElement('option');
-                            option.value = item.Value;
-                            option.textContent = item.Text;
-                            itemSelect.appendChild(option);
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching item names:', error);
-                });
-        }
+        //                data.d.forEach(function (item) {
+        //                    var option = document.createElement('option');
+        //                    option.value = item.Value;
+        //                    option.textContent = item.Text;
+        //                    itemSelect.appendChild(option);
+        //                });
+        //            }
+        //        })
+        //        .catch(error => {
+        //            console.error('Error fetching item names:', error);
+        //        });
+        //}
 
     </script>
 </asp:Content>

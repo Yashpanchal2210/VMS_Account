@@ -195,6 +195,23 @@ namespace VMS_1
             return items;
         }
 
+        protected void GridViewP_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("Row Type: " + e.Row.RowType.ToString());
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                if (Session["Role"] != null && Session["Role"].ToString() == "Store Keeper")
+                {
+                    // Find the delete button in the row and hide it
+                    LinkButton deleteButton = e.Row.Cells[e.Row.Cells.Count - 1].Controls.OfType<LinkButton>().FirstOrDefault(btn => btn.CommandName == "Delete");
+                    if (deleteButton != null)
+                    {
+                        deleteButton.Visible = false;
+                    }
+                }
+            }
+        }
+
         protected void GridViewExtraPatients_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
 

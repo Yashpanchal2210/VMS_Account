@@ -165,19 +165,18 @@
         <div>
             <label for="txtNudID">NUD ID</label>
             <asp:TextBox ID="NudID" runat="server" placeholder="Enter your NUD ID" required></asp:TextBox>
-            <asp:RegularExpressionValidator ID="RegularExpressionValidator2" runat="server" ControlToValidate="NudID" ErrorMessage="Please enter correct NUD ID" ValidationExpression="^\d{5,}[A-Za-z]$" Display="Dynamic">
-            </asp:RegularExpressionValidator>
+            <asp:RegularExpressionValidator ID="RegularExpressionValidator2" runat="server" ControlToValidate="NudID" ErrorMessage="Please enter correct NUD ID" ValidationExpression="^\d{5,}[A-Za-z]$" Display="Dynamic" ForeColor="Red"></asp:RegularExpressionValidator>
         </div>
         <div>
             <label for="txtPassword">Password</label>
             <asp:TextBox ID="Password" runat="server" TextMode="Password" placeholder="Enter your password" required></asp:TextBox>
-            <asp:RegularExpressionValidator ID="PasswordValidator" runat="server" ControlToValidate="Password" ErrorMessage="Password should be minimum 8 characters with at least one letter, one numeral, and one special character" ValidationExpression="^(?=.[A-Za-z])(?=.\d)(?=.[@$!%#?&])[A-Za-z\d@$!%*#?&]{8,}$"></asp:RegularExpressionValidator>
+            <asp:RegularExpressionValidator ID="PasswordValidator" runat="server" ControlToValidate="Password" ErrorMessage="Password should be minimum 8 characters with at least one letter, one numeral, and one special character" ValidationExpression="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" ForeColor="Red"></asp:RegularExpressionValidator>
         </div>
         <div>
             <label for="txtPassword">Confirm Password</label>
             <asp:TextBox ID="ConfirmPassword" runat="server" TextMode="Password" placeholder="Re-Enter your password" required></asp:TextBox>
-            <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ControlToValidate="ConfirmPassword" ErrorMessage="Password should be minimum 8 characters with at least one letter, one numeral, and one special character" ValidationExpression="^(?=.[A-Za-z])(?=.\d)(?=.[@$!%#?&])[A-Za-z\d@$!%*#?&]{8,}$"></asp:RegularExpressionValidator><br />
-            <asp:CompareValidator ID="CompareValidator1" runat="server" ControlToValidate="ConfirmPassword" ControlToCompare="Password" ErrorMessage="Entered passwords are not matching"></asp:CompareValidator>
+            <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ControlToValidate="ConfirmPassword" ErrorMessage="Password should be minimum 8 characters with at least one letter, one numeral, and one special character" ValidationExpression="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" ForeColor="Red"></asp:RegularExpressionValidator><br />
+            <asp:CompareValidator ID="CompareValidator1" runat="server" ControlToValidate="ConfirmPassword" ControlToCompare="Password" ErrorMessage="Entered passwords are not matching" ForeColor="Red"></asp:CompareValidator>
         </div>
         <div>
             <label for="role">Role</label>
@@ -255,8 +254,5 @@
             return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
         }
     </script>
-</body>
-</html>
-
 </body>
 </html>
