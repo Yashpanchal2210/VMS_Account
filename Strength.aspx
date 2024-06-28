@@ -41,33 +41,33 @@
                     <tbody id="tableBody" runat="server">
                         <tr>
                             <td style="width: 123px">
-                                <input type="date" class="form-control" id="dateVal" name="date" required style="width: 98%" onchange="fetchDate(this.id)" /></td>
+                                <input type="date" class="form-control" id="dateVal" name="date" style="width: 98%" onchange="fetchDate(this.id)" /></td>
                             <td style="width: 123px">
-                                <input type="text" class="form-control" name="VegOfficer" required min="0" /></td>
+                                <input type="text" class="form-control" name="VegOfficer" min="0" /></td>
                             <td style="width: 123px">
-                                <input type="text" class="form-control" name="NonVegOfficer" required min="0" /></td>
+                                <input type="text" class="form-control" name="NonVegOfficer" min="0" /></td>
                             <td style="width: 123px">
-                                <input type="text" class="form-control" name="VegrikOfficer" required min="0" /></td>
+                                <input type="text" class="form-control" name="VegrikOfficer" min="0" /></td>
                             <td style="width: 123px">
-                                <input type="text" class="form-control" name="NonVegRikOfficer" required min="0" /></td>
+                                <input type="text" class="form-control" name="NonVegRikOfficer" min="0" /></td>
                             <td style="width: 123px">
-                                <input type="text" class="form-control" name="vegSailor" required min="0" /></td>
+                                <input type="text" class="form-control" name="vegSailor" min="0" /></td>
                             <td style="width: 123px">
-                                <input type="text" class="form-control" name="nonVegSailor" required min="0" /></td>
+                                <input type="text" class="form-control" name="nonVegSailor" min="0" /></td>
                             <td style="width: 123px">
-                                <input type="text" class="form-control" name="VegSailorRik" required min="0" /></td>
+                                <input type="text" class="form-control" name="VegSailorRik" min="0" /></td>
                             <td style="width: 123px">
-                                <input type="text" class="form-control" name="NonVegSailorRik" required min="0" /></td>
+                                <input type="text" class="form-control" name="NonVegSailorRik" min="0" /></td>
                             <td style="width: 123px">
-                                <input type="text" class="form-control" name="VegNonEntitledOfficer" required min="0" /></td>
+                                <input type="text" class="form-control" name="VegNonEntitledOfficer" min="0" /></td>
                             <td style="width: 147px">
-                                <input type="text" class="form-control" name="NonVegNonEntitledOfficer" required min="0" /></td>
+                                <input type="text" class="form-control" name="NonVegNonEntitledOfficer" min="0" /></td>
                             <td style="width: 124px">
-                                <input type="text" class="form-control" name="VegNonEntitledSailor" required min="0" /></td>
+                                <input type="text" class="form-control" name="VegNonEntitledSailor" min="0" /></td>
                             <td style="width: 124px">
-                                <input type="text" class="form-control" name="NonVegNonEntitledSailor" required min="0" /></td>
+                                <input type="text" class="form-control" name="NonVegNonEntitledSailor" min="0" /></td>
                             <td style="width: 124px">
-                                <input type="text" class="form-control" name="Civilian" required min="0" style="width: 96%" /></td>
+                                <input type="text" class="form-control" name="Civilian" min="0" style="width: 96%" /></td>
                             <td style="width: 124px">
                                 <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>
                         </tr>
@@ -77,9 +77,9 @@
             <div>
                 <asp:Label ID="lblStatus" runat="server" Text=""></asp:Label>
             </div>
-           <div style="color: red; background-color: yellow; padding: 10px;text-align: center;font-weight: bold;">
-    Data entered for the same date will be overwritten.
-</div>
+            <div style="color: red; background-color: yellow; padding: 10px; text-align: center; font-weight: bold;">
+                Data entered for the same date will be overwritten.
+            </div>
 
             <div class="text-center">
                 <br />
@@ -91,8 +91,17 @@
                 <h2 class="mt-4">Strength Data</h2>
 
             </div>
+            <%--  <div class="form-group">
+                <label for="monthYear">Select Month and Year:</label>
+                <input type="month" id="monthYear" name="monthYear" class="form-control" onchange="fetchFilteredData()" /><br />
+                &nbsp;
+            </div>--%>
             <div class="table-responsive">
-                <asp:GridView ID="GridViewStrength" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" DataKeyNames="Id">
+                <asp:TextBox ID="txtDate" type="month" runat="server" CssClass="form-control" placeholder="Enter date (MM/DD/YYYY)"></asp:TextBox>
+                <asp:Button ID="btnFilter" runat="server" CssClass="btn btn-primary" Text="Filter" OnClick="btnFilter_Click" />
+
+                <asp:GridView ID="GridViewStrength" runat="server" CssClass="table table-bordered table-striped"
+                    AutoGenerateColumns="False" DataKeyNames="Id">
                     <Columns>
                         <asp:BoundField DataField="Id" Visible="false" HeaderText="ID" ReadOnly="True" />
                         <asp:BoundField DataField="dates" HeaderText="Date" ReadOnly="True" />
@@ -109,10 +118,22 @@
                         <asp:BoundField DataField="vegNonEntitledSailor" HeaderText="vegNonEntitledSailor" ReadOnly="True" />
                         <asp:BoundField DataField="NonVegNonEntitledSailor" HeaderText="NonVegNonEntitledSailor" ReadOnly="True" />
                         <asp:BoundField DataField="civilians" HeaderText="civilians" ReadOnly="True" />
-           
+                        <asp:BoundField DataField="IsApproved" HeaderText="Status" ReadOnly="True" />
+                        <asp:TemplateField HeaderText="Actions">
+                            <ItemTemplate>
+                                <asp:Button ID="btnDelete" runat="server" Text="Reject" CssClass="btn btn-danger"
+                                    CommandName="DeleteRecord" CommandArgument='<%# Eval("Id") %>' OnClick="btnAction_Click"
+                                    Visible='<%# IsRegulatingOfficer() %>' />
+                                <asp:Button ID="btnApprove" runat="server" Text="Approve" CssClass="btn btn-success"
+                                    CommandName="ApproveRecord" CommandArgument='<%# Eval("Id") %>' OnClick="btnAction_Click"
+                                    Visible='<%# IsRegulatingOfficer() %>' />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+
                     </Columns>
                 </asp:GridView>
             </div>
+
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -203,11 +224,7 @@
             row.parentNode.removeChild(row);
         }
 
-        function fetchDate(value) {
-            var getDate = document.getElementById("dateVal").value;
 
-
-        }
 
     </script>
 </asp:Content>

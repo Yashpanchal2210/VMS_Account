@@ -2,9 +2,9 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Text;
 using System.Web;
 using System.Web.Security;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace VMS_1
@@ -21,14 +21,16 @@ namespace VMS_1
             Response.Cache.SetExpires(DateTime.UtcNow.AddHours(-1));
             Response.Cache.SetNoStore();
             Response.AppendHeader("Pragma", "no-cache");
+
             if (!IsPostBack)
             {
-                //LoadGridView();
                 // Initialize ViewState["DataTable"] if it's null
                 if (ViewState["DataTable"] == null)
                 {
                     ViewState["DataTable"] = new DataTable();
                 }
+                BindGridView();
+                GridViewStrength.Visible = false;
             }
         }
 
@@ -36,9 +38,8 @@ namespace VMS_1
         {
             try
             {
-                //string connStr = "Data Source=PIYUSH-JHA\\SQLEXPRESS;Initial Catalog=InsProj;Integrated Security=True;Encrypt=False";
                 string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-                // Get data from the form
+
                 string[] dates = Request.Form.GetValues("date");
                 string[] vegOfficers = Request.Form.GetValues("VegOfficer");
                 string[] nonVegOfficers = Request.Form.GetValues("NonVegOfficer");
@@ -54,12 +55,10 @@ namespace VMS_1
                 string[] NonVegNonEntitledSailor = Request.Form.GetValues("NonVegNonEntitledSailor");
                 string[] civilians = Request.Form.GetValues("Civilian");
 
-                // Connect to the database
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
 
-                    // Iterate through each row and insert data into the database
                     for (int i = 0; i < dates.Length; i++)
                     {
                         SqlCommand cmd = new SqlCommand("InsertOrUpdateStrength", conn);
@@ -85,85 +84,57 @@ namespace VMS_1
                 }
 
                 lblStatus.Text = "Data entered successfully.";
-
-                // Refresh the GridView after data insertion
                 BindGridView();
-                //LoadGridView();
-
-                // Bind the total GridView after data insertion
                 BindTotalGridView((DataTable)ViewState["DataTable"]);
             }
             catch (Exception ex)
             {
-                // Handle exceptions
                 lblStatus.Text = "An error occurred: " + ex.Message;
             }
         }
-
-        //private void LoadGridView()
-        //{
-        //    try
-        //    {
-        //        string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-        //        using (SqlConnection conn = new SqlConnection(connStr))
-        //        {
-        //            conn.Open();
-
-        //            SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Strength", conn);
-        //            DataTable dt = new DataTable();
-        //            da.Fill(dt);
-
-        //            GridViewStrength.DataSource = dt;
-        //            GridViewStrength.DataBind();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
-        //    }
-        //}
-
-        // Method to bind data to the GridView
-
 
         private void BindGridView()
         {
             try
             {
-                //string connStr = "Data Source=PIYUSH-JHA\\SQLEXPRESS;Initial Catalog=InsProj;Integrated Security=True;Encrypt=False";
                 string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-                string firstSubmittedDate = Request.Form.GetValues("date")[0];
-                DateTime dateTime = DateTime.Parse(firstSubmittedDate);
-                string monthFilter = dateTime.ToString("yyyy-MM");
+                string query = string.Empty;
+                string role = Session["Role"].ToString();
 
-                string query = "SELECT * FROM Strength WHERE CONVERT(VARCHAR(7), dates, 120) = @Month";
+                if (role == "Regulating Officer")
+                {
+                    query = "SELECT * FROM Strength WHERE IsApproved = 0 OR IsApproved IS NULL;";
+                }else if (role == "Regulating Office")
+                {
+                    query = "SELECT * FROM Strength where IsApproved = 1";
+                }
+                else
+                {
+                    query = "SELECT * FROM Strength";
+                }
 
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
 
                     SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@Month", monthFilter);
-
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
                     adapter.Fill(dt);
 
-                    // Store DataTable in ViewState
                     ViewState["DataTable"] = dt;
-
+                    GridViewStrength.DataSource = dt;
+                    GridViewStrength.DataBind();
                 }
             }
             catch (Exception ex)
             {
-                // Handle exceptions
                 lblStatus.Text = "An error occurred while fetching data: " + ex.Message;
             }
         }
 
         private void BindTotalGridView(DataTable dt)
         {
-            // Calculate totals for each column except "Date"
             DataRow totalRow = dt.NewRow();
             foreach (DataColumn column in dt.Columns)
             {
@@ -173,12 +144,111 @@ namespace VMS_1
                 }
             }
 
-            // Add the total row to the DataTable
             dt.Rows.Add(totalRow);
-
-            // Bind the totals to the second GridView
             GridViewStrength.DataSource = dt;
             GridViewStrength.DataBind();
         }
+
+        protected void btnFilter_Click(object sender, EventArgs e)
+        {
+            string filterDate = txtDate.Text.Trim();
+
+            if (DateTime.TryParseExact(filterDate, "yyyy-MM", null, System.Globalization.DateTimeStyles.None, out DateTime date))
+            {
+                DataTable dt = (DataTable)ViewState["DataTable"];
+                DataView dv = new DataView(dt);
+
+                // Format the filter to match the month and year
+                dv.RowFilter = $"dates >= '{date.ToString("yyyy-MM-01")}' AND dates < '{date.AddMonths(1).ToString("yyyy-MM-01")}'";
+
+                if (dv.Count > 0)
+                {
+                    GridViewStrength.DataSource = dv;
+                    GridViewStrength.DataBind();
+                    GridViewStrength.Visible = true;
+                }
+                else
+                {
+                    lblStatus.Text = "No data found for the selected date.";
+                    GridViewStrength.Visible = false;
+                }
+            }
+            else
+            {
+                lblStatus.Text = "Invalid date format. Please enter a valid date in yyyy-MM format.";
+            }
+        }
+
+        protected void btnAction_Click(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            string commandName = btn.CommandName;
+            int id = Convert.ToInt32(btn.CommandArgument);
+
+            if (commandName == "DeleteRecord")
+            {
+                DeleteRecord(id);
+            }
+            else if (commandName == "ApproveRecord")
+            {
+                ApproveRecord(id);
+            }
+
+            // Rebind the GridView after the action
+            BindGridView();
+            BindTotalGridView((DataTable)ViewState["DataTable"]);
+        }
+
+        private void DeleteRecord(int id)
+        {
+            try
+            {
+                string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand("DELETE FROM Strength WHERE Id = @Id", conn);
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = "Error deleting record: " + ex.Message;
+            }
+        }
+
+        private void ApproveRecord(int id)
+        {
+            try
+            {
+                string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand("UPDATE Strength SET IsApproved = 1 WHERE Id = @Id", conn);
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = "Error approving record: " + ex.Message;
+            }
+        }
+
+        protected bool IsRegulatingOfficer()
+        {
+            // Check if Session["Role"] exists and equals "Regulating Officer"
+            if (Session["Role"] != null && Session["Role"].ToString() == "Regulating Officer")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
     }
 }
