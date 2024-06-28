@@ -5,6 +5,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>User Registration</title>
+    <script type="text/javascript">
+        function showAlert(message) {
+            alert(message);
+        }
+    </script>
     <style>
         :root {
             --primary-color: #3498db;
@@ -145,22 +150,28 @@
             <asp:TextBox ID="Name" runat="server" placeholder="Enter your name" required></asp:TextBox>
         </div>
         <div>
+
             <label for="ddlRank">Rank</label>
             <asp:DropDownList ID="Rank" runat="server" Width="100%">
-                <asp:ListItem>Cmde</asp:ListItem>
-                <asp:ListItem>Capt</asp:ListItem>
-                <asp:ListItem>Cdr</asp:ListItem>
-                <asp:ListItem>Lt Cdr</asp:ListItem>
-                <asp:ListItem>Lt</asp:ListItem>
-                <asp:ListItem>Slt</asp:ListItem>
-                <asp:ListItem>MC</asp:ListItem>
-                <asp:ListItem>Chief</asp:ListItem>
-                <asp:ListItem>Sailor</asp:ListItem>
+                <asp:ListItem>Select</asp:ListItem>
+                <asp:ListItem>CMDE</asp:ListItem>
+                <asp:ListItem>CAPT</asp:ListItem>
+                <asp:ListItem>CDR</asp:ListItem>
+                <asp:ListItem>LT CDR</asp:ListItem>
+                <asp:ListItem>LT</asp:ListItem>
+                <asp:ListItem>SLT</asp:ListItem>
+                <asp:ListItem>MCPO I</asp:ListItem>
+                <asp:ListItem>MCPO II</asp:ListItem>
+                <asp:ListItem>CPO</asp:ListItem>
+                <asp:ListItem>PO</asp:ListItem>
+                <asp:ListItem>LEADING SEAMAN</asp:ListItem>
+                <asp:ListItem>SEA I</asp:ListItem>
+                <asp:ListItem>SEA II</asp:ListItem>
             </asp:DropDownList>
         </div>
         <div>
             <label for="txtDesignation">Designation</label>
-            <asp:TextBox ID="Designation" runat="server" placeholder="Enter your designation" MaxLength="10" required></asp:TextBox>
+            <asp:TextBox ID="Designation" runat="server" placeholder="Enter your designation" MaxLength="30" required></asp:TextBox>
         </div>
         <div>
             <label for="txtNudID">NUD ID</label>
@@ -186,6 +197,8 @@
                 <asp:ListItem Text="Logistic Officer"></asp:ListItem>
                 <asp:ListItem Text="Accounting Officer"></asp:ListItem>
                 <asp:ListItem Text="Store Keeper"></asp:ListItem>
+                <asp:ListItem Text="Regulating Officer"></asp:ListItem>
+                <asp:ListItem Text="Regulating Office"></asp:ListItem>
             </asp:DropDownList>
         </div>
         <div>
@@ -209,6 +222,7 @@
             <asp:Label ID="Label1" runat="server" Text="Label" Visible="False"></asp:Label>
             <a href="LOGIN.aspx" class="register-link">Back to Login Page</a>
         </div>
+
     </form>
 
     <script>

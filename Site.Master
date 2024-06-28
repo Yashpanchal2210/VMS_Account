@@ -174,6 +174,16 @@
                     font-size: 18px;
                 }
         }
+
+        .dropdown-submenu {
+            position: relative;
+        }
+
+            .dropdown-submenu .dropdown-menu {
+                top: 0;
+                left: 100%;
+                margin-top: -1px;
+            }
     </style>
 </head>
 <body>
@@ -181,20 +191,28 @@
         <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>
         <a href="Dashboard.aspx">Home</a>
         <button class="dropdown-btn">
-            Modules <i class="fa fa-caret-down"></i>
+            Victualling Account Creation <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-container">
-            <a href="IssueMaster.aspx">Issue Master</a>
+            <a href="ReportsGenerate.aspx">View Strength</a>
+            <a href="RationScale.aspx">Rate</a>
             <a href="ItemReceipt.aspx">Item Receipt</a>
+            <a href="IssueMaster.aspx">Issue Master</a>
+
             <a href="ItemMaster.aspx">Ration Scale</a>
-            <a href="RationScale.aspx">Item Rate</a>
-            <a href="Strength.aspx">Strength</a>
+
+
             <% if (IsUserLoggedIn() && IsUserInRole("Admin"))
                 { %>
             <a href="AddBasicandLieuItems.aspx">Add Items</a>
             <% } %>
+            <% if (IsUserLoggedIn() && IsUserInRole("Regulating Officer"))
+                { %>
+            <a href="Strength.aspx">Update Strength</a>
+            <a href="ReportsGenerate.aspx">View Strength</a>
+            <% } %>
         </div>
-        <% if (IsUserLoggedIn() && !IsUserInRole("Admin"))
+        <% if (IsUserLoggedIn() && !IsUserInRole("Admin") && !IsUserInRole("Regulating Officer"))
             { %>
         <button class="dropdown-btn">
             Extra Issue <i class="fa fa-caret-down"></i>
@@ -212,13 +230,14 @@
             <a href="Wastage.aspx">Wastage</a>
         </div>
         <% } %>
+        <a class="btn dropdown-btn" href="VictuallingManagement.aspx">View Reports</a>
         <button class="dropdown-btn">
             Generate Report<i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-container">
             <a href="Page01.aspx">Page1</a>
-            <a href="OfficerWorksheet.aspx">Officer Worksheet</a>
-            <a href="SailorWorksheet.aspx">Sailor Worksheet</a>
+            <a href="OfficerVAcc.aspx">Officer Worksheet</a>
+            <a href="SailorsVAcc.aspx">Sailor Worksheet</a>
             <a href="Page2_7Report.aspx">Page2-7</a>
             <a href="Page08.aspx">Page 08</a>
             <a href="ExtraIssue.aspx">Extra Issue(Page9)</a>
@@ -233,8 +252,19 @@
             <a href="Overdrawal.aspx">OverDrawal</a>
             <%--<a href="VictuallingManagement.aspx">Victualling Account Reports</a>--%>
         </div>
-        <a class="btn dropdown-btn" href="VictuallingManagement.aspx">Victualling Account Reports</a>
 
+        <% if (IsUserLoggedIn() && IsUserInRole("Regulating Officer") && !IsUserInRole(""))
+            { %>
+        <button class="dropdown-btn">
+            Strength <i class="fa fa-caret-down"></i>
+        </button>
+
+        <div class="dropdown-container">
+
+            <a href="Strength.aspx">Update Strength</a>
+            <a href="ReportsGenerate.aspx">View Strength</a>
+        </div>
+        <% } %>
         <% if (IsUserLoggedIn() && IsUserInRole("Admin"))
             { %>
         <button class="dropdown-btn">
@@ -245,6 +275,8 @@
             <a href="UnapprovedUsers.aspx">Approve Users</a>
         </div>
         <% } %>
+
+
 
         <a href="UserUpdate.aspx" runat="server">Reset Password</a>
         <a href="~/LOGIN.aspx?m=logout" runat="server">Logout</a>
@@ -265,37 +297,58 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <% if (IsUserLoggedIn() && IsUserInRole("Admin") && !IsUserInRole("Commanding Officer"))
+                <% if (IsUserLoggedIn() && IsUserInRole("Regulating Officer") && !IsUserInRole(""))
+                    { %>
+                <ul class="navbar-nav">
+                    <a class="nav-link text-white dark-theme-text font-weight-bold" href="Strength.aspx" role="button" aria-expanded="false">Update Strength
+                    </a>
+                    <a class="nav-link text-white dark-theme-text font-weight-bold" href="ReportsGenerate.aspx" role="button" aria-expanded="false">View Strength
+                    </a>
+                    <%--<a class="dropdown-item" href="AddBasicandLieuItems.aspx">Add Items</a>--%>
+                </ul>
+
+                <% } %>
+                <% if (IsUserLoggedIn() && !IsUserInRole("Regulating Officer") && !IsUserInRole(""))
+                    { %>
+                <ul class="navbar-nav">
+
+                    <a class="nav-link text-white dark-theme-text font-weight-bold" href="ReportsGenerate.aspx" role="button" aria-expanded="false">View Strength
+                    </a>
+                    <%--<a class="dropdown-item" href="AddBasicandLieuItems.aspx">Add Items</a>--%>
+                </ul>
+
+                <% } %>
+
+                <% if (IsUserLoggedIn() && IsUserInRole("Admin") && !IsUserInRole("Commanding Officer") && !IsUserInRole("Regulating Officer"))
                     { %>
                 <ul class="navbar-nav">
                     <a class="nav-link text-white dark-theme-text font-weight-bold" href="AddBasicandLieuItems.aspx" role="button" aria-expanded="false">Add Items
-</a>
+                    </a>
                     <%--<a class="dropdown-item" href="AddBasicandLieuItems.aspx">Add Items</a>--%>
                 </ul>
                 <% } %>
-                <% if (IsUserLoggedIn() && IsUserInRole("Admin") && !IsUserInRole("Commanding Officer"))
+                <% if (IsUserLoggedIn() && IsUserInRole("Admin") && !IsUserInRole("Commanding Officer") && !IsUserInRole("Regulating Officer"))
                     { %>
                 <ul class="navbar-nav">
                     <a class="nav-link text-white dark-theme-text font-weight-bold" href="ItemMaster.aspx" role="button" aria-expanded="false">Ration Scale
-</a>
+                    </a>
                     <%--<a class="dropdown-item" href="AddBasicandLieuItems.aspx">Add Items</a>--%>
                 </ul>
                 <% } %>
-                <% if (IsUserLoggedIn() && !IsUserInRole("Admin") && !IsUserInRole("Commanding Officer"))
+                <% if (IsUserLoggedIn() && !IsUserInRole("Admin") && !IsUserInRole("Commanding Officer") && !IsUserInRole("Regulating Officer"))
                     { %>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Modules
+                        <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Victualling Account Creation
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="IssueMaster.aspx">Issue Master</a>
+                            <a class="dropdown-item" href="ReportsGenerate.aspx">View Strength</a>
                             <a class="dropdown-item" href="ItemReceipt.aspx">Item Receipt</a>
+                            <a class="dropdown-item" href="IssueMaster.aspx">Issue Master</a>
                             <% if (IsUserLoggedIn() && IsUserInRole("Admin"))
                                 { %>
                             <a class="dropdown-item" href="ItemMaster.aspx">Ration Scale</a>
                             <% } %>
-                            <a class="dropdown-item" href="RationScale.aspx">Item Rate</a>
-                            <a class="dropdown-item" href="Strength.aspx">Strength</a>
                             <% if (IsUserLoggedIn() && IsUserInRole("Admin"))
                                 { %>
                             <a class="dropdown-item" href="AddBasicandLieuItems.aspx">Add Items</a>
@@ -303,13 +356,17 @@
                         </div>
                     </li>
                 </ul>
+                <a class="nav-link text-white dark-theme-text font-weight-bold" href="RationScale.aspx" role="button" aria-haspopup="true" aria-expanded="false">Item Rate
+                </a>
                 <% } %>
-                <% if (IsUserLoggedIn() && !IsUserInRole("Admin") && !IsUserInRole("Commanding Officer"))
+                <% if (IsUserLoggedIn() && !IsUserInRole("Admin") && !IsUserInRole("Commanding Officer") && !IsUserInRole("Regulating Officer"))
                     { %>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Extra Issue
                         </a>
+                    </li>
+                    <li class="nav-item dropdown">
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="Divers_ExtraIssue.aspx">Divers</a>
                             <a class="dropdown-item" href="PestControl_ExtraIssue.aspx">Pest Control</a>
@@ -323,9 +380,10 @@
                             <a class="dropdown-item" href="Wastage.aspx">Wastage</a>
                         </div>
                     </li>
+                    <a class="nav-link text-white dark-theme-text font-weight-bold" href="VictuallingManagement.aspx" role="button" aria-haspopup="true" aria-expanded="false">View Reports</a>
                 </ul>
                 <% } %>
-                <% if (IsUserLoggedIn() && !IsUserInRole("Admin") && !IsUserInRole("Commanding Officer"))
+                <% if (IsUserLoggedIn() && !IsUserInRole("Regulating Officer") && !IsUserInRole("Admin") && !IsUserInRole("Commanding Officer"))
                     { %>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
@@ -333,8 +391,8 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="Page01.aspx">Page1</a>
-                            <a class="dropdown-item" href="OfficerWorksheet.aspx">Officer Worksheet</a>
-                            <a class="dropdown-item" href="SailorWorksheet.aspx">Sailor Worksheet</a>
+                            <a class="dropdown-item" href="OfficerVAcc.aspx">Officer Worksheet</a>
+                            <a class="dropdown-item" href="SailorsVAcc.aspx">Sailor Worksheet</a>
                             <a class="dropdown-item" href="Page2_7Report.aspx">Page2-7</a>
                             <a class="dropdown-item" href="Page08.aspx">Page 08</a>
                             <a class="dropdown-item" href="ExtraIssue.aspx">Extra Issue(Page9)</a>
@@ -353,12 +411,10 @@
                 </ul>
 
                 <% } %>
-                <a class="nav-link text-white dark-theme-text font-weight-bold" href="VictuallingManagement.aspx" role="button" aria-haspopup="true" aria-expanded="false">Victualling Account Reports</a>
-                <%
-                    if (IsUserLoggedIn() && IsUserInRole("Admin") && !IsUserInRole("Commanding Officer"))
-                    {
-                %>
-                <ul class="navbar-nav">
+                &nbsp;<%
+                          if (IsUserLoggedIn() && IsUserInRole("Admin") && !IsUserInRole("Commanding Officer") && !IsUserInRole("Regulating Officer"))
+                          {
+                %><ul class="navbar-nav">
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle dark-theme-text text-white font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User</a>

@@ -32,80 +32,80 @@ namespace VMS_1
 
             if (!IsPostBack)
             {
-                bool hasData = !string.IsNullOrEmpty(HTMLContentLiteralP2.Text);
-                if (hasData)
-                {
-                    // Determine which buttons to show based on the role (assuming role logic from previous example)
-                    string role = Session["Role"] as string;
+                //bool hasData = !string.IsNullOrEmpty(HTMLContentLiteralP2.Text);
+                //if (hasData)
+                //{
+                //    // Determine which buttons to show based on the role (assuming role logic from previous example)
+                //    string role = Session["Role"] as string;
 
-                    if (role == "Store Keeper")
-                    {
-                        btnSendToLogistic.Visible = true;
-                    }
-                    else if (role == "Logistic Officer")
-                    {
-                        btnApprove1.Visible = true;
-                        btnReject1.Visible = true;
-                    }
-                    else if (role == "Commanding Officer")
-                    {
-                        btnApprove2.Visible = true;
-                        btnReject2.Visible = true;
-                    }
-                    // else handle other roles or default visibility as needed
-                }
+                //    if (role == "Store Keeper")
+                //    {
+                //        btnSendToLogistic.Visible = true;
+                //    }
+                //    else if (role == "Logistic Officer")
+                //    {
+                //        btnApprove1.Visible = true;
+                //        btnReject1.Visible = true;
+                //    }
+                //    else if (role == "Commanding Officer")
+                //    {
+                //        btnApprove2.Visible = true;
+                //        btnReject2.Visible = true;
+                //    }
+                //    // else handle other roles or default visibility as needed
+                //}
             }
         }
 
-        //protected void SendToLogoButton_Click()
-        //{
-        //    UpdateSendToLogo();
-        //}
+        protected void SendToLogoButton_Click()
+        {
+            UpdateSendToLogo();
+        }
 
-        //private void UpdateSendToLogo()
-        //{
-        //    try
-        //    {
-        //        using (SqlConnection connection = new SqlConnection(connStr))
-        //        {
-        //            connection.Open();
-        //            var getMonth = DateTime.Now.Month;
-        //            var getYear = DateTime.Now.Year;
-        //            var getDay = DateTime.Now.Day;
+        private void UpdateSendToLogo()
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connStr))
+                {
+                    connection.Open();
+                    var getMonth = DateTime.Now.Month;
+                    var getYear = DateTime.Now.Year;
+                    var getDay = DateTime.Now.Day;
 
-        //            string reportno = Convert.ToString(getYear + getYear + getDay);
+                    string reportno = Convert.ToString(getYear + getYear + getDay);
 
-        //            string updateQuery = "INSERT INTO ApproveVMS (SK, SktoLogo, Logo, LogoReject, LogoApprove, LogotoCo, Co, CoReject, CoApprove, IsApproved, ReportNumber) VALUES (@SK, @SktoLogo, @Logo, @LogoReject, @LogoApprove, @LogotoCo, @Co, @CoReject, @CoApprove, @IsApproved, @ReportNumber)"; // Add your update query
-        //            string getReportNumber = "Select ReportNumber from ApproveVMS";
-        //            using (SqlCommand command = new SqlCommand(updateQuery, connection))
-        //            {
-        //                command.Parameters.AddWithValue("@SK", 0);
-        //                command.Parameters.AddWithValue("@SktoLogo", 1);
-        //                command.Parameters.AddWithValue("@Logo", 1);
-        //                command.Parameters.AddWithValue("@LogoReject", 0);
-        //                command.Parameters.AddWithValue("@LogoApprove", 0);
-        //                command.Parameters.AddWithValue("@LogotoCo", 0);
-        //                command.Parameters.AddWithValue("@Co", 0);
-        //                command.Parameters.AddWithValue("@CoReject", 0);
-        //                command.Parameters.AddWithValue("@CoApprove", 0);
-        //                command.Parameters.AddWithValue("@IsApproved", 0);
-        //                command.Parameters.AddWithValue("@ReportNumber", reportno);
+                    string updateQuery = "INSERT INTO ApproveVMS (SK, SktoLogo, Logo, LogoReject, LogoApprove, LogotoCo, Co, CoReject, CoApprove, IsApproved, ReportNumber) VALUES (@SK, @SktoLogo, @Logo, @LogoReject, @LogoApprove, @LogotoCo, @Co, @CoReject, @CoApprove, @IsApproved, @ReportNumber)"; // Add your update query
+                    string getReportNumber = "Select ReportNumber from ApproveVMS";
+                    using (SqlCommand command = new SqlCommand(updateQuery, connection))
+                    {
+                        command.Parameters.AddWithValue("@SK", 0);
+                        command.Parameters.AddWithValue("@SktoLogo", 1);
+                        command.Parameters.AddWithValue("@Logo", 1);
+                        command.Parameters.AddWithValue("@LogoReject", 0);
+                        command.Parameters.AddWithValue("@LogoApprove", 0);
+                        command.Parameters.AddWithValue("@LogotoCo", 0);
+                        command.Parameters.AddWithValue("@Co", 0);
+                        command.Parameters.AddWithValue("@CoReject", 0);
+                        command.Parameters.AddWithValue("@CoApprove", 0);
+                        command.Parameters.AddWithValue("@IsApproved", 0);
+                        command.Parameters.AddWithValue("@ReportNumber", reportno);
 
-        //                // Execute the insert query
-        //                int rowsAffected = command.ExecuteNonQuery();
+                        // Execute the insert query
+                        int rowsAffected = command.ExecuteNonQuery();
 
-        //                if (rowsAffected > 0)
-        //                {
-        //                    lblMessage.Text = "Report has been forwarded to Logistic officer";
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw; // Rethrow exception or handle as needed
-        //    }
-        //}
+                        if (rowsAffected > 0)
+                        {
+                            //lblMessage.Text = "Report has been forwarded to Logistic officer";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw; // Rethrow exception or handle as needed
+            }
+        }
 
         protected void GenerateHTMLViewButton_Click(object sender, EventArgs e)
         {
@@ -163,31 +163,33 @@ namespace VMS_1
             HTMLContentLiteralP2.Text = htmlBuilder.ToString();
             GenerateHTMLViewP18(selectedDateP27);
             GenerateHTMLViewP8();
-            //GenerateHTMLViewP2_7(selectedDateP27);
+            GenerateHTMLViewP2_7(selectedDateP27);
+            GenerateHTMLViewSailorWorksheet(selectedDateP27);
+            GenerateHTMLViewOfficerWorksheet(selectedDateP27);
             //BindData(selectedDateP27);
 
-            bool hasData = !string.IsNullOrEmpty(HTMLContentLiteralP2.Text);
-            if (hasData)
-            {
-                // Determine which buttons to show based on the role (assuming role logic from previous example)
-                string role = Session["Role"] as string;
+            //bool hasData = !string.IsNullOrEmpty(HTMLContentLiteralP2.Text);
+            //if (hasData)
+            //{
+            //    // Determine which buttons to show based on the role (assuming role logic from previous example)
+            //    string role = Session["Role"] as string;
 
-                if (role == "Store Keeper")
-                {
-                    btnSendToLogistic.Visible = true;
-                }
-                else if (role == "Logistic Officer")
-                {
-                    btnApprove1.Visible = true;
-                    btnReject1.Visible = true;
-                }
-                else if (role == "Commanding Officer")
-                {
-                    btnApprove2.Visible = true;
-                    btnReject2.Visible = true;
-                }
-                // else handle other roles or default visibility as needed
-            }
+            //    if (role == "Store Keeper")
+            //    {
+            //        btnSendToLogistic.Visible = true;
+            //    }
+            //    else if (role == "Logistic Officer")
+            //    {
+            //        btnApprove1.Visible = true;
+            //        btnReject1.Visible = true;
+            //    }
+            //    else if (role == "Commanding Officer")
+            //    {
+            //        btnApprove2.Visible = true;
+            //        btnReject2.Visible = true;
+            //    }
+            //    // else handle other roles or default visibility as needed
+            //}
         }
 
 
@@ -403,7 +405,7 @@ namespace VMS_1
                 bool matchFound = false;
                 foreach (DataRow sailorRow in SailorIssueData.Rows)
                 {
-                    if (row["InLieuItem"].Equals(sailorRow["itemnames"]))
+                    if (row["InLieuItem"].Equals(sailorRow["ItemName"]))
                     {
                         htmlTables += $"<th>{sailorRow["QtyIssued"]}</th>";
                         matchFound = true;
@@ -429,7 +431,7 @@ namespace VMS_1
                 bool matchFound = false;
                 foreach (DataRow officerIssue in officerIssueData.Rows)
                 {
-                    if (row["InLieuItem"].Equals(officerIssue["itemnames"]))
+                    if (row["InLieuItem"].Equals(officerIssue["ItemName"]))
                     {
                         htmlTables += $"<th>{officerIssue["QtyIssued"]}</th>";
                         matchFound = true;
@@ -595,14 +597,14 @@ namespace VMS_1
                 decimal totalIssue = 0;
                 foreach (DataRow row in SailorIssueData.Rows)
                 {
-                    if (row["itemnames"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
                     {
                         totalIssue += Convert.ToDecimal(row["QtyIssued"]);
                     }
                 }
                 foreach (DataRow row in officerIssueData.Rows)
                 {
-                    if (row["itemnames"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
                     {
                         totalIssue += Convert.ToDecimal(row["QtyIssued"]);
                     }
@@ -663,14 +665,14 @@ namespace VMS_1
                 decimal total = 0, totalReceipt = 0;
                 foreach (DataRow row in SailorIssueData.Rows)
                 {
-                    if (row["itemnames"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
                     {
                         total += Convert.ToDecimal(row["QtyIssued"]);
                     }
                 }
                 foreach (DataRow row in officerIssueData.Rows)
                 {
-                    if (row["itemnames"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
                     {
                         total += Convert.ToDecimal(row["QtyIssued"]);
                     }
@@ -749,14 +751,14 @@ namespace VMS_1
                 decimal total = 0; decimal totalReceipt = 0;
                 foreach (DataRow row in SailorIssueData.Rows)
                 {
-                    if (row["itemnames"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
                     {
                         total += Convert.ToDecimal(row["QtyIssued"]);
                     }
                 }
                 foreach (DataRow row in officerIssueData.Rows)
                 {
-                    if (row["itemnames"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
+                    if (row["ItemName"].ToString() == inLieuItemsTable.Rows[i]["InLieuItem"].ToString())
                     {
                         total += Convert.ToDecimal(row["QtyIssued"]);
                     }
@@ -845,7 +847,7 @@ namespace VMS_1
             htmlTables += "</table></div>";
 
             // Assign the generated HTML to the container
-            //tablesContainerPage2to7.InnerHtml = htmlTables;
+            tablesContainerPage2to7.InnerHtml = htmlTables;
 
 
             //tablesContainerPage2to7.InnerHtml = htmlTables;
@@ -1081,11 +1083,7 @@ namespace VMS_1
 
         #endregion 
 
-        protected void ExportToExcelButton_Click(object sender, EventArgs e)
-        {
-
-        }
-
+        #region Page 8
         protected void GenerateHTMLViewP8()
         {
             StringBuilder htmlBuilder = new StringBuilder();
@@ -1187,7 +1185,9 @@ namespace VMS_1
             // Render the HTML content on the frontend
             HTMLContentLiteralP8.Text = htmlBuilder.ToString();
         }
+        #endregion
 
+        #region Page18
         protected void GenerateHTMLViewP18(string[] selectedDate)
         {
             string monthYear = monthYearPicker.Value;
@@ -1246,6 +1246,503 @@ namespace VMS_1
             // Render the HTML content on the frontend
             HTMLContentLiteralP14.Text = htmlBuilder.ToString();
         }
+        #endregion
+
+        #region Sailor
+
+        private DataTable GetSailorGENData(string[] selectedDate)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT SUM(vegSailor)vegSailor,SUM(nonVegSailor)nonVegSailor,(SUM(vegSailor)+SUM(nonVegSailor)) Total FROM [dbo].[strength]  Where MONTH(Dates) = @Month AND YEAR(Dates) = @Year GROUP BY Month(Dates)", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Month", selectedDate[1]);
+                    cmd.Parameters.AddWithValue("@Year", selectedDate[0]);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+        private DataTable GetSailorRikData(string[] selectedDate)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT SUM(vegSailorRik)vegSailorRik,SUM(nonVegSailorRik)nonVegSailorRik,(SUM(vegSailorRik)+SUM(nonVegSailorRik)) Total FROM [dbo].[strength]  Where MONTH(Dates) = @Month AND YEAR(Dates) = @Year GROUP BY Month(Dates)", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Month", selectedDate[1]);
+                    cmd.Parameters.AddWithValue("@Year", selectedDate[0]);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+        private DataTable GetSailorEntitledData(string[] selectedDate)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT SUM(vegNonEntitledSailor)vegNonEntitledSailor,SUM(NonVegNonEntitledSailor)NonVegNonEntitledSailor,(SUM(vegNonEntitledSailor)+SUM(NonVegNonEntitledSailor)) Total FROM [dbo].[strength]  Where MONTH(Dates) = @Month AND YEAR(Dates) = @Year GROUP BY Month(Dates)", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Month", selectedDate[1]);
+                    cmd.Parameters.AddWithValue("@Year", selectedDate[0]);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+
+        private DataTable GetSailorTotalData(string[] selectedDate)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT (SUM(vegSailor)+SUM(vegSailorRik)+SUM(vegNonEntitledOfficer))TotalNonVeg, (SUM(nonVegSailor) + SUM(nonVegSailorRik) + SUM(nonVegNonEntitledOfficer))TotalVeg,(SUM(vegSailor) + SUM(vegSailorRik) + SUM(vegNonEntitledOfficer) + SUM(nonVegSailor) + SUM(nonVegSailorRik) + SUM(nonVegNonEntitledOfficer))Total  FROM[dbo].[strength]  Where MONTH(Dates) = @Month AND YEAR(Dates) = @Year GROUP BY Month(Dates)", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Month", selectedDate[1]);
+                    cmd.Parameters.AddWithValue("@Year", selectedDate[0]);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+
+        private DataTable GetSailorBasicItemsData()
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("select * from BasicItems WHERE Category='Officer'", conn))
+                {
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+        private DataTable GetSailorInLieuItemsData(int BasicItemId)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("select * from InLieuItems WHERE Category='Officer' AND BasicItemId=@BasicItemId", conn))
+                {
+                    cmd.Parameters.AddWithValue("@BasicItemId", BasicItemId);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+        private DataTable GetSailorIssueItemsData(int BasicItemId)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT IM.ItemName,SUM(convert(decimal,IM.QtyIssued))QtyIssued FROM IssueMaster IM INNER JOIN InLieuItems INL ON  IM.ItemId=INL.Id WHERE INL.BasicItemId=@BasicItemId AND IM.Role='Wardroom' GROUP BY month(IM.Date),IM.ItemName", conn))
+                {
+                    cmd.Parameters.AddWithValue("@BasicItemId", BasicItemId);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+
+        protected void GenerateHTMLViewSailorWorksheet(string[] selectedDate)
+        {
+
+            // Generate HTML tables
+            string htmlTables = "<div class='table-container' style='overflow-x: auto; display: flex; flex-wrap: nowrap;'>";
+            htmlTables += "<table border='1' width='100%' style='text-align:center; margin-right:10px;'>";
+
+            // Row for InLieuItem
+            htmlTables += "<tr><th></th><th></th><th>'S'</th><th></th><th>'V'</th><th></th><th> Total</th><th></th><th></th>"; // Added two empty headers for the first two columns
+            htmlTables += "</tr>";
+            htmlTables += "<tr>";
+            DataTable OfficerGEN = GetSailorGENData(selectedDate);
+            if (OfficerGEN.Rows.Count > 0)
+            {
+                htmlTables += "<th></th><th>GEN</th><th>" + OfficerGEN.Rows[0]["nonVegSailor"] + "</th><th></th><th>" + OfficerGEN.Rows[0]["vegSailor"] + "</th><th></th><th>" + OfficerGEN.Rows[0]["Total"] + "</th><th></th><th></th>";
+            }
+            else
+            {
+                htmlTables += "<th></th><th>GEN</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>";
+            }
+            htmlTables += "</tr>";
+            htmlTables += "<tr>";
+            DataTable OfficerRik = GetSailorRikData(selectedDate);
+            if (OfficerRik.Rows.Count > 0)
+            {
+                htmlTables += "<th></th><th>RIK + HON. OFFICER</th><th>" + OfficerRik.Rows[0]["nonVegSailorRik"] + "</th><th></th><th>" + OfficerRik.Rows[0]["vegSailorRik"] + "</th><th></th><th>" + OfficerRik.Rows[0]["Total"] + "</th><th></th><th></th>";
+            }
+            else
+            {
+                htmlTables += "<th></th><th>RIK + HON. OFFICER</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>";
+            }
+            htmlTables += "</tr>";
+
+            htmlTables += "<tr>";
+            DataTable OfficerEnti = GetSailorEntitledData(selectedDate);
+            if (OfficerRik.Rows.Count > 0)
+            {
+                htmlTables += "<th></th><th>NON ENTITLED MESSING</th><th>" + OfficerEnti.Rows[0]["NonVegNonEntitledSailor"] + "</th><th></th><th>" + OfficerEnti.Rows[0]["vegNonEntitledSailor"] + "</th><th></th><th>" + OfficerEnti.Rows[0]["Total"] + "</th><th></th><th></th>";
+            }
+            else
+            {
+                htmlTables += "<th></th><th>NON ENTITLED MESSING</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>";
+            }
+            htmlTables += "</tr>";
+
+            htmlTables += "<tr>";
+            DataTable OfficerTotal = GetSailorTotalData(selectedDate);
+            if (OfficerRik.Rows.Count > 0)
+            {
+                htmlTables += "<th></th><th>Total</th><th>" + OfficerTotal.Rows[0]["TotalNonVeg"] + "</th><th></th><th>" + OfficerTotal.Rows[0]["TotalVeg"] + "</th><th></th><th>" + OfficerTotal.Rows[0]["Total"] + "</th><th></th><th></th>";
+            }
+            else
+            {
+                htmlTables += "<th></th><th>Total</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>";
+            }
+            htmlTables += "</tr>";
+
+            htmlTables += "<tr><th>Ser.</th><th>Item</th><th>Strength</th><th></th><th>Scale</th><th></th><th>Qty Entitled</th><th></th><th>Qty Issued</th>";
+            htmlTables += "</tr>";
+
+            DataTable OfficeBasicItems = GetSailorBasicItemsData();
+            int srno = 1;
+            foreach (DataRow item in OfficeBasicItems.Rows)
+            {
+                htmlTables += "<tr>";
+                htmlTables += $"<td>{srno}</td>";
+                htmlTables += $"<td>{item["BasicItem"]}</td>";
+                htmlTables += $"<td>{OfficerTotal.Rows[0]["Total"]}</td>";
+                htmlTables += $"<td>x</td>";
+                htmlTables += $"<td>{item["VegScale"]}</td>";
+                htmlTables += $"<td>=</td>";
+                htmlTables += $"<td>{Convert.ToDecimal(OfficerTotal.Rows[0]["Total"]) * Convert.ToDecimal(item["VegScale"])}</td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += "</tr>";
+                DataTable OfficeInLieuItems = GetSailorInLieuItemsData(Convert.ToInt32(item["Id"]));
+                foreach (DataRow itemIn in OfficeInLieuItems.Rows)
+                {
+                    htmlTables += "<tr>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td>{itemIn["InLieuItem"]}</td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td>=</td>";
+                    htmlTables += $"<td>{0.00}</td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += "</tr>";
+                }
+                //row=15;
+                htmlTables += "<tr>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td>Total</td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td>=</td>";
+                htmlTables += $"<td>{Convert.ToDecimal(OfficerTotal.Rows[0]["Total"]) * Convert.ToDecimal(item["VegScale"])}</td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += "</tr>";
+
+                DataTable OfficeIssueItems = GetSailorIssueItemsData(Convert.ToInt32(item["Id"]));
+                decimal TotalQtyIssued = 0M;
+                foreach (DataRow itemIn in OfficeIssueItems.Rows)
+                {
+                    htmlTables += "<tr>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td>{itemIn["ItemName"]}</td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td>=</td>";
+                    htmlTables += $"<td>{itemIn["QtyIssued"]}</td>";
+                    htmlTables += "</tr>";
+                }
+                htmlTables += "<tr>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td>Total</td>";
+                htmlTables += $"<td>{TotalQtyIssued}</td>";
+                htmlTables += "</tr>";
+                srno++;
+            }
+
+            htmlTables += "</table></div>";
+
+            // Assign the generated HTML to the container
+            tablesContainerPageSailorWorksheet.InnerHtml = htmlTables;
+
+        }
+
+        #endregion
+
+        #region Officer
+
+        private DataTable GetOfficerGENData(string[] selectedDate)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT SUM(vegOfficers)vegOfficers,SUM(nonVegOfficers)nonVegOfficers,(SUM(vegOfficers)+SUM(nonVegOfficers)) Total FROM [dbo].[strength]  Where MONTH(Dates) = @Month AND YEAR(Dates) = @Year GROUP BY Month(Dates)", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Month", selectedDate[1]);
+                    cmd.Parameters.AddWithValue("@Year", selectedDate[0]);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+        private DataTable GetOfficerRikData(string[] selectedDate)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT SUM(vegrikOfficers)vegrikOfficers,SUM(nonVegrikOfficers)nonVegrikOfficers,(SUM(vegrikOfficers)+SUM(nonVegrikOfficers)) Total FROM [dbo].[strength]  Where MONTH(Dates) = @Month AND YEAR(Dates) = @Year GROUP BY Month(Dates)", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Month", selectedDate[1]);
+                    cmd.Parameters.AddWithValue("@Year", selectedDate[0]);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+        private DataTable GetOfficerEntitledData(string[] selectedDate)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT SUM(vegNonEntitledOfficer)vegNonEntitledOfficer,SUM(nonVegNonEntitledOfficer)nonVegNonEntitledOfficer,(SUM(vegNonEntitledOfficer)+SUM(nonVegNonEntitledOfficer)) Total FROM [dbo].[strength]  Where MONTH(Dates) = @Month AND YEAR(Dates) = @Year GROUP BY Month(Dates)", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Month", selectedDate[1]);
+                    cmd.Parameters.AddWithValue("@Year", selectedDate[0]);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+
+        private DataTable GetOfficeTotalData(string[] selectedDate)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT (SUM(vegOfficers)+SUM(vegrikOfficers)+SUM(vegNonEntitledOfficer))TotalNonVeg, (SUM(nonVegOfficers) + SUM(nonVegrikOfficers) + SUM(nonVegNonEntitledOfficer))TotalVeg,(SUM(vegOfficers) + SUM(vegrikOfficers) + SUM(vegNonEntitledOfficer) + SUM(nonVegOfficers) + SUM(nonVegrikOfficers) + SUM(nonVegNonEntitledOfficer))Total  FROM[dbo].[strength]  Where MONTH(Dates) = @Month AND YEAR(Dates) = @Year GROUP BY Month(Dates)", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Month", selectedDate[1]);
+                    cmd.Parameters.AddWithValue("@Year", selectedDate[0]);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+
+        private DataTable GetOfficeBasicItemsData()
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("select * from BasicItems WHERE Category='Officer'", conn))
+                {
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+        private DataTable GetOfficeInLieuItemsData(int BasicItemId)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("select * from InLieuItems WHERE Category='Officer' AND BasicItemId=@BasicItemId", conn))
+                {
+                    cmd.Parameters.AddWithValue("@BasicItemId", BasicItemId);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+        private DataTable GetOfficeIssueItemsData(int BasicItemId)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT IM.ItemName,SUM(convert(decimal,IM.QtyIssued))QtyIssued FROM IssueMaster IM INNER JOIN InLieuItems INL ON  IM.ItemId=INL.Id WHERE INL.BasicItemId=@BasicItemId AND IM.Role='Wardroom' GROUP BY month(IM.Date),IM.ItemName", conn))
+                {
+                    cmd.Parameters.AddWithValue("@BasicItemId", BasicItemId);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+
+        protected void GenerateHTMLViewOfficerWorksheet(string[] selectedDate)
+        {
+
+            // Generate HTML tables
+            string htmlTables = "<div class='table-container' style='overflow-x: auto; display: flex; flex-wrap: nowrap;'>";
+            htmlTables += "<table border='1' width='100%' style='text-align:center; margin-right:10px;'>";
+
+            // Row for InLieuItem
+            htmlTables += "<tr><th></th><th></th><th>'S'</th><th></th><th>'V'</th><th></th><th> Total</th><th></th><th></th>"; // Added two empty headers for the first two columns
+            htmlTables += "</tr>";
+            htmlTables += "<tr>";
+            DataTable OfficerGEN = GetOfficerGENData(selectedDate);
+            if (OfficerGEN.Rows.Count > 0)
+            {
+                htmlTables += "<th></th><th>GEN</th><th>" + OfficerGEN.Rows[0]["nonVegOfficers"] + "</th><th></th><th>" + OfficerGEN.Rows[0]["vegOfficers"] + "</th><th></th><th>" + OfficerGEN.Rows[0]["Total"] + "</th><th></th><th></th>";
+            }
+            else
+            {
+                htmlTables += "<th></th><th>GEN</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>";
+            }
+            htmlTables += "</tr>";
+            htmlTables += "<tr>";
+            DataTable OfficerRik = GetOfficerRikData(selectedDate);
+            if (OfficerRik.Rows.Count > 0)
+            {
+                htmlTables += "<th></th><th>RIK + HON. OFFICER</th><th>" + OfficerRik.Rows[0]["nonVegrikOfficers"] + "</th><th></th><th>" + OfficerRik.Rows[0]["vegrikOfficers"] + "</th><th></th><th>" + OfficerRik.Rows[0]["Total"] + "</th><th></th><th></th>";
+            }
+            else
+            {
+                htmlTables += "<th></th><th>RIK + HON. OFFICER</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>";
+            }
+            htmlTables += "</tr>";
+
+            htmlTables += "<tr>";
+            DataTable OfficerEnti = GetOfficerEntitledData(selectedDate);
+            if (OfficerRik.Rows.Count > 0)
+            {
+                htmlTables += "<th></th><th>NON ENTITLED MESSING</th><th>" + OfficerEnti.Rows[0]["nonVegNonEntitledOfficer"] + "</th><th></th><th>" + OfficerEnti.Rows[0]["vegNonEntitledOfficer"] + "</th><th></th><th>" + OfficerEnti.Rows[0]["Total"] + "</th><th></th><th></th>";
+            }
+            else
+            {
+                htmlTables += "<th></th><th>NON ENTITLED MESSING</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>";
+            }
+            htmlTables += "</tr>";
+
+            htmlTables += "<tr>";
+            DataTable OfficerTotal = GetOfficeTotalData(selectedDate);
+            if (OfficerRik.Rows.Count > 0)
+            {
+                htmlTables += "<th></th><th>Total</th><th>" + OfficerTotal.Rows[0]["TotalNonVeg"] + "</th><th></th><th>" + OfficerTotal.Rows[0]["TotalVeg"] + "</th><th></th><th>" + OfficerTotal.Rows[0]["Total"] + "</th><th></th><th></th>";
+            }
+            else
+            {
+                htmlTables += "<th></th><th>Total</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>";
+            }
+            htmlTables += "</tr>";
+
+            htmlTables += "<tr><th>Ser.</th><th>Item</th><th>Strength</th><th></th><th>Scale</th><th></th><th>Qty Entitled</th><th></th><th>Qty Issued</th>";
+            htmlTables += "</tr>";
+
+            DataTable OfficeBasicItems = GetOfficeBasicItemsData();
+            int srno = 1;
+            foreach (DataRow item in OfficeBasicItems.Rows)
+            {
+                htmlTables += "<tr>";
+                htmlTables += $"<td>{srno}</td>";
+                htmlTables += $"<td>{item["BasicItem"]}</td>";
+                htmlTables += $"<td>{OfficerTotal.Rows[0]["Total"]}</td>";
+                htmlTables += $"<td>x</td>";
+                htmlTables += $"<td>{item["VegScale"]}</td>";
+                htmlTables += $"<td>=</td>";
+                htmlTables += $"<td>{Convert.ToDecimal(OfficerTotal.Rows[0]["Total"]) * Convert.ToDecimal(item["VegScale"])}</td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += "</tr>";
+                DataTable OfficeInLieuItems = GetOfficeInLieuItemsData(Convert.ToInt32(item["Id"]));
+                foreach (DataRow itemIn in OfficeInLieuItems.Rows)
+                {
+                    htmlTables += "<tr>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td>{itemIn["InLieuItem"]}</td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td>=</td>";
+                    htmlTables += $"<td>{0.00}</td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += "</tr>";
+                }
+                //row=15;
+                htmlTables += "<tr>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td>Total</td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td>=</td>";
+                htmlTables += $"<td>{Convert.ToDecimal(OfficerTotal.Rows[0]["Total"]) * Convert.ToDecimal(item["VegScale"])}</td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += "</tr>";
+
+                DataTable OfficeIssueItems = GetOfficeIssueItemsData(Convert.ToInt32(item["Id"]));
+                decimal TotalQtyIssued = 0M;
+                foreach (DataRow itemIn in OfficeIssueItems.Rows)
+                {
+                    htmlTables += "<tr>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td>{itemIn["ItemName"]}</td>";
+                    htmlTables += $"<td></td>";
+                    htmlTables += $"<td>=</td>";
+                    htmlTables += $"<td>{itemIn["QtyIssued"]}</td>";
+                    htmlTables += "</tr>";
+                }
+                htmlTables += "<tr>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td></td>";
+                htmlTables += $"<td>Total</td>";
+                htmlTables += $"<td>{TotalQtyIssued}</td>";
+                htmlTables += "</tr>";
+                srno++;
+            }
+
+            htmlTables += "</table></div>";
+
+            // Assign the generated HTML to the container
+            tablesContainerPageOfficerWorksheet.InnerHtml = htmlTables;
+
+        }
+
+        #endregion
 
 
     }

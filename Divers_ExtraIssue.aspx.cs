@@ -147,6 +147,8 @@ namespace VMS_1
                             updateCmd.Parameters.AddWithValue("@Quantity", qtyIssued);
 
                             updateCmd.ExecuteNonQuery();
+                            
+                           
                         }
                         else
                         {

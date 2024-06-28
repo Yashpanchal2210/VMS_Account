@@ -77,7 +77,12 @@
             <div>
                 <asp:Label ID="lblStatus" runat="server" Text=""></asp:Label>
             </div>
+           <div style="color: red; background-color: yellow; padding: 10px;text-align: center;font-weight: bold;">
+    Data entered for the same date will be overwritten.
+</div>
+
             <div class="text-center">
+                <br />
                 <button type="button" class="btn btn-primary mr-2" onclick="addRow()">Add Row</button>
                 <asp:Button ID="SubmitButton" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-success mr-2" Width="107px" Height="38px" />
 
@@ -87,7 +92,7 @@
 
             </div>
             <div class="table-responsive">
-                <asp:GridView ID="GridViewStrength" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" OnRowEditing="GridViewStrength_RowEditing" OnRowDeleting="GridViewStrength_RowDeleting" DataKeyNames="Id" OnRowDataBound="GridViewStrengthView_RowDataBound">
+                <asp:GridView ID="GridViewStrength" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False" DataKeyNames="Id">
                     <Columns>
                         <asp:BoundField DataField="Id" Visible="false" HeaderText="ID" ReadOnly="True" />
                         <asp:BoundField DataField="dates" HeaderText="Date" ReadOnly="True" />
@@ -104,7 +109,7 @@
                         <asp:BoundField DataField="vegNonEntitledSailor" HeaderText="vegNonEntitledSailor" ReadOnly="True" />
                         <asp:BoundField DataField="NonVegNonEntitledSailor" HeaderText="NonVegNonEntitledSailor" ReadOnly="True" />
                         <asp:BoundField DataField="civilians" HeaderText="civilians" ReadOnly="True" />
-                        <asp:CommandField ShowDeleteButton="True" DeleteText="Delete Row" />
+           
                     </Columns>
                 </asp:GridView>
             </div>

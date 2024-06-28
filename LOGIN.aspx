@@ -22,7 +22,7 @@
             transition: background-color 0.3s;
             position: relative;
             display: flex;
-            justify-content: center;
+            justify-content: center; 
             align-items: center;
             background-image: url('/wwwroot/Images/loginpage.jpg');
             background-size: cover;

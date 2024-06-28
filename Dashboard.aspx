@@ -31,7 +31,9 @@
                                     <div class="row g-4 align-end">
                                         <div class="col-xxl-8">
                                             <div class="nk-order-ovwg-ck">
-                                                <canvas class="order-overview-chart" id="orderOverviewPresent"></canvas>
+                                                <div style="width: 100%; overflow-x: auto;">
+                                                    <canvas class="order-overview-chart" id="orderOverviewPresent"></canvas>
+                                                </div>
                                             </div>
                                         </div>
                                         <!-- .col -->
@@ -94,18 +96,11 @@
                                 <div class="card-inner">
                                     <div class="nk-wg-action">
                                         <div class="nk-wg-action-content">
-                                            <p class="title"><a href="#">Book of Reference</a></p>
+                                            <p class="title"><a href="wwwroot/PDFFile/Revised INBR 14.pdf">Book of Reference</a></p>
                                         </div>
                                     </div>
                                 </div>
-                                <!-- .card-inner -->
-                                <div class="card-inner">
-                                    <div class="nk-wg-action">
-                                        <div class="nk-wg-action-content">
-                                            <p class="title"><a href="#">Upcoming Deposit</a></p>
-                                        </div>
-                                    </div>
-                                </div>
+                                
                                 <!-- .card-inner -->
                             </div>
                             <!-- .card-inner-group -->
@@ -326,6 +321,12 @@
                     scales: {
                         y: {
                             beginAtZero: true // Start y-axis at zero
+                        }
+                    },
+
+                    plugins: {
+                        legend: {
+                            position: 'top' // Example: adjust legend position if needed
                         }
                     }
                 }

@@ -29,12 +29,12 @@ namespace VMS_1
                 checkCmd.Parameters.AddWithValue("@NudID", NudID.Text);
                 con.Open();
                 int existingUserCount = (int)checkCmd.ExecuteScalar();
-                if (existingUserCount > 0)
-                {
-                    Label1.Visible = true;
-                    Label1.Text = "User with this NUD ID already exists.";
-                    return;
-                }
+               if (existingUserCount > 0)
+               {
+               Label1.Visible = true;
+               Label1.Text = "User with this NUD ID already exists.";
+                 return;
+               }
 
                 // Insert new user record
                 SqlCommand cmd = new SqlCommand("INSERT INTO usermaster(Name, Rank, Designation, NudId, Password,ConfirmPassword,SecretQuestion, Answer, Role, IsApproved) VALUES(@Name, @Rank, @Designation, @NudID, @Password,@ConfirmPassword, @SecretQuestion, @Answer, @Role, @IsApproved)", con);
@@ -51,16 +51,15 @@ namespace VMS_1
                 cmd.Parameters.AddWithValue("@IsApproved", 0);
                 if (cmd.ExecuteNonQuery() == 1)
                 {
-                    Label1.Visible = true;
-                    Label1.Text = "Record saved successfully.";
-
-                    // Wait for 5 seconds before redirecting to the login page
+                    string message = "Registration successful. Contact Admin.";
+                    ScriptManager.RegisterStartupScript(this, GetType(), "alertMessage", $"showAlert('{message}');", true);
                     Response.AddHeader("REFRESH", "2;URL=LOGIN.aspx");
                 }
                 else
                 {
-                    Label1.Visible = true;
-                    Label1.Text = "Record not saved, please try again.";
+                    // Record not saved
+                    string message = "Registration failed, please try again.";
+                    ScriptManager.RegisterStartupScript(this, GetType(), "alertMessage", $"showAlert('{message}');", true);
                 }
             }
         }

@@ -3,6 +3,11 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
         <h2 class="mt-4">Extra Issue - Divers</h2>
+         <script type="text/javascript">
+             function showAlert(message) {
+                 alert(message);
+             }
+ </script>
         <form id="extraIssueForm" runat="server">
             <div class="table-responsive">
                 <table class="table" id="extraissueTable">
@@ -18,7 +23,7 @@
                             <th class="heading">Item 2</th>
                             <th class="heading">Item 3</th>
                             <th class="heading">Other Items</th>
-                            <th>Action</th>
+                            <%--<th>Action</th>--%>
                         </tr>
                     </thead>
                     <tbody id="tableBody" runat="server">
@@ -32,22 +37,15 @@
                             <td>
                                 <select class="form-control rank" id="rank" name="rank" width="200px" required>
                                     <option value="" selected>Select</option>
-                                    <option value="Sub Lieutenant">Sub Lieutenant</option>
-                                    <option value="Lieutenant">Lieutenant</option>
-                                    <option value="Lieutenant Commander">Lieutenant Commander</option>
-                                    <option value="Commander">Commander</option>
                                     <option value="Captain">Captain</option>
-                                    <option value="Commodore">Commodore</option>
-                                    <option value="Rear Admiral">Rear Admiral</option>
-                                    <option value="Vice Admiral">Vice Admiral</option>
-                                    <option value="Admiral">Admiral</option>
-                                    <option value="Seaman 2nd Class">Seaman 2nd Class</option>
-                                    <option value="Seaman Ist Class">Seaman Ist Class</option>
+                                    <option value="Commander">Commander</option>
+                                    <option value="Lieutenant Commander">Lieutenant Commander</option>
+                                    <option value="Lieutenant">Lieutenant</option>
+                                     <option value="Sub Lieutenant">Sub Lieutenant</option>
+                                    <option value="Master Chief Petty Officer Ist Class">MCPO I</option>  
+                                   <option value="Master Chief Petty Officer IInd Class">MCPO II</option>
+                                    <option value="Chief Petty Officer">CPO</option>
                                     <option value="Leading Rate">Leading</option>
-                                    <option value="Petty Officer">Petty Officer</option>
-                                    <option value="Chief Petty Officer">Chief Petty Officer</option>
-                                    <option value="Master Chief Petty Officer IInd Class">Master Chief Petty Officer IInd Class</option>
-                                    <option value="Master Chief Petty Officer Ist Class">Master Chief Petty Officer Ist Class</option>
                                 </select>
                             </td>
                             <td>
@@ -99,7 +97,7 @@
                 </table>
             </div>
             <div>
-                <asp:Label ID="lblStatus" runat="server" Text=""></asp:Label>
+                <asp:Label ID="lblStatus" runat="server" Text="Data Entered Successfully" Visible="False"></asp:Label>
             </div>
             <div class="text-center">
                 <%--<button type="button" class="btn btn-primary mr-2" onclick="addRow()">Add Row</button>--%>
@@ -201,16 +199,16 @@
                                 <asp:TextBox ID="txtqty" runat="server" Text='<%# Bind("Qty") %>'></asp:TextBox>
                             </EditItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Actions">
-                            <ItemTemplate>
+                      <%--  <asp:TemplateField HeaderText="Actions">
+                            <ItemTemplate>--%>
                                 <%--<asp:LinkButton ID="EditButton" runat="server" CommandName="Edit" Text="Edit"></asp:LinkButton>--%>
-                                <asp:LinkButton ID="DeleteButton" runat="server" CommandName="Delete" Text="Delete"></asp:LinkButton>
+                                <%--<asp:LinkButton ID="DeleteButton" runat="server" CommandName="Delete" Text="Delete"></asp:LinkButton>
                             </ItemTemplate>
-                            <EditItemTemplate>
-                                <asp:LinkButton ID="UpdateButton" runat="server" CommandName="Update" Text="Update"></asp:LinkButton>
+                            <EditItemTemplate>--%>
+                                <%--<asp:LinkButton ID="UpdateButton" runat="server" CommandName="Update" Text="Update"></asp:LinkButton>
                                 <asp:LinkButton ID="CancelButton" runat="server" CommandName="Cancel" Text="Cancel"></asp:LinkButton>
                             </EditItemTemplate>
-                        </asp:TemplateField>
+                        </asp:TemplateField>--%>
                     </Columns>
                 </asp:GridView>
             </div>

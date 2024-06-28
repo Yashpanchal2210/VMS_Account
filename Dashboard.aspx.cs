@@ -201,7 +201,7 @@ namespace VMS_1
             SELECT 
                 RM.itemnames,
                 SUM(RM.quantities) AS TotalQuantity,
-                CASE WHEN BLI.Fresh = 'True' THEN 'Fresh' ELSE 'Not Fresh' END AS FreshStatus
+                CASE WHEN BLI.Fresh = 'True' THEN 'Fresh' ELSE 'Dry' END AS FreshStatus
             FROM 
                 ReceiptMaster RM
             LEFT JOIN 
@@ -259,7 +259,7 @@ namespace VMS_1
                             },
                             new
                             {
-                                label = "Not Fresh",
+                                label = "Dry",
                                 data = notFreshData,
                                 backgroundColor = "rgba(255, 99, 132, 0.2)",
                                 borderColor = "rgba(255, 99, 132, 1)",

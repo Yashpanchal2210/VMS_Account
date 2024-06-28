@@ -35,63 +35,63 @@ namespace VMS_1
             GridView1.DataSource = dt;
             GridView1.DataBind();
         }
-        protected void GridView1_RowEditing(object sender, GridViewEditEventArgs e)
-        {
-            GridView1.EditIndex = e.NewEditIndex;
-            BindGridView();
-        }
+        //protected void GridView1_RowEditing(object sender, GridViewEditEventArgs e)
+        //{
+        //    GridView1.EditIndex = e.NewEditIndex;
+        //    BindGridView();
+        //}
 
-        protected void GridView1_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
-        {
-            GridView1.EditIndex = -1;
-            BindGridView();
-        }
+        //protected void GridView1_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+        //{
+        //    GridView1.EditIndex = -1;
+        //    BindGridView();
+        //}
 
-        protected void GridView1_RowUpdating(object sender, GridViewUpdateEventArgs e)
-        {
-            GridViewRow row = GridView1.Rows[e.RowIndex];
-            string id = GridView1.DataKeys[e.RowIndex].Value.ToString();
-            string updatedValue1 = ((TextBox)row.FindControl("txtVegOfficers")).Text;
-            string updatedValue2 = ((TextBox)row.FindControl("txtNonVegOfficers")).Text;
-            string updatedValue3 = ((TextBox)row.FindControl("txtVegSailor")).Text;
-            string updatedValue4 = ((TextBox)row.FindControl("txtNonVegSailor")).Text;
+        //protected void GridView1_RowUpdating(object sender, GridViewUpdateEventArgs e)
+        //{
+        //    GridViewRow row = GridView1.Rows[e.RowIndex];
+        //    string id = GridView1.DataKeys[e.RowIndex].Value.ToString();
+        //    string updatedValue1 = ((TextBox)row.FindControl("txtVegOfficers")).Text;
+        //    string updatedValue2 = ((TextBox)row.FindControl("txtNonVegOfficers")).Text;
+        //    string updatedValue3 = ((TextBox)row.FindControl("txtVegSailor")).Text;
+        //    string updatedValue4 = ((TextBox)row.FindControl("txtNonVegSailor")).Text;
 
-            using (SqlConnection conn = new SqlConnection(connStr))
-            {
-                string query = "UPDATE Strength SET vegOfficers = @VegOfficers, nonVegOfficers = @NonVegOfficers, vegSailor = @VegSailor, nonVegSailor = @NonVegSailor WHERE Id = @Id";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@Id", id);
-                cmd.Parameters.AddWithValue("@VegOfficers", updatedValue1);
-                cmd.Parameters.AddWithValue("@NonVegOfficers", updatedValue2);
-                cmd.Parameters.AddWithValue("@VegSailor", updatedValue3);
-                cmd.Parameters.AddWithValue("@NonVegSailor", updatedValue4);
+        //    using (SqlConnection conn = new SqlConnection(connStr))
+        //    {
+        //        string query = "UPDATE Strength SET vegOfficers = @VegOfficers, nonVegOfficers = @NonVegOfficers, vegSailor = @VegSailor, nonVegSailor = @NonVegSailor WHERE Id = @Id";
+        //        SqlCommand cmd = new SqlCommand(query, conn);
+        //        cmd.Parameters.AddWithValue("@Id", id);
+        //        cmd.Parameters.AddWithValue("@VegOfficers", updatedValue1);
+        //        cmd.Parameters.AddWithValue("@NonVegOfficers", updatedValue2);
+        //        cmd.Parameters.AddWithValue("@VegSailor", updatedValue3);
+        //        cmd.Parameters.AddWithValue("@NonVegSailor", updatedValue4);
 
-                conn.Open();
-                cmd.ExecuteNonQuery();
-                conn.Close();
-            }
+        //        conn.Open();
+        //        cmd.ExecuteNonQuery();
+        //        conn.Close();
+        //    }
 
-            GridView1.EditIndex = -1;
-            BindGridView();
-        }
+        //    GridView1.EditIndex = -1;
+        //    BindGridView();
+        //}
 
-        protected void GridView1_RowDeleting(object sender, GridViewDeleteEventArgs e)
-        {
-            string id = GridView1.DataKeys[e.RowIndex].Value.ToString();
+        //protected void GridView1_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        //{
+        //    string id = GridView1.DataKeys[e.RowIndex].Value.ToString();
 
-            using (SqlConnection conn = new SqlConnection(connStr))
-            {
-                string query = "DELETE FROM Strength WHERE Id = @Id";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@Id", id);
+        //    using (SqlConnection conn = new SqlConnection(connStr))
+        //    {
+        //        string query = "DELETE FROM Strength WHERE Id = @Id";
+        //        SqlCommand cmd = new SqlCommand(query, conn);
+        //        cmd.Parameters.AddWithValue("@Id", id);
 
-                conn.Open();
-                cmd.ExecuteNonQuery();
-                conn.Close();
-            }
+        //        conn.Open();
+        //        cmd.ExecuteNonQuery();
+        //        conn.Close();
+        //    }
 
-            BindGridView(); // Rebind GridView after deletion
-        }
+        //    BindGridView(); // Rebind GridView after deletion
+        //}
 
         private void BindGridView()
         {
