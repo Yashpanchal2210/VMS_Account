@@ -473,6 +473,8 @@
                 .then(data => {
                     console.log(data); // Inspect data structure
                     if (data && data.d) {
+                        // Save the data in localStorage
+                        localStorage.setItem('vmsStatusData', data.d);
                         updateProgressBar(data.d);
                     } else {
                         console.error('No data found in response or incorrect data structure');
@@ -489,7 +491,7 @@
                 var item = rows[0];
 
                 var percentage = 0;
-                if (item.SK === true && item.Logo === false && item.LogoReject === false && item.LogoApprove === false && item.LogotoCo === false && item.Co === false && item.CoReject === false && item.CoApprove === false0) {
+                if (item.SK === true && item.Logo === false && item.LogoReject === false && item.LogoApprove === false && item.LogotoCo === false && item.Co === false && item.CoReject === false && item.CoApprove === false) {
                     percentage = 25;
                 } else if (item.Logo === true && item.SK === false && item.LogoReject === false && item.LogoApprove === false && item.LogotoCo === false && item.Co === false && item.CoReject === false && item.CoApprove === false) {
                     percentage = 50;
@@ -504,6 +506,16 @@
                 progressBar.setAttribute('aria-valuenow', percentage);
             }
         }
+
+        // Load the data from localStorage on page load
+        window.onload = function () {
+            var storedData = localStorage.getItem('vmsStatusData');
+            if (storedData) {
+                updateProgressBar(storedData);
+            }
+        };
+
+
 
     </script>
 </asp:Content>

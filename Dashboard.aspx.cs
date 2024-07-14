@@ -41,7 +41,10 @@ namespace VMS_1
             //LoadOfficerSheet();
             //LoadGridViewExtraIssue();
             FilterDataByMonth(Convert.ToString(DateTime.Now.Month));
-            GetVMSStatus(Convert.ToString(DateTime.Now.Month));
+            if(!IsPostBack)
+            {
+                GetVMSStatus(Convert.ToString(DateTime.Now.Month));
+            }
             string chartDataR = GenerateReceiptChartData();
             string chartDataI = GenerateIssueChartData();
             string chartDataP = GetChartDataPresentStock();
@@ -1445,7 +1448,7 @@ namespace VMS_1
             string queryVMSMaster = @"
             SELECT SK, SktoLogo, Logo, LogoReject, LogoApprove, LogotoCo, Co, CoReject, CoApprove, IsApproved, ReportNumber
             FROM ApproveVMS
-            WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year";
+            WHERE MONTH(AddedDate) = @Month AND YEAR(AddedDate) = @Year";
 
             using (SqlConnection conn = new SqlConnection(connStr))
             {
