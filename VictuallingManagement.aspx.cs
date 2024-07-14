@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Spreadsheet;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -32,80 +33,132 @@ namespace VMS_1
 
             if (!IsPostBack)
             {
-                //bool hasData = !string.IsNullOrEmpty(HTMLContentLiteralP2.Text);
-                //if (hasData)
-                //{
-                //    // Determine which buttons to show based on the role (assuming role logic from previous example)
-                //    string role = Session["Role"] as string;
+                bool hasData = !string.IsNullOrEmpty(HTMLContentLiteralP2.Text);
+                if (hasData)
+                {
+                    // Determine which buttons to show based on the role (assuming role logic from previous example)
+                    string role = Session["Role"] as string;
 
-                //    if (role == "Store Keeper")
-                //    {
-                //        btnSendToLogistic.Visible = true;
-                //    }
-                //    else if (role == "Logistic Officer")
-                //    {
-                //        btnApprove1.Visible = true;
-                //        btnReject1.Visible = true;
-                //    }
-                //    else if (role == "Commanding Officer")
-                //    {
-                //        btnApprove2.Visible = true;
-                //        btnReject2.Visible = true;
-                //    }
-                //    // else handle other roles or default visibility as needed
-                //}
+                    if (role == "Store Keeper")
+                    {
+                        btnSendToLogistic.Visible = true;
+                    }
+                    else if (role == "Logistic Officer")
+                    {
+                        btnApprove1.Visible = true;
+                        btnReject1.Visible = true;
+                    }
+                    else if (role == "Commanding Officer")
+                    {
+                        btnApprove2.Visible = true;
+                        btnReject2.Visible = true;
+                    }
+                    // else handle other roles or default visibility as needed
+                }
             }
         }
 
-        protected void SendToLogoButton_Click()
+        protected void SendToLogoButton_Click(object sender, EventArgs e)
         {
-            UpdateSendToLogo();
+            string selectedMonthYear = monthYearPicker.Value;
+            UpdateSendToLogo(selectedMonthYear);
         }
 
-        private void UpdateSendToLogo()
+        private void UpdateSendToLogo(string monthYear)
         {
             try
             {
                 using (SqlConnection connection = new SqlConnection(connStr))
                 {
                     connection.Open();
-                    var getMonth = DateTime.Now.Month;
-                    var getYear = DateTime.Now.Year;
-                    var getDay = DateTime.Now.Day;
 
-                    string reportno = Convert.ToString(getYear + getYear + getDay);
+                    // Extract the month and year from the provided string
+                    DateTime selectedDate = DateTime.ParseExact(monthYear, "yyyy-MM", null);
+                    int selectedMonth = selectedDate.Month;
+                    int selectedYear = selectedDate.Year;
 
-                    string updateQuery = "INSERT INTO ApproveVMS (SK, SktoLogo, Logo, LogoReject, LogoApprove, LogotoCo, Co, CoReject, CoApprove, IsApproved, ReportNumber) VALUES (@SK, @SktoLogo, @Logo, @LogoReject, @LogoApprove, @LogotoCo, @Co, @CoReject, @CoApprove, @IsApproved, @ReportNumber)"; // Add your update query
-                    string getReportNumber = "Select ReportNumber from ApproveVMS";
-                    using (SqlCommand command = new SqlCommand(updateQuery, connection))
+                    // Check if there's existing data for the selected month and year
+                    string checkQuery = "SELECT COUNT(*) FROM ApproveVMS WHERE MONTH(AddedDate) = @Month AND YEAR(AddedDate) = @Year";
+                    using (SqlCommand checkCommand = new SqlCommand(checkQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@SK", 0);
-                        command.Parameters.AddWithValue("@SktoLogo", 1);
-                        command.Parameters.AddWithValue("@Logo", 1);
-                        command.Parameters.AddWithValue("@LogoReject", 0);
-                        command.Parameters.AddWithValue("@LogoApprove", 0);
-                        command.Parameters.AddWithValue("@LogotoCo", 0);
-                        command.Parameters.AddWithValue("@Co", 0);
-                        command.Parameters.AddWithValue("@CoReject", 0);
-                        command.Parameters.AddWithValue("@CoApprove", 0);
-                        command.Parameters.AddWithValue("@IsApproved", 0);
-                        command.Parameters.AddWithValue("@ReportNumber", reportno);
+                        checkCommand.Parameters.AddWithValue("@Month", selectedMonth);
+                        checkCommand.Parameters.AddWithValue("@Year", selectedYear);
 
-                        // Execute the insert query
-                        int rowsAffected = command.ExecuteNonQuery();
+                        int count = (int)checkCommand.ExecuteScalar();
 
-                        if (rowsAffected > 0)
+                        if (count > 0)
                         {
-                            //lblMessage.Text = "Report has been forwarded to Logistic officer";
+                            // Update the existing record
+                            string updateQuery = "UPDATE ApproveVMS SET SktoLogo = @SktoLogo, Logo = @Logo, LogoReject = @LogoReject, " +
+                                                 "LogoApprove = @LogoApprove, LogotoCo = @LogotoCo, Co = @Co, " +
+                                                 "CoReject = @CoReject, CoApprove = @CoApprove, IsApproved = @IsApproved " +
+                                                 "WHERE MONTH(AddedDate) = @Month AND YEAR(AddedDate) = @Year";
+
+                            using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
+                            {
+                                updateCommand.Parameters.AddWithValue("@SktoLogo", 1);
+                                updateCommand.Parameters.AddWithValue("@Logo", 1);
+                                updateCommand.Parameters.AddWithValue("@LogoReject", 0);
+                                updateCommand.Parameters.AddWithValue("@LogoApprove", 0);
+                                updateCommand.Parameters.AddWithValue("@LogotoCo", 0);
+                                updateCommand.Parameters.AddWithValue("@Co", 0);
+                                updateCommand.Parameters.AddWithValue("@CoReject", 0);
+                                updateCommand.Parameters.AddWithValue("@CoApprove", 0);
+                                updateCommand.Parameters.AddWithValue("@IsApproved", 0);
+
+                                updateCommand.Parameters.AddWithValue("@Month", selectedMonth);
+                                updateCommand.Parameters.AddWithValue("@Year", selectedYear);
+
+                                int rowsAffected = updateCommand.ExecuteNonQuery();
+
+                                if (rowsAffected > 0)
+                                {
+                                    lblMessage.Text = "Report has been updated for the Logistic officer.";
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // Insert new record
+                            string reportNo = $"{selectedYear}{selectedMonth}{DateTime.Now.Day}"; // Adjust as needed
+
+                            string insertQuery = "INSERT INTO ApproveVMS (SK, SktoLogo, Logo, LogoReject, LogoApprove, LogotoCo, Co, CoReject, CoApprove, IsApproved, ReportNumber, AddedDate) " +
+                                                 "VALUES (@SK, @SktoLogo, @Logo, @LogoReject, @LogoApprove, @LogotoCo, @Co, @CoReject, @CoApprove, @IsApproved, @ReportNumber, @Date)";
+
+                            using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
+                            {
+                                insertCommand.Parameters.AddWithValue("@SK", 0);
+                                insertCommand.Parameters.AddWithValue("@SktoLogo", 1);
+                                insertCommand.Parameters.AddWithValue("@Logo", 1);
+                                insertCommand.Parameters.AddWithValue("@LogoReject", 0);
+                                insertCommand.Parameters.AddWithValue("@LogoApprove", 0);
+                                insertCommand.Parameters.AddWithValue("@LogotoCo", 0);
+                                insertCommand.Parameters.AddWithValue("@Co", 0);
+                                insertCommand.Parameters.AddWithValue("@CoReject", 0);
+                                insertCommand.Parameters.AddWithValue("@CoApprove", 0);
+                                insertCommand.Parameters.AddWithValue("@IsApproved", 0);
+                                insertCommand.Parameters.AddWithValue("@ReportNumber", reportNo);
+                                insertCommand.Parameters.AddWithValue("@Date", selectedDate);
+
+                                int rowsAffected = insertCommand.ExecuteNonQuery();
+
+                                if (rowsAffected > 0)
+                                {
+                                    lblMessage.Text = "Report has been forwarded to Logistic officer.";
+                                }
+                            }
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
+                // Log the exception and handle it appropriately
+                lblMessage.Text = "An error occurred: " + ex.Message;
                 throw; // Rethrow exception or handle as needed
             }
         }
+
 
         protected void GenerateHTMLViewButton_Click(object sender, EventArgs e)
         {
@@ -168,28 +221,28 @@ namespace VMS_1
             GenerateHTMLViewOfficerWorksheet(selectedDateP27);
             //BindData(selectedDateP27);
 
-            //bool hasData = !string.IsNullOrEmpty(HTMLContentLiteralP2.Text);
-            //if (hasData)
-            //{
-            //    // Determine which buttons to show based on the role (assuming role logic from previous example)
-            //    string role = Session["Role"] as string;
+            bool hasData = !string.IsNullOrEmpty(HTMLContentLiteralP2.Text);
+            if (hasData)
+            {
+                // Determine which buttons to show based on the role (assuming role logic from previous example)
+                string role = Session["Role"] as string;
 
-            //    if (role == "Store Keeper")
-            //    {
-            //        btnSendToLogistic.Visible = true;
-            //    }
-            //    else if (role == "Logistic Officer")
-            //    {
-            //        btnApprove1.Visible = true;
-            //        btnReject1.Visible = true;
-            //    }
-            //    else if (role == "Commanding Officer")
-            //    {
-            //        btnApprove2.Visible = true;
-            //        btnReject2.Visible = true;
-            //    }
-            //    // else handle other roles or default visibility as needed
-            //}
+                if (role == "Store Keeper")
+                {
+                    btnSendToLogistic.Visible = true;
+                }
+                else if (role == "Logistic Officer")
+                {
+                    btnApprove1.Visible = true;
+                    btnReject1.Visible = true;
+                }
+                else if (role == "Commanding Officer")
+                {
+                    btnApprove2.Visible = true;
+                    btnReject2.Visible = true;
+                }
+                // else handle other roles or default visibility as needed
+            }
         }
 
 
@@ -279,9 +332,9 @@ namespace VMS_1
                 {
                     foreach (DataRow row in monthEndStockData.Rows)
                     {
-                        string itemName = row["InLieuItem"].ToString();
+                        string itemName = row["ItemName"].ToString();
                         // Find the row in receiptMasterTable where ItemName matches InLieuItem and referenceNos matches
-                        if (row["InLieuItem"].Equals(receiptRow["itemnames"]))
+                        if (row["ItemName"].Equals(receiptRow["InLieuItem"]))
                         {
                             htmlTables += $"<th>{receiptRow["quantities"]}</th>";
                         }

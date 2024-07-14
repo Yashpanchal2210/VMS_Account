@@ -41,6 +41,7 @@ namespace VMS_1
             //LoadOfficerSheet();
             //LoadGridViewExtraIssue();
             FilterDataByMonth(Convert.ToString(DateTime.Now.Month));
+            GetVMSStatus(Convert.ToString(DateTime.Now.Month));
             string chartDataR = GenerateReceiptChartData();
             string chartDataI = GenerateIssueChartData();
             string chartDataP = GetChartDataPresentStock();
@@ -1421,5 +1422,54 @@ namespace VMS_1
         //        lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
         //    }
         //}
+
+
+        [WebMethod]
+        public static string GetVMSStatus(string selectedDate)
+        {
+            if (string.IsNullOrEmpty(selectedDate))
+            {
+                return JsonConvert.SerializeObject(new { error = "Selected date cannot be null or empty." });
+            }
+
+            DateTime parsedDate;
+            if (!DateTime.TryParseExact(selectedDate, "yyyy-MM", null, System.Globalization.DateTimeStyles.None, out parsedDate))
+            {
+                return JsonConvert.SerializeObject(new { error = "Invalid date format. Expected format is yyyy-MM." });
+            }
+
+            int month = parsedDate.Month;
+            int year = parsedDate.Year;
+
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            string queryVMSMaster = @"
+            SELECT SK, SktoLogo, Logo, LogoReject, LogoApprove, LogotoCo, Co, CoReject, CoApprove, IsApproved, ReportNumber
+            FROM ApproveVMS
+            WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year";
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();
+
+                using (SqlCommand cmdPresentMaster = new SqlCommand(queryVMSMaster, conn))
+                {
+                    cmdPresentMaster.Parameters.AddWithValue("@Month", month);
+                    cmdPresentMaster.Parameters.AddWithValue("@Year", year);
+
+                    using (SqlDataAdapter daPresentMaster = new SqlDataAdapter(cmdPresentMaster))
+                    {
+                        DataTable dt = new DataTable();
+                        daPresentMaster.Fill(dt);
+                        if (dt.Rows.Count == 0)
+                        {
+                            return JsonConvert.SerializeObject(new { message = "No data found for the selected date." });
+                        }
+                        return JsonConvert.SerializeObject(dt);
+                    }
+                }
+            }
+        }
+
+
     }
 }

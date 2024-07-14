@@ -275,9 +275,6 @@
             <a href="UnapprovedUsers.aspx">Approve Users</a>
         </div>
         <% } %>
-
-
-
         <a href="UserUpdate.aspx" runat="server">Reset Password</a>
         <a href="~/LOGIN.aspx?m=logout" runat="server">Logout</a>
     </div>
@@ -297,7 +294,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <% if (IsUserLoggedIn() && IsUserInRole("Regulating Officer") && !IsUserInRole(""))
+                <% if (IsUserLoggedIn() && (IsUserInRole("Regulating Officer") || IsUserInRole("Regulating Office")) && !IsUserInRole(""))
                     { %>
                 <ul class="navbar-nav">
                     <a class="nav-link text-white dark-theme-text font-weight-bold" href="Strength.aspx" role="button" aria-expanded="false">Update Strength
@@ -365,8 +362,6 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Extra Issue
                         </a>
-                    </li>
-                    <li class="nav-item dropdown">
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="Divers_ExtraIssue.aspx">Divers</a>
                             <a class="dropdown-item" href="PestControl_ExtraIssue.aspx">Pest Control</a>
@@ -430,7 +425,7 @@
                 <ul class="navbar-nav" style="margin-left: auto;">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= GetUserName() %> (<%= GetUserRole() %>)
-                            <i class="fa fa-gear"></i>
+                            <i class="bi bi-gear-fill"></i>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" style="margin-left: -70px;">
                             <a class="dropdown-item" href="UserUpdate.aspx" runat="server">Reset Password</a>
@@ -438,9 +433,6 @@
                         </div>
                     </li>
                 </ul>
-
-
-
             </div>
         </nav>
     </header>

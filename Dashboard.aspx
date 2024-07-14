@@ -11,8 +11,60 @@
         .issue-row {
             color: red;
         }
+
+        .row-align {
+            display: flex;
+            align-items: center;
+        }
+
+        .form-control {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+            .form-control:last-child {
+                margin-right: 0;
+            }
     </style>
     <form id="form1" runat="server">
+        <div class="container">
+            <div class="nk-block">
+                <div class="row g-gs">
+                    <div class="col-lg-12">
+                        <div class="card card-bordered h-100">
+                            <div class="card-inner">
+                                <div class="card-title-group align-start mb-3">
+                                    <div class="card-title">
+                                        <h6 class="title">Status</h6>
+                                    </div>
+                                </div>
+                                <div class="row row-align col-md-6">
+                                    <input type="month" class="form-control col-md-4" id="vmsDate" />
+                                    <button class="btn btn-primary form-control col-md-2" onclick="getVMSStatus()">Check</button>
+                                </div>
+                                <div class="nk-order-ovwg mt-5">
+                                    <div class="row g-4 align-end">
+                                        <div class="col-xxl-8">
+                                            <div class="nk-order-ovwg-ck">
+                                                <div class="row row-align col-md-12">
+                                                    <p style="" class="col-md-4 align-content-around">Store Keeper</p>
+                                                    <p style="text-align: center;" class="col-md-4">Logistic Officer</p>
+                                                    <p style="text-align: right;" class="col-md-4">Commanding Officer</p>
+                                                    <p style=""></p>
+                                                </div>
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-info" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="container">
             <div class="nk-block">
@@ -100,7 +152,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- .card-inner -->
                             </div>
                             <!-- .card-inner-group -->
@@ -401,5 +453,58 @@
             var row = btn.parentNode.parentNode;
             row.parentNode.removeChild(row);
         }
+
+        function getVMSStatus() {
+            var selectedDate = document.getElementById("vmsDate").value;
+
+            fetch('Dashboard.aspx/GetVMSStatus', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ selectedDate: selectedDate })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data); // Inspect data structure
+                    if (data && data.d) {
+                        updateProgressBar(data.d);
+                    } else {
+                        console.error('No data found in response or incorrect data structure');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching VMS status:', error);
+                });
+        }
+
+        function updateProgressBar(data) {
+            let rows = JSON.parse(data);
+            if (rows.length > 0) {
+                var item = rows[0];
+
+                var percentage = 0;
+                if (item.SK === true && item.Logo === false && item.LogoReject === false && item.LogoApprove === false && item.LogotoCo === false && item.Co === false && item.CoReject === false && item.CoApprove === false0) {
+                    percentage = 25;
+                } else if (item.Logo === true && item.SK === false && item.LogoReject === false && item.LogoApprove === false && item.LogotoCo === false && item.Co === false && item.CoReject === false && item.CoApprove === false) {
+                    percentage = 50;
+                } else if (item.Co === true && item.SK === false && item.Logo === false && item.LogoReject === false && item.LogoApprove === false && item.LogotoCo === false && item.CoReject === false && item.CoApprove === false) {
+                    percentage = 75;
+                } else if (item.IsApproved === true) {
+                    percentage = 100;
+                }
+
+                var progressBar = document.querySelector('.progress-bar');
+                progressBar.style.width = percentage + '%';
+                progressBar.setAttribute('aria-valuenow', percentage);
+            }
+        }
+
     </script>
 </asp:Content>
+

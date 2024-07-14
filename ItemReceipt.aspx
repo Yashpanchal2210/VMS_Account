@@ -304,8 +304,9 @@
             newRow.innerHTML = `
                                 <td><input type="text" class="form-control" value="${selectedRefNo}" disabled /></td>
                                  <td>
-                                      <select class="form-control itemname js-states" name="itemname" id="itemname_${rowSequence}" onchange="fetchBasicDenom(this.id)" required>
-                                     </select>
+                                    <select class="form-control itemname js-states" id="itemname_${rowSequence}" name="itemname" onchange="fetchBasicDenom(this.id)" required>
+                                        <option value="">Select</option>
+                                    </select>
                                  </td>
                                 <td><input type="text" class="form-control" name="qty" required pattern="^\\d+(\\.\\d+)?$" /></td>
                                 <td>
