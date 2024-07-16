@@ -311,7 +311,8 @@
 
                     <a class="nav-link text-white dark-theme-text font-weight-bold" href="ReportsGenerate.aspx" role="button" aria-expanded="false">View Strength
                     </a>
-                    <%--<a class="dropdown-item" href="AddBasicandLieuItems.aspx">Add Items</a>--%>
+                     <a class="nav-link text-white dark-theme-text font-weight-bold" href="CurrentStockList.aspx" role="button" aria-expanded="false">Generate Physical Report
+                    </a>
                 </ul>
 
                 <% } %>
@@ -349,6 +350,7 @@
                             <% if (IsUserLoggedIn() && IsUserInRole("Admin"))
                                 { %>
                             <a class="dropdown-item" href="AddBasicandLieuItems.aspx">Add Items</a>
+                            
                             <% } %>
                         </div>
                     </li>
@@ -416,6 +418,7 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item " href="Users.aspx">Edit Users</a>
                             <a class="dropdown-item " href="UnapprovedUsers.aspx">Approve Users</a>
+                            <a class="dropdown-item" href="AuditUnit.aspx">Audit</a>
                         </div>
                     </li>
                 </ul>

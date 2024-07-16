@@ -141,6 +141,51 @@ namespace VMS_1
         protected global::System.Web.UI.WebControls.Literal HTMLContentLiteralP8;
 
         /// <summary>
+        /// HTMLContentLiteralP9 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal HTMLContentLiteralP9;
+
+        /// <summary>
+        /// HTMLContentLiteralP10 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal HTMLContentLiteralP10;
+
+        /// <summary>
+        /// HTMLContentLiteralP11 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal HTMLContentLiteralP11;
+
+        /// <summary>
+        /// HTMLContentLiteralP12 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal HTMLContentLiteralP12;
+
+        /// <summary>
+        /// HTMLContentLiteralP13 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal HTMLContentLiteralP13;
+
+        /// <summary>
         /// HTMLContentLiteralP14 control.
         /// </summary>
         /// <remarks>

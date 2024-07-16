@@ -216,6 +216,7 @@ namespace VMS_1
             HTMLContentLiteralP2.Text = htmlBuilder.ToString();
             GenerateHTMLViewP18(selectedDateP27);
             GenerateHTMLViewP8();
+            GenerateHTMLViewP9();
             GenerateHTMLViewP2_7(selectedDateP27);
             GenerateHTMLViewSailorWorksheet(selectedDateP27);
             GenerateHTMLViewOfficerWorksheet(selectedDateP27);
@@ -1239,7 +1240,60 @@ namespace VMS_1
             HTMLContentLiteralP8.Text = htmlBuilder.ToString();
         }
         #endregion
+        #region Page 9
+        protected void GenerateHTMLViewP9()
+        {
+            StringBuilder htmlBuilder = new StringBuilder();
 
+            // Start the table with Arial font
+            htmlBuilder.Append("<table style='font-family: Arial; width: 100%; border-collapse: collapse;'>");
+
+            // Title row
+            htmlBuilder.Append("<tr>");
+            htmlBuilder.Append("<td colspan='7' style='font-size: 12px; font-weight: bold; text-align: center; border: 1px solid black;'>PAGE - 9</td>");
+            htmlBuilder.Append("</tr>");
+
+            // Second title row
+            htmlBuilder.Append("<tr>");
+            htmlBuilder.Append("<td colspan='7' style='font-size: 12px; font-weight: bold; text-align: center; border: 1px solid black;'>Page-09 Report (Extra Isssue)</td>");
+            htmlBuilder.Append("</tr>");
+
+            // Header row
+            htmlBuilder.Append("<tr>");
+            htmlBuilder.Append("<td style='border: 1px solid black;'>Id</td>");
+            htmlBuilder.Append("<td style='border: 1px solid black;'>Date</td>");
+            htmlBuilder.Append("<td style='border: 1px solid black;'>Strength</td>");
+            htmlBuilder.Append("<td style='border: 1px solid black;'>ItemId</td>");
+            htmlBuilder.Append("<td style='border: 1px solid black;'>ItemName</td>");
+            htmlBuilder.Append("<td style='border: 1px solid black;'>Type</td>");
+            htmlBuilder.Append("<td style='border: 1px solid black;'>Qty</td>");            
+            htmlBuilder.Append("</tr>");
+
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            DataTable strengthData = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();
+                SqlDataAdapter dataAdapter = new SqlDataAdapter("select * from ExtraIssueCategory", conn);
+                dataAdapter.Fill(strengthData);
+            }
+            // Line number rows
+            for (int i = 0; i < strengthData.Rows.Count; i++)
+            {
+                htmlBuilder.Append("<tr>");
+                htmlBuilder.Append("<td style='border: 1px solid black;'>" + strengthData.Rows[i]["ID"].ToString() + "</td>");
+                htmlBuilder.Append("<td style='border: 1px solid black;'>" + strengthData.Rows[i]["Date"].ToString() + "</td>");
+                htmlBuilder.Append("<td style='border: 1px solid black;'>" + strengthData.Rows[i]["Strength"].ToString() + "</td>");
+                htmlBuilder.Append("<td style='border: 1px solid black;'>" + strengthData.Rows[i]["ItemId"].ToString() + "</td>");
+                htmlBuilder.Append("<td style='border: 1px solid black;'>" + strengthData.Rows[i]["ItemName"].ToString() + "</td>");
+                htmlBuilder.Append("<td style='border: 1px solid black;'>" + strengthData.Rows[i]["Type"].ToString() + "</td>");
+                htmlBuilder.Append("<td style='border: 1px solid black;'>" + strengthData.Rows[i]["Qty"].ToString() + "</td>");
+                htmlBuilder.Append("</tr>");
+            }           
+            htmlBuilder.Append("</table>");
+            HTMLContentLiteralP9.Text = htmlBuilder.ToString();
+        }
+        #endregion
         #region Page18
         protected void GenerateHTMLViewP18(string[] selectedDate)
         {
