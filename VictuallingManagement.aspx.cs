@@ -55,6 +55,13 @@ namespace VMS_1
                     }
                     // else handle other roles or default visibility as needed
                 }
+                if (Request.QueryString["date"] != null)
+                {
+                    string[] selectedDateP27 = Request.QueryString["date"].Split('-');
+                    string monthYear = Request.QueryString["date"];
+                    GenerateHtml(monthYear);
+                    view.Visible = false;
+                }
             }
         }
 
@@ -162,8 +169,22 @@ namespace VMS_1
 
         protected void GenerateHTMLViewButton_Click(object sender, EventArgs e)
         {
-            string[] selectedDateP27 = monthYearPicker.Value.Split('-');
-            string monthYear = monthYearPicker.Value;
+            if (Request.QueryString["date"] != null)
+            {
+                string[] selectedDateP27 = Request.QueryString["date"].Split('-');
+                string monthYear = monthYearPicker.Value;
+                GenerateHtml(monthYear);
+            }
+            else
+            {
+                string[] selectedDateP27 = monthYearPicker.Value.Split('-');
+                string monthYear = monthYearPicker.Value;
+                GenerateHtml(monthYear);
+            }
+        }
+        private void GenerateHtml(string monthYear)
+        {
+            string[] selectedDateP27 = monthYear.Split('-');
             string COName = Request.Form["coVal"];
             string LOName = Request.Form["loVal"];
             string AOName = Request.Form["aoVal"];
@@ -177,7 +198,6 @@ namespace VMS_1
             string currentUser = HttpContext.Current.User.Identity.Name;
             string currentUserRank = Session["Rank"].ToString();
             string currentUserNudID = Session["NudId"].ToString();
-
             StringBuilder htmlBuilder = new StringBuilder();
 
             htmlBuilder.Append("<table style='font-family: Arial; width: 100%; margin-top:10px;'>");
@@ -217,9 +237,12 @@ namespace VMS_1
             GenerateHTMLViewP18(selectedDateP27);
             GenerateHTMLViewP8();
             GenerateHTMLViewP9();
+            GenerateHTMLViewP11(selectedDateP27);
             GenerateHTMLViewP2_7(selectedDateP27);
             GenerateHTMLViewSailorWorksheet(selectedDateP27);
             GenerateHTMLViewOfficerWorksheet(selectedDateP27);
+            GenerateHTMLViewP12(selectedDateP27);
+            BindGridView();
             //BindData(selectedDateP27);
 
             bool hasData = !string.IsNullOrEmpty(HTMLContentLiteralP2.Text);
@@ -1107,7 +1130,7 @@ namespace VMS_1
             DataTable dataTable = new DataTable();
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                using (SqlCommand cmd = new SqlCommand("SELECT ItemName, SUM(CONVERT(decimal(18, 3), Qty)) AS Qty FROM RationIssuePayment WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year GROUP BY ItemName", conn))
+                using (SqlCommand cmd = new SqlCommand("select Dates, itemnames, quantities, referenceNos from ReceiptMaster Where MONTH(Dates) = @Month AND YEAR(Dates) = @Year order by Dates ASC", conn))
                 {
                     cmd.Parameters.AddWithValue("@Month", selectedDate[1]);
                     cmd.Parameters.AddWithValue("@Year", selectedDate[0]);
@@ -1266,7 +1289,7 @@ namespace VMS_1
             htmlBuilder.Append("<td style='border: 1px solid black;'>ItemId</td>");
             htmlBuilder.Append("<td style='border: 1px solid black;'>ItemName</td>");
             htmlBuilder.Append("<td style='border: 1px solid black;'>Type</td>");
-            htmlBuilder.Append("<td style='border: 1px solid black;'>Qty</td>");            
+            htmlBuilder.Append("<td style='border: 1px solid black;'>Qty</td>");
             htmlBuilder.Append("</tr>");
 
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
@@ -1289,9 +1312,275 @@ namespace VMS_1
                 htmlBuilder.Append("<td style='border: 1px solid black;'>" + strengthData.Rows[i]["Type"].ToString() + "</td>");
                 htmlBuilder.Append("<td style='border: 1px solid black;'>" + strengthData.Rows[i]["Qty"].ToString() + "</td>");
                 htmlBuilder.Append("</tr>");
-            }           
+            }
             htmlBuilder.Append("</table>");
             HTMLContentLiteralP9.Text = htmlBuilder.ToString();
+        }
+
+
+        private DataTable GetPresentStockData(string[] selectedDate)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("select iLueItem, iLueDenom from BasicLieuItems where Fresh = 'True'", conn))
+                {
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+        private DataTable GetBasicLieuItems()
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("select iLueItem, iLueDenom from BasicLieuItems where Fresh = 'True'", conn))
+                {
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+        protected void GenerateHTMLViewP11(string[] selectedDateP27)
+        {
+            //Fetch ItemNames
+            DataTable presentItemStock = GetPresentStockData10(selectedDateP27);
+
+            //Fetch Ration Payment
+            DataTable presentRationPayement = GetRationPaymentData10(selectedDateP27);
+
+            StringBuilder htmlBuilder = new StringBuilder();
+
+            // Start the HTML table
+            htmlBuilder.Append("<table border='1' style='width: 100%; border-collapse: collapse;'>");
+
+            // Add header rows
+            htmlBuilder.Append("<tr><td colspan='12' style='text-align: center; font-weight: bold;'>PAGE 10</td></tr>");
+            htmlBuilder.Append("<tr><td colspan='12'></td></tr>");
+            htmlBuilder.Append("<tr><td colspan='12' style='text-align: center; font-weight: bold;'>DAILY EXTRACT OF RATION ISSUED ON PAYMENT</td></tr>");
+            htmlBuilder.Append("<tr><td colspan='12'></td></tr>");
+            htmlBuilder.Append("<tr><td style='width: 20%;'>VR. NO.</td>");
+
+            // Add item names in header
+            foreach (DataRow row in presentItemStock.Rows)
+            {
+                htmlBuilder.Append("<td style='text-align: center;'>" + row["ItemName"] + "</td>");
+            }
+            htmlBuilder.Append("</tr>");
+
+            // Add Denom and Rate rows
+            htmlBuilder.Append("<tr><td>DENOM-></td>");
+            foreach (DataRow row in presentItemStock.Rows)
+            {
+                htmlBuilder.Append("<td style='text-align: center;'>" + row["Denom"] + "</td>");
+            }
+            htmlBuilder.Append("</tr>");
+
+            htmlBuilder.Append("<tr><td>RATE-></td>");
+            foreach (DataRow row in presentItemStock.Rows)
+            {
+                htmlBuilder.Append("<td style='text-align: center;'>" + row["Rate"] + "</td>");
+            }
+            htmlBuilder.Append("</tr>");
+
+            // Add payment issue rows
+            foreach (DataRow rowPaymentIssue in presentRationPayement.Rows)
+            {
+                htmlBuilder.Append("<tr>");
+                htmlBuilder.Append("<td>" + rowPaymentIssue["ReferenceCRVNo"] + "</td>");
+                foreach (DataRow row in presentItemStock.Rows)
+                {
+                    if (row["ItemName"].Equals(rowPaymentIssue["ItemName"]))
+                    {
+                        htmlBuilder.Append("<td style='text-align: center;'>" + rowPaymentIssue["Qty"] + "</td>");
+                    }
+                    else
+                    {
+                        htmlBuilder.Append("<td style='text-align: center;'></td>");
+                    }
+                }
+                htmlBuilder.Append("</tr>");
+            }
+
+            // Calculate and add totals (T/QTY)
+            htmlBuilder.Append("<tr><td>T/QTY</td>");
+            foreach (DataRow row in presentItemStock.Rows)
+            {
+                int totalQty = presentRationPayement.AsEnumerable()
+                    .Where(r => r.Field<string>("ItemName") == row.Field<string>("ItemName"))
+                    .Sum(r => Convert.ToInt32(r["Qty"]));
+                htmlBuilder.Append("<td style='text-align: center;'>" + totalQty + "</td>");
+            }
+            htmlBuilder.Append("</tr>");
+
+            // Calculate and add values (VALUE)
+            htmlBuilder.Append("<tr><td>VALUE</td>");
+            foreach (DataRow row in presentItemStock.Rows)
+            {
+                int totalQty = presentRationPayement.AsEnumerable()
+                    .Where(r => r.Field<string>("ItemName") == row.Field<string>("ItemName"))
+                    .Sum(r => Convert.ToInt32(r["Qty"]));
+                double rate = Convert.ToDouble(row["Rate"]);
+                htmlBuilder.Append("<td style='text-align: center;'>" + (totalQty * rate) + "</td>");
+            }
+            htmlBuilder.Append("</tr>");
+
+            // End the HTML table
+            htmlBuilder.Append("</table>");
+
+            // Get the generated HTML string
+            string htmlString = htmlBuilder.ToString();            
+
+            HTMLContentLiteralP10.Text = htmlBuilder.ToString();
+        }
+        private void BindGridView()
+        {
+            string selectedMonthYear = monthYearPicker.Value;
+            DataTable dt = FetchStrengthData(selectedMonthYear);
+            GridView1.DataSource = dt;
+            GridView1.DataBind();
+        }
+        private DataTable FetchStrengthData(string monthYear)
+        {
+
+            DataTable dt = new DataTable();
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+
+                conn.Open();
+
+                string query = "SELECT * FROM Strength WHERE ISDATE(CONVERT(VARCHAR(10), dates, 120)) = 1 AND CONVERT(VARCHAR(7), dates, 120) = @Month ORDER BY dates ASC;";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Month", monthYear);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                adapter.Fill(dt);
+                conn.Close();
+
+            }
+
+            return dt;
+        }
+        protected void GenerateHTMLViewP12(string[] selectedDateP27)
+        {
+            //Fetch ItemNames
+            DataTable presentItemStock = GetBasicLieuItems();
+
+            //Fetch Ration Payemnt
+            DataTable presentRationPayement = GetRationPaymentData(selectedDateP27);
+
+            StringBuilder htmlBuilder = new StringBuilder();
+
+            // Start the table with Arial font
+            htmlBuilder.Append("<table style='font-family: Arial; width: 100%; border-collapse: collapse;'>");
+
+            // Title row
+            htmlBuilder.Append("<tr>");
+            htmlBuilder.Append("<td  colspan='20' style='font-size: 12px; font-weight: bold; text-align: center; border: 1px solid black;'>PAGE - 12</td>");
+            htmlBuilder.Append("</tr>");
+
+            // Second title row
+            htmlBuilder.Append("<tr>");
+            htmlBuilder.Append("<td colspan='20' style='font-size: 12px; font-weight: bold; text-align: center; border: 1px solid black;'> DAILY RECEIPT  OF FRESH RATION FOR THE MONTH OF " + selectedDateP27[1] + "  " + selectedDateP27[0] + "</td>");
+            htmlBuilder.Append("</tr>");
+
+            // Header row
+            int dataStartColumn = 3;
+            htmlBuilder.Append("<tr>");
+            htmlBuilder.Append("<td style='border: 1px solid black;'></td><td style='border: 1px solid black;'>Voucher No</td>");
+            foreach (DataRow row in presentItemStock.Rows)
+            {
+                htmlBuilder.Append("<td style='border: 1px solid black;'>" + row["iLueItem"] + "</td>");
+                dataStartColumn++;
+            }
+            htmlBuilder.Append("</tr>");
+            htmlBuilder.Append("<tr><td style='border: 1px solid black;' colspan='20'></td></tr>");
+
+            htmlBuilder.Append("<tr>");
+            htmlBuilder.Append("<td style='border: 1px solid black;'>DENO.</td><td style='border: 1px solid black;'></td>");
+            foreach (DataRow row in presentItemStock.Rows)
+            {
+                htmlBuilder.Append("<td style='border: 1px solid black;'>" + row["iLueDenom"] + "</td>");
+            }
+            htmlBuilder.Append("</tr>");
+            htmlBuilder.Append("<tr><td style='border: 1px solid black;' colspan='20'>DATE</ td></tr>");
+
+            foreach (DataRow rowReceiptCRV in presentRationPayement.Rows)
+            {
+
+                htmlBuilder.Append("</tr>");
+                if (DateTime.TryParse(rowReceiptCRV["Dates"].ToString(), out DateTime dateValue))
+                {
+                    htmlBuilder.Append("<td style='border: 1px solid black;'>" + dateValue.ToString("dd/MM/yyyy") + "</td>");
+                }
+                else
+                {
+                    htmlBuilder.Append("<td style='border: 1px solid black;'>" + rowReceiptCRV["Dates"] + "</td>");
+                }
+                htmlBuilder.Append("<td style='border: 1px solid black;'>" + rowReceiptCRV["referenceNos"] + "</td>");
+
+                foreach (DataRow row in presentItemStock.Rows)
+                {
+                    if (row["iLueItem"].Equals(rowReceiptCRV["itemnames"]))
+                    {
+                        htmlBuilder.Append("<td style='border: 1px solid black;'>" + rowReceiptCRV["quantities"] + "</td>"); // Start from column C
+
+                    }
+                    else
+                    {
+                        htmlBuilder.Append("<td style='border: 1px solid black;'></td>");
+                    }
+                }
+            }
+
+            htmlBuilder.Append("</tr>");
+
+
+
+
+
+            htmlBuilder.Append("<tr><td style='border: 1px solid black; bold:true;'>T/QTY</td><td style='border: 1px solid black; bold:true;'></td>");
+
+
+            Dictionary<string, int> itemQuantities = new Dictionary<string, int>();
+
+            // First loop to calculate the sum of quantities for each item
+            foreach (DataRow rowReceiptCRV in presentRationPayement.Rows)
+            {
+                string itemName = rowReceiptCRV["itemnames"].ToString();
+                int quantity = Convert.ToInt32(rowReceiptCRV["quantities"]);
+
+                if (itemQuantities.ContainsKey(itemName))
+                {
+                    itemQuantities[itemName] += quantity;
+                }
+                else
+                {
+                    itemQuantities[itemName] = quantity;
+                }
+            }
+
+            foreach (DataRow row in presentItemStock.Rows)
+            {
+                string itemName = row["iLueItem"].ToString();
+
+                if (itemQuantities.ContainsKey(itemName))
+                {
+                    htmlBuilder.Append("<td style='border: 1px solid black;'>" + itemQuantities[itemName] + "</td>");
+                }
+                else
+                {
+                    htmlBuilder.Append("<td style='border: 1px solid black;'></td>");
+                }
+            }
+
+            htmlBuilder.Append("</tr>");
+            htmlBuilder.Append("</table>");
+            HTMLContentLiteralP12.Text = htmlBuilder.ToString();
         }
         #endregion
         #region Page18
@@ -1605,6 +1894,37 @@ namespace VMS_1
 
         #region Officer
 
+        private DataTable GetRationPaymentData10(string[] selectedDate)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT ReferenceCRVNo, ItemName, SUM(CONVERT(decimal(18, 3), Qty)) AS Qty FROM RationIssuePayment WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year GROUP BY ReferenceCRVNo, Qty, ItemName", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Month", selectedDate[1]);
+                    cmd.Parameters.AddWithValue("@Year", selectedDate[0]);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+
+        private DataTable GetPresentStockData10(string[] selectedDate)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT DISTINCT ItemName, Denom, Rate  FROM RationIssuePayment WHERE MONTH(Date) = @Month AND YEAR(Date) = @Year GROUP BY ItemName, Denom, Rate", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Month", selectedDate[1]);
+                    cmd.Parameters.AddWithValue("@Year", selectedDate[0]);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
         private DataTable GetOfficerGENData(string[] selectedDate)
         {
             DataTable dataTable = new DataTable();

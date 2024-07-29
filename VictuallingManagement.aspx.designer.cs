@@ -24,6 +24,15 @@ namespace VMS_1
         protected global::System.Web.UI.HtmlControls.HtmlForm PageForm;
 
         /// <summary>
+        /// view control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl view;
+
+        /// <summary>
         /// monthYearPicker control.
         /// </summary>
         /// <remarks>
@@ -184,6 +193,15 @@ namespace VMS_1
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal HTMLContentLiteralP13;
+
+        /// <summary>
+        /// GridView1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView GridView1;
 
         /// <summary>
         /// HTMLContentLiteralP14 control.

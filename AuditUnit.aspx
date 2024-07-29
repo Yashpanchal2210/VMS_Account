@@ -57,8 +57,8 @@
                                     <div class="col-md-2">
                                         <h6 class="title">Month</h6>
                                     </div>
-                                    <div class="col-md-10">
-                                        <input type="month" class="form-control col-md-4" id="vmsDate" />
+                                    <div class="col-md-10">                                      
+                                        <input type="month" id="monthYearPicker" runat="server" class="form-control date-picker" style="width: 21%" required />
                                     </div>
                                 </div>
                                 <div class="row row-align col-md-12">
@@ -67,7 +67,7 @@
                                 <div class="row row-align col-md-12">
                                     <div class="col-md-2"></div>
                                     <div class="col-md-10">
-                                        <asp:Button ID="btnView" class="btn btn-primary" runat="server" Text="View Victualling Account" />
+                                        <asp:Button ID="btnView" class="btn btn-primary" runat="server" Text="View Victualling Account" OnClick="btnView_Click" />
                                     </div>
                                 </div>
                                 <div class="row row-align col-md-12">
@@ -86,11 +86,11 @@
                                 </div>
                                 <div class="row row-align col-md-12">
                                     <div class="col-md-2"></div>
-                                    <div  class="col-md-1">
-                                        <asp:Button ID="btnApprove" class="btn btn-success" runat="server" Text="Approve" />
+                                    <div class="col-md-1">
+                                        <asp:Button ID="btnApprove" class="btn btn-success" runat="server" Text="Approve" OnClick="btnApprove_Click" />
                                     </div>
-                                    <div >
-                                        <asp:Button ID="btnReturn" class="btn btn-warning" runat="server" Text="Return to unit with observations" />
+                                    <div>
+                                        <asp:Button ID="btnReturn" class="btn btn-warning" runat="server" Text="Return to unit with observations" OnClick="btnReturn_Click" />
                                     </div>
                                 </div>
                             </div>

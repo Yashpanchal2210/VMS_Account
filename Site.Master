@@ -314,7 +314,18 @@
                      <a class="nav-link text-white dark-theme-text font-weight-bold" href="CurrentStockList.aspx" role="button" aria-expanded="false">Generate Physical Report
                     </a>
                 </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="DemandDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Demand
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="DemandDropdownMenuLink">
+                            <a class="dropdown-item" href="CreateDemand.aspx">Create Demand</a>
+                            <a class="dropdown-item" href="DemandApproval.aspx">Demand Approval</a>
+                            <a class="dropdown-item" href="DemandStatus.aspx">Demand Status</a>
 
+                        </div>
+                    </li>
+                </ul>
                 <% } %>
 
                 <% if (IsUserLoggedIn() && IsUserInRole("Admin") && !IsUserInRole("Commanding Officer") && !IsUserInRole("Regulating Officer"))

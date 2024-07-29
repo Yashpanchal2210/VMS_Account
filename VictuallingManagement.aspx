@@ -23,6 +23,7 @@
     <div class="container">
         <h2 class="mt-4">Victualling Account</h2>
         <form id="PageForm" runat="server">
+            <div id="view" runat="server">
             <div class="form-group">
                 <label for="monthYearPicker">Select Month and Year:</label>
                 <input type="month" id="monthYearPicker" runat="server" class="form-control date-picker" style="width: 21%" required />
@@ -43,6 +44,7 @@
             <asp:Button ID="btnApprove2" CssClass="btn btn-success" runat="server" Text="Approve" Visible="false" />
             <asp:Button ID="btnReject2" CssClass="btn btn-danger" runat="server" Text="Reject" Visible="false" />
             <asp:Label ID="lblMessage" CssClass="text-success" runat="server"></asp:Label>
+            </div>
             <div id="htmlViewContainer">
                 <%--Start Page02--%>
                 <asp:Literal ID="HTMLContentLiteralP2" runat="server"></asp:Literal>
@@ -73,13 +75,52 @@
                 <asp:Literal ID="HTMLContentLiteralP11" runat="server"></asp:Literal>
                 <asp:Literal ID="HTMLContentLiteralP12" runat="server"></asp:Literal>
                 <asp:Literal ID="HTMLContentLiteralP13" runat="server"></asp:Literal>
+                <h6 class="mt-4" style="text-align:center">Page 13</h6>
+                <h4 class="mt-6" style="text-align:center">Strength Data</h4>
+                <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false" CssClass="table table-striped table-bordered"
+                    DataKeyNames="Id">
+                    <Columns>
+                        <asp:BoundField DataField="dates" HeaderText="Dates" SortExpression="dates" />
+                        <asp:TemplateField HeaderText="Veg Officers">
+                            <ItemTemplate>
+                                <asp:Label ID="lblVegOfficers" runat="server" Text='<%# Eval("vegOfficers") %>' />
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtVegOfficers" runat="server" Text='<%# Bind("vegOfficers") %>' />
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="NonVeg Officers">
+                            <ItemTemplate>
+                                <asp:Label ID="lblNonVegOfficers" runat="server" Text='<%# Eval("nonVegOfficers") %>' />
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtNonVegOfficers" runat="server" Text='<%# Bind("nonVegOfficers") %>' />
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Veg Sailor">
+                            <ItemTemplate>
+                                <asp:Label ID="lblVegSailor" runat="server" Text='<%# Eval("vegSailor") %>' />
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtVegSailor" runat="server" Text='<%# Bind("vegSailor") %>' />
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="NonVeg Sailor">
+                            <ItemTemplate>
+                                <asp:Label ID="lblNonVegSailor" runat="server" Text='<%# Eval("nonVegSailor") %>' />
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtNonVegSailor" runat="server" Text='<%# Bind("nonVegSailor") %>' />
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+                </asp:GridView>
                 <%--Start Page14--%>
                 <asp:Literal ID="HTMLContentLiteralP14" runat="server"></asp:Literal>
                 <%--End Page14--%>
             </div>
         </form>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
