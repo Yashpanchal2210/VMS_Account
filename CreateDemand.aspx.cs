@@ -34,7 +34,7 @@ namespace VMS_1
             try
             {
                 string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-                string itemNameQuery = "SELECT ItemName FROM RationScale WHERE ItemId = @ItemId";
+                string itemNameQuery = "SELECT iLueItem FROM BasicLieuItems WHERE ItemCode = @ItemId";
 
                 string[] date = Request.Form.GetValues("date");
                 string[] itemIds = Request.Form.GetValues("item");
@@ -63,7 +63,7 @@ namespace VMS_1
                             itemName = itemNameCmd.ExecuteScalar()?.ToString();
                         }
 
-                        SqlCommand cmd = new SqlCommand("INSERT INTO Demand (DemandNo,ItemCode,ItemName,ItemDeno,Qty,DemandDate,SupplyDate,Status) VALUES (@DemandNo,@ItemCode,@ItemName,@ItemDeno,@Qty,@DemandDate,@SupplyDate,0)", conn);
+                        SqlCommand cmd = new SqlCommand("INSERT INTO Demand (DemandNo,ItemCode,ItemName,ItemDeno,Qty,ReqDate,SupplyDate,Status) VALUES (@DemandNo,@ItemCode,@ItemName,@ItemDeno,@Qty,@ReqDate,@SupplyDate,0)", conn);
 
                         cmd.Parameters.AddWithValue("@DemandNo", demandno);
                         cmd.Parameters.AddWithValue("@ItemCode", itemcode[i]);
@@ -71,7 +71,7 @@ namespace VMS_1
                         cmd.Parameters.AddWithValue("@ItemDeno", denom[i]);
                         cmd.Parameters.AddWithValue("@Qty", qty[i]);
                         cmd.Parameters.AddWithValue("@SupplyDate", date[0]);
-                        cmd.Parameters.AddWithValue("@DemandDate", System.DateTime.Now);
+                        cmd.Parameters.AddWithValue("@ReqDate", System.DateTime.Now);
                         cmd.ExecuteNonQuery();
                         lblStatus.Text = "Data entered successfully.";
                     }
@@ -95,7 +95,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT ID,DemandNo,ItemCode,ItemName,ItemDeno,Qty,DemandDate FROM Demand order by id asc", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT ID,DemandNo,ItemCode,ItemName,ItemDeno,Qty,ReqDate,SupplyDate FROM Demand order by id asc", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 
@@ -117,35 +117,59 @@ namespace VMS_1
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 conn.Open();
-                string itemNameQuery = "Select ItemName from RationScale Where ItemId = @Id";
-                SqlCommand cmditem = new SqlCommand(itemNameQuery, conn);
-                cmditem.Parameters.AddWithValue("@Id", ItemVal);
-                SqlDataReader reader1 = cmditem.ExecuteReader();
-                if (reader1.Read())
-                {
-                    ItemName = reader1["ItemName"].ToString();
-                }
-                conn.Close();
+                //string itemNameQuery = "Select ItemName from RationScale Where ItemId = @Id";
+                //SqlCommand cmditem = new SqlCommand(itemNameQuery, conn);
+                //cmditem.Parameters.AddWithValue("@Id", ItemVal);
+                //SqlDataReader reader1 = cmditem.ExecuteReader();
+                //if (reader1.Read())
+                //{
+                //    ItemName = reader1["ItemName"].ToString();
+                //}
+                //conn.Close();
 
-                conn.Open();
-                string query = "SELECT Denomination, VegScale, NonVegScale  FROM InLieuItems WHERE InLieuItem = @BasicItem";
+                //conn.Open();
+                string query = "SELECT *  FROM BasicLieuItems WHERE ItemCode = @ItemCode";
                 SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@BasicItem", ItemName);
+                cmd.Parameters.AddWithValue("@ItemCode", ItemVal);
 
                 SqlDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    Denomination = reader["Denomination"].ToString();
+                    Denomination = reader["BasicDenom"].ToString();
+                   
                 }
             }
 
             return Denomination;
         }
         [WebMethod]
+        public static string GetItemCodem(string ItemVal)
+        {
+            string Itemcode = "";
+            string ItemName = "";
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();                
+                string query = "SELECT *  FROM BasicLieuItems WHERE ItemCode = @ItemCode";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@ItemCode", ItemVal);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    Itemcode = reader["Itemcode"].ToString();
+
+                }
+            }
+
+            return Itemcode;
+        }
+        [WebMethod]
         public static List<object> GetItems()
         {
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-            string query = "SELECT * FROM RationScale";
+            string query = "select distinct iLueItem AS ItemName,itemcode AS ItemId from BasicLieuItems";
             DataTable dt = new DataTable();
 
             using (SqlConnection conn = new SqlConnection(connStr))
@@ -169,34 +193,34 @@ namespace VMS_1
             return items;
         }
 
-        [WebMethod]
-        public static string GetItemDataByItemId(string Id)
-        {
-            ItemData itemData = new ItemData();
-            itemData.Rates = new List<string>();
-            itemData.ReferenceNos = new List<string>();
+        //[WebMethod]
+        //public static string GetItemDataByItemId(string Id)
+        //{
+        //    ItemData itemData = new ItemData();
+        //    itemData.Rates = new List<string>();
+        //    itemData.ReferenceNos = new List<string>();
 
-            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-            string query = "SELECT * FROM RationScale WHERE ItemId = @ItemId";
+        //    string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+        //    string query = "SELECT * FROM RationScale WHERE ItemId = @ItemId";
 
-            using (SqlConnection conn = new SqlConnection(connStr))
-            {
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@ItemId", Id);
-                    conn.Open();
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            itemData.Rates.Add(reader["Rate"].ToString());
-                        }
-                    }
-                }
-            }
+        //    using (SqlConnection conn = new SqlConnection(connStr))
+        //    {
+        //        using (SqlCommand cmd = new SqlCommand(query, conn))
+        //        {
+        //            cmd.Parameters.AddWithValue("@ItemId", Id);
+        //            conn.Open();
+        //            using (SqlDataReader reader = cmd.ExecuteReader())
+        //            {
+        //                while (reader.Read())
+        //                {
+        //                    itemData.Rates.Add(reader["Rate"].ToString());
+        //                }
+        //            }
+        //        }
+        //    }
 
-            return JsonConvert.SerializeObject(itemData);
-        }
+        //    return JsonConvert.SerializeObject(itemData);
+        //}
 
         public class ItemData
         {

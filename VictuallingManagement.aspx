@@ -29,21 +29,25 @@
                 <input type="month" id="monthYearPicker" runat="server" class="form-control date-picker" style="width: 21%" required />
 
                 <label class="col-form-label">Please enter Name and Rank of Commanding Officer:</label>
-                <input type="text" class="form-control" id="coVal" name="coVal" style="width: 50%;" />
+                <input type="text" class="form-control" id="coVal" name="coVal" style="width: 50%;" runat="server" />
 
                 <label class="col-form-label">Please enter Name and Rank of Logistic Officer:</label>
-                <input type="text" class="form-control" id="loVal" name="loVal" style="width: 50%;" />
+                <input type="text" class="form-control" id="loVal" name="loVal" style="width: 50%;" runat="server" />
 
                 <label class="col-form-label">Please enter Name and Rank of Accounting Officer:</label>
-                <input type="text" class="form-control" id="aoVal" name="aoVal" style="width: 50%;" />
+                <input type="text" class="form-control" id="aoVal" name="aoVal" style="width: 50%;"  runat="server" />                
+                <asp:Label ID="lblremark" runat="server" Text="Please enter Remark:"></asp:Label>
+                <asp:TextBox ID="txtGRemark" class="form-control"  runat="server" TextMode="MultiLine" style="width: 50%;"></asp:TextBox>
             </div>
             <asp:Button ID="GenerateHTMLViewButton" CssClass="btn btn-primary" runat="server" Text="Generate View" OnClick="GenerateHTMLViewButton_Click" />
-            <asp:Button ID="btnSendToLogistic" CssClass="btn btn-success" runat="server" Text="Send to Logistic" OnClick="SendToLogoButton_Click" Visible="false" />
-            <asp:Button ID="btnApprove1" CssClass="btn btn-success" runat="server" Text="Approve" Visible="false" />
-            <asp:Button ID="btnReject1" CssClass="btn btn-danger" runat="server" Text="Reject" Visible="false" />
-            <asp:Button ID="btnApprove2" CssClass="btn btn-success" runat="server" Text="Approve" Visible="false" />
-            <asp:Button ID="btnReject2" CssClass="btn btn-danger" runat="server" Text="Reject" Visible="false" />
-            <asp:Label ID="lblMessage" CssClass="text-success" runat="server"></asp:Label>
+            <asp:Button ID="btnSendToLogistic" CssClass="btn btn-success" runat="server" Text="Send to LOGO" OnClick="SendToLogoButton_Click" Visible="false" />
+            <asp:Button ID="btnApprove1" CssClass="btn btn-success" runat="server" Text="Approve" Visible="false" OnClick="btnApprove1_Click" />
+            <asp:Button ID="btnReject1" CssClass="btn btn-danger" runat="server" Text="Reject" Visible="false" OnClick="btnReject1_Click" />
+            <asp:Button ID="btnApprove2" CssClass="btn btn-success" runat="server" Text="Approve" Visible="false" OnClick="btnApprove2_Click" />
+            <asp:Button ID="btnReject2" CssClass="btn btn-danger" runat="server" Text="Reject" Visible="false" OnClick="btnReject2_Click" />
+            <asp:Button ID="btnApproveAudit" CssClass="btn btn-success" runat="server" Text="Approve" Visible="false" OnClick="btnApproveAudit_Click" />
+            <asp:Button ID="btnRejectAudit" CssClass="btn btn-danger" runat="server" Text="Reject" Visible="false" OnClick="btnRejectAudit_Click" />
+            <asp:Label ID="lblMessage"  runat="server" Font-Bold="true"></asp:Label>
             </div>
             <div id="htmlViewContainer">
                 <%--Start Page02--%>

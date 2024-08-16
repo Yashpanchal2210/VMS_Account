@@ -61,7 +61,8 @@
                     <Columns>
                         <asp:BoundField DataField="Id" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
                         <asp:BoundField DataField="DemandNo" HeaderText="DemandNo" />
-                        <asp:BoundField DataField="DemandDate" HeaderText="Date" DataFormatString="{0:yyyy-MM-dd}" />
+                        <asp:BoundField DataField="SupplyDate" HeaderText="Supply Date" DataFormatString="{0:yyyy-MM-dd}" />
+                        <asp:BoundField DataField="ReqDate" HeaderText="Req Date" DataFormatString="{0:yyyy-MM-dd}" />
                         <asp:BoundField DataField="ItemName" HeaderText="Item Name" />
                         <asp:BoundField DataField="Qty" HeaderText="Qty" />
                         <asp:CommandField ShowDeleteButton="True" DeleteText="Delete Row" />
@@ -79,6 +80,7 @@
             fetchItems('item');
         });
         function fetchBasicDenom(id) {
+            debugger;
             var ItemValue = document.getElementById(id).value;
             document.getElementById("scaleAmount").value = "";
 
@@ -106,6 +108,7 @@
                             var denomsDropdown = document.getElementById("denoms");
                             denomsDropdown.value = data.d;
                         }
+                        fetchItemCode(id);
                     }
                 })
                 .catch(error => {
@@ -207,6 +210,41 @@
                 })
                 .catch(error => {
                     console.error('Error fetching items:', error);
+                });
+        }
+        function fetchItemCode(id) {
+            debugger;
+            var ItemValue = document.getElementById(id).value;
+            document.getElementById("scaleAmount").value = "";
+
+            if (id != null) {
+                var value = id;  // Use 'var' instead of 'string'
+                var parts = value.split('_');  // Use JavaScript's 'split' method
+            }
+
+            var part1 = parts[1];
+
+            fetch('CreateDemand.aspx/GetItemCodem', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ItemVal: ItemValue })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.d) {
+                        if (rowSequence >= 1) {
+                            var denomsDropdown = document.getElementById("itemcode_" + part1);
+                            denomsDropdown.value = data.d;
+                        } else {
+                            var denomsDropdown = document.getElementById("itemcode");
+                            denomsDropdown.value = data.d;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching basic denomination:', error);
                 });
         }
     </script>

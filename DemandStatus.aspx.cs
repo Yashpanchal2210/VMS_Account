@@ -23,9 +23,10 @@ namespace VMS_1
                 {
                     FormsAuthentication.RedirectToLoginPage();
                 }
-                string MonthYear = System.DateTime.Now.ToString("MMM");
+                string MonthYear = System.DateTime.Now.ToString("yyyy-MM");
                 monthYearPicker.Value = MonthYear;
                 BindGridView(MonthYear);
+                BindApprovedGridView(MonthYear);
             }
 
         }
@@ -39,7 +40,7 @@ namespace VMS_1
                 {
                     conn.Open();
                     DataTable dt = new DataTable();
-                    SqlCommand cmd = new SqlCommand("SELECT ID,DemandNo,ItemCode,ItemName,ItemDeno,Qty,DemandDate,SupplyDate FROM Demand WHERE Status=0 AND  CONVERT(VARCHAR(7), DemandDate, 120) = @Month ORDER By Id desc", conn);
+                    SqlCommand cmd = new SqlCommand("SELECT ID,DemandNo,ItemCode,ItemName,ItemDeno,Qty,DemandDate,SupplyDate FROM Demand WHERE Status=0 AND  CONVERT(VARCHAR(7), SupplyDate, 120) = @Month ORDER By Id desc", conn);
                     cmd.Parameters.AddWithValue("@Month", monthYear);
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                     adapter.Fill(dt);
@@ -65,11 +66,10 @@ namespace VMS_1
                 {
                     conn.Open();
                     DataTable dt = new DataTable();
-                    SqlCommand cmd = new SqlCommand("SELECT ID,DemandNo,ItemCode,ItemName,ItemDeno,Qty,DemandDate,SupplyDate FROM Demand WHERE Status=1 AND  CONVERT(VARCHAR(7), DemandDate, 120) = @Month ORDER By Id desc", conn);
+                    SqlCommand cmd = new SqlCommand("SELECT ID,DemandNo,ItemCode,ItemName,ItemDeno,Qty,DemandDate,SupplyDate,[dbo].[usp_get_demandIssuedQty](DemandNo)IssuedQty FROM Demand WHERE Status=1 AND  CONVERT(VARCHAR(7), DemandDate, 120) = @Month ORDER By Id desc", conn);
                     cmd.Parameters.AddWithValue("@Month", monthYear);
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                     adapter.Fill(dt);
-
                     gvapproved.DataSource = dt;
                     gvapproved.DataBind();
 
@@ -83,6 +83,7 @@ namespace VMS_1
         protected void btnSearch_Click(object sender, EventArgs e)
         {
             BindGridView(monthYearPicker.Value);
+            BindApprovedGridView(monthYearPicker.Value);
         }
         protected void btnApprovedSearch_Click(object sender, EventArgs e)
         {

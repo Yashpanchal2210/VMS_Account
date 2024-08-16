@@ -1,10 +1,10 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="DemandApproval.aspx.cs" Inherits="VMS_1.DemandApproval" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="ByYardIssue.aspx.cs" Inherits="VMS_1.ByYardIssue" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
     <div class="container">
         <div>
-            <h2 class="mt-4">Demand Approval</h2>
+            <h2 class="mt-4">Demand Issue</h2>
         </div>
         <form id="itemMasterForm" runat="server">
             <input type="hidden" id="scaleAmount" />
@@ -15,90 +15,61 @@
                     <table style="width: 100%;">
                         <tr>
                             <div>
-                                <h4 class="mt-4">New Demand</h4>
+                                <h4 class="mt-4">Demand Item Detail</h4>
                             </div>
                             <td style="width: 50%;">
                                 <label for="monthYearPicker">Select Month and Year:</label>
                                 <input type="month" id="monthYearPicker" runat="server" class="form-control date-picker" style="width: 70%" />
                             </td>
-                            <td class="text-left">
-                                <asp:Label ID="lblStatus" runat="server" Text=""></asp:Label>
+                            <td>
+                                <asp:Label ID="lblStatus" runat="server" Text="" ForeColor="Green" Font-Bold="true"></asp:Label>
                                 <asp:Button ID="btnSearch" runat="server" Text="Search" OnClick="btnSearch_Click" CssClass="btn btn-primary" />
                             </td>
-                            <td style="width: 60%;"></td>
-                            <td></td>
-                            <td></td>
                         </tr>
-                    </table>
-                </div>
-            </div>
-
-            <div>
-                <asp:GridView ID="GridViewRationScale" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="false" AutoPostBack="true" DataKeyNames="ID" OnRowEditing="GridViewRationScale_RowEditing" OnRowUpdating="GridViewRationScale_RowUpdating" OnRowCancelingEdit="GridViewRationScale_RowCancelingEdit" OnRowDeleting="GridViewRationScale_RowDeleting" OnRowDataBound="GridViewRation_RowDataBound">
-                    <Columns>
-                        <asp:BoundField DataField="ID" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
-                        <asp:BoundField DataField="DemandNo" HeaderText="DemandNo" />
-                        <asp:BoundField DataField="ItemCode" HeaderText="Pattern Number" />
-                        <asp:TemplateField HeaderText="Item Name">
-                            <ItemTemplate>
-                                <asp:Label ID="lblItemName" runat="server" Text='<%# Eval("ItemName") %>'></asp:Label>
-                            </ItemTemplate>
-                            <EditItemTemplate>
-                                <asp:DropDownList ID="ddlItemName" runat="server" CssClass="form-control itemname" AppendDataBoundItems="true">
-                                    <asp:ListItem Text="Select" Value="" />
-                                </asp:DropDownList>
-                            </EditItemTemplate>
-                        </asp:TemplateField>
-                        <asp:BoundField DataField="Qty" HeaderText="Qty" />
-                        <asp:BoundField DataField="ItemDeno" HeaderText="Denomination" />
-                        <asp:BoundField DataField="ReqDate" HeaderText="Req Date" />
-                        <asp:BoundField DataField="SupplyDate" HeaderText="Supply Date" />
-                        <asp:CommandField HeaderText="Action" ShowEditButton="true" ShowDeleteButton="true" />
-                    </Columns>
-                </asp:GridView>
-            </div>
-            <div class="text-center">
-                <asp:Button ID="SubmitButton" runat="server" Text="Approve" Visible="false" OnClick="SubmitButton_Click" CssClass="btn btn-success mr-2" Width="107px" Height="38px" />
-            </div>
-            <div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-12">
-                    <table style="width: 100%;">
                         <tr>
-                            <div>
-                                <h4 class="mt-4">Demand Pending With BVY</h4>
-                            </div>
-                            <td style="width: 50%;">
-                                <label for="monthYearPicker">Select Month and Year:</label>
-                                <input type="month" id="monthapp" runat="server" class="form-control date-picker" style="width: 70%" />
+
+                            <td colspan="6">
+                                <div>
+                                    <asp:GridView ID="GridViewRationScale" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="false">
+                                        <columns>
+                                             <asp:TemplateField HeaderText="">
+                                                <itemtemplate>
+                                                    <asp:CheckBox ID="chkitem" runat="server"></asp:CheckBox>
+                                                </itemtemplate>
+                                            </asp:TemplateField>
+                                            <asp:BoundField DataField="ID" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
+                                            <asp:BoundField DataField="DemandNo" HeaderText="DemandNo" />
+                                            <asp:BoundField DataField="ItemCode" HeaderText="Pattern Number" />
+                                            <asp:TemplateField HeaderText="Item Name">
+                                                <itemtemplate>
+                                                    <asp:Label ID="lblItemName" runat="server" Text='<%# Eval("ItemName") %>'></asp:Label>
+                                                </itemtemplate>
+                                            </asp:TemplateField>
+                                            <asp:BoundField DataField="ItemDeno" HeaderText="Denomination" />
+                                            <asp:BoundField DataField="DemandDate" HeaderText="DemandDate" />
+                                            <asp:BoundField DataField="SupplyDate" HeaderText="Supply Date" />
+                                            <asp:BoundField DataField="Qty" HeaderText="Requested Qty" />
+                                            <asp:TemplateField HeaderText="Issued Qty">
+                                                <itemtemplate>
+                                                    <asp:Textbox ID="txtIssueQty" runat="server" Text="0"></asp:Textbox>
+                                                </itemtemplate>
+                                            </asp:TemplateField>
+                                        </columns>
+                                    </asp:GridView>
+                                </div>
                             </td>
-                            <td class="text-left">
-                                <asp:Button ID="btnApprovedSearch" runat="server" Text="Search" OnClick="btnApprovedSearch_Click" CssClass="btn btn-primary" />
-                            </td>
-                            <td style="width: 30%;">
-                                <asp:Label ID="Label1" runat="server" Text=""></asp:Label></td>
+                        </tr>
+                        <tr>
+                            <td><asp:label ID="lblRef" runat="server" Text="Issue Reference No" Font-Bold="true" required ></asp:label> </td>
+                            <td ><asp:TextBox ID="txtIssueRefNo" runat="server" required ></asp:TextBox> </td>
+                            <td>
+                                <asp:Button ID="SubmitButton" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-primary" />
+                            </td>                            
                             <td></td>
                             <td></td>
                         </tr>
                     </table>
                 </div>
-            </div>
-
-            <div>
-                <asp:GridView ID="gvapproved" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="false" AutoPostBack="true" DataKeyNames="ID">
-                    <Columns>
-                        <asp:BoundField DataField="ID" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
-                        <asp:BoundField DataField="DemandNo" HeaderText="DemandNo" />
-                        <asp:BoundField DataField="ItemCode" HeaderText="Pattern Number" />
-                        <asp:BoundField DataField="ItemName" HeaderText="Item Name" />
-                        <asp:BoundField DataField="Qty" HeaderText="Qty" />
-                        <asp:BoundField DataField="ItemDeno" HeaderText="Denomination" />
-                        <asp:BoundField DataField="DemandDate" HeaderText="DemandDate" />
-                        <asp:BoundField DataField="SupplyDate" HeaderText="Supply Date" />
-
-                    </Columns>
-                </asp:GridView>
             </div>
         </form>
     </div>

@@ -50,25 +50,355 @@ namespace VMS_1
                     }
                     else if (role == "Commanding Officer")
                     {
+                        ViewState["co"] = true;
                         btnApprove2.Visible = true;
                         btnReject2.Visible = true;
                     }
+
                     // else handle other roles or default visibility as needed
                 }
                 if (Request.QueryString["date"] != null)
                 {
                     string[] selectedDateP27 = Request.QueryString["date"].Split('-');
                     string monthYear = Request.QueryString["date"];
+                    monthYearPicker.Value = monthYear;
+                    FillVAAccountDetails(monthYear);
+                    checkVAStatus();
                     GenerateHtml(monthYear);
-                    view.Visible = false;
+                    LogoStatus();
+                    //view.Visible = false;
+                }
+                checkVAStatus();
+            }
+        }
+        private void LogoStatus()
+        {
+            if (Request.QueryString["id"] != null)
+            {
+                DataTable dt = new DataTable();
+                using (SqlConnection connection = new SqlConnection(connStr))
+                {
+                    string query = "EXEC usp_GetVALogoApproved " + Request.QueryString["id"] + "";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        connection.Open();
+                        SqlDataAdapter adapter = new SqlDataAdapter(command);
+                        adapter.Fill(dt);
+                    }
+                }
+                if (dt.Rows.Count > 0)
+                {
+                    btnApprove1.Text = "Forward To Audit";
+                }
+                else
+                {
+                    btnApprove1.Text = "Approve";
+                }
+            }
+        }
+        private int checkStrengthStatus(string Date)
+        {
+            int Status = 0;
+            string[] Datem = Date.Split('-');
+            DataTable dt = new DataTable();
+            using (SqlConnection connection = new SqlConnection(connStr))
+            {
+                string query = "EXEC usp_checkStrength " + Datem[0] + "," + Datem[1] + "";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    connection.Open();
+                    SqlDataAdapter adapter = new SqlDataAdapter(command);
+                    adapter.Fill(dt);
+                }
+            }
+            if (dt.Rows.Count > 0)
+            {
+                Status = Convert.ToInt32(dt.Rows[0][0].ToString());
+            }
+            return Status;
+        }
+        private int checkDemandStatus(string Date)
+        {
+            int Status = 0;
+            string[] Datem = Date.Split('-');
+            DataTable dt = new DataTable();
+            using (SqlConnection connection = new SqlConnection(connStr))
+            {
+                string query = "EXEC usp_checkDemandIssue " + Datem[0] + "," + Datem[1] + "";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    connection.Open();
+                    SqlDataAdapter adapter = new SqlDataAdapter(command);
+                    adapter.Fill(dt);
+                }
+            }
+            if (dt.Rows.Count > 0)
+            {
+                Status = Convert.ToInt32(dt.Rows[0][0].ToString());
+            }
+            return Status;
+        }
+        private void checkVAStatus()
+        {
+            if (Request.QueryString["id"] != null)
+            {
+                DataTable dt = new DataTable();
+                using (SqlConnection connection = new SqlConnection(connStr))
+                {
+                    string query = "EXEC usp_GetVACurrentStatus " + Request.QueryString["id"] + "";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        connection.Open();
+                        SqlDataAdapter adapter = new SqlDataAdapter(command);
+                        adapter.Fill(dt);
+                    }
+                }
+                if (dt.Rows.Count > 0)
+                {
+                    if (Session["NudId"].ToString() == dt.Rows[0]["FrowardedTo"].ToString())
+                    {
+                        if (Session["Role"].ToString() == "Store Keeper")
+                        {
+                            btnSendToLogistic.Visible = true;
+                        }
+                        else if (Session["Role"].ToString() == "Logistic Officer")
+                        {
+                            btnApprove1.Visible = true;
+                            btnReject1.Visible = true;
+                        }
+                        else if (Session["Role"].ToString() == "Commanding Officer")
+                        {
+                            btnApprove2.Visible = true;
+                            btnReject2.Visible = true;
+                        }
+                        else if (Session["Role"].ToString() == "Auditor")
+                        {
+                            btnApprove2.Visible = true;
+                            btnReject2.Visible = true;
+                        }
+                        txtGRemark.Visible = true;
+                        lblremark.Visible = true;
+                    }
+                    else
+                    {
+                        txtGRemark.Visible = false;
+                        lblremark.Visible = false;
+                        btnApprove1.Visible = false;
+                        btnApprove2.Visible = false;
+                        btnReject1.Visible = false;
+                        btnReject2.Visible = false;
+                        btnSendToLogistic.Visible = false;
+                    }
+                }
+
+            }
+        }
+        private void FillVAAccountDetails(string monthYear)
+        {
+            string selectedMonthYear = monthYearPicker.Value;
+            DataTable dt = new DataTable();
+            DateTime selectedDate = DateTime.ParseExact(monthYear, "yyyy-MM", null);
+            int selectedMonth = selectedDate.Month;
+            int selectedYear = selectedDate.Year;
+            using (SqlConnection connection = new SqlConnection(connStr))
+            {
+                string query = "SELECT AccountID,AYear,AMonth,UnitCode,CreatedBy,CreatedAt,CommandingOfficer,LogisticOfficer,AccountingOfficer,Status,ApprovedBy,ApprovedaDate,ApprovedByCO,ApprovedDateCo,ApprovedByAudit,ApprovedDateAudit FROM VictuallingAccountList";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Month", selectedMonth); // Assuming selectedDate contains month and year
+                    command.Parameters.AddWithValue("@Year", selectedYear);
+                    connection.Open();
+                    SqlDataAdapter adapter = new SqlDataAdapter(command);
+                    adapter.Fill(dt);
+                }
+            }
+            if (dt.Rows.Count > 0)
+            {
+                coVal.Value = dt.Rows[0]["CommandingOfficer"].ToString();
+                loVal.Value = dt.Rows[0]["LogisticOfficer"].ToString();
+                aoVal.Value = dt.Rows[0]["AccountingOfficer"].ToString();
+                btnSendToLogistic.Visible = false;
+            }
+            else
+            {
+                if (Session["Role"].ToString() == "Store Keeper")
+                {
+                    btnSendToLogistic.Visible = true;
                 }
             }
         }
 
         protected void SendToLogoButton_Click(object sender, EventArgs e)
         {
-            string selectedMonthYear = monthYearPicker.Value;
-            UpdateSendToLogo(selectedMonthYear);
+            if (!string.IsNullOrEmpty(coVal.Value) || !string.IsNullOrEmpty(loVal.Value) || !string.IsNullOrEmpty(aoVal.Value))
+            {
+                int status = checkStrengthStatus(monthYearPicker.Value);
+                int dstatus = checkDemandStatus(monthYearPicker.Value);
+                if (status == 1)
+                {
+                    if (dstatus == 0)
+                    {
+                        string selectedMonthYear = monthYearPicker.Value;
+                        InsertVAAccount(selectedMonthYear);
+                        UpdateSendToLogo(selectedMonthYear);
+                    }
+                    else
+                    {
+                        lblMessage.ForeColor = System.Drawing.Color.Red;
+                        lblMessage.Text = "please receive pending demand ";
+                    }
+                }
+                else
+                {
+                    lblMessage.ForeColor = System.Drawing.Color.Red;
+                    lblMessage.Text = "please enter strength details";
+                }
+            }
+            else
+            {
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                lblMessage.Text = "please enter CO,LOGO and Accounting Officer details";
+            }
+        }
+        private void InsertVAAccount(string monthYear)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connStr))
+                {
+                    connection.Open();
+                    // Extract the month and year from the provided string
+                    DateTime selectedDate = DateTime.ParseExact(monthYear, "yyyy-MM", null);
+                    int selectedMonth = selectedDate.Month;
+                    int selectedYear = selectedDate.Year;
+
+
+                    // Insert new record
+                    string reportNo = $"{selectedYear}{selectedMonth}{DateTime.Now.Day}"; // Adjust as needed
+
+                    string insertQuery = "EXEC InsertVADetails " + selectedYear + "," + selectedMonth + ",'0000','" + Session["NudId"] + "','" + coVal.Value + "','" + loVal.Value + "','" + aoVal.Value + "','" + Session["NudId"] + "'";
+
+                    using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
+                    {
+                        int rowsAffected = insertCommand.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            lblMessage.Text = "Report has been forwarded to Logistic officer.";
+                        }
+                        if (rowsAffected == -1)
+                        {
+                            InsertConversation(Convert.ToInt32(Request.QueryString["id"]), "12345Y");
+                        }
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception and handle it appropriately
+                lblMessage.Text = "An error occurred: " + ex.Message;
+                throw; // Rethrow exception or handle as needed
+            }
+        }
+        private void InsertConversation(int AccountId, string ForwardedTo)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connStr))
+                {
+                    connection.Open();
+                    string insertQuery = "EXEC InsertConversation " + AccountId + ",'" + Session["NudId"] + "','" + ForwardedTo + "','" + txtGRemark.Text + "'";
+                    using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
+                    {
+                        int rowsAffected = insertCommand.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            lblMessage.Text = "Report has been forwarded to next level.";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception and handle it appropriately
+                lblMessage.Text = "An error occurred: " + ex.Message;
+                throw; // Rethrow exception or handle as needed
+            }
+        }
+        private void ApprovedByLOGO(int AccountId)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connStr))
+                {
+                    connection.Open();
+                    string insertQuery = "EXEC ApproveVADetailsByLOGO " + AccountId + ",'" + Session["NudId"] + "'";
+                    using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
+                    {
+                        int rowsAffected = insertCommand.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            lblMessage.Text = "Report has been Approved to next level.";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception and handle it appropriately
+                lblMessage.Text = "An error occurred: " + ex.Message;
+                throw; // Rethrow exception or handle as needed
+            }
+        }
+        private void ApprovedByCO(int AccountId)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connStr))
+                {
+                    connection.Open();
+                    string insertQuery = "EXEC ApproveVADetailsByCO " + AccountId + ",'" + Session["NudId"] + "'";
+                    using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
+                    {
+                        int rowsAffected = insertCommand.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            lblMessage.Text = "Report has been Approved to next level.";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception and handle it appropriately
+                lblMessage.Text = "An error occurred: " + ex.Message;
+                throw; // Rethrow exception or handle as needed
+            }
+        }
+        private void ApprovedByAudit(int AccountId)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connStr))
+                {
+                    connection.Open();
+                    string insertQuery = "EXEC ApproveVADetailsByAudit " + AccountId + ",'" + Session["NudId"] + "'";
+                    using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
+                    {
+                        int rowsAffected = insertCommand.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            lblMessage.Text = "Report has been Approved to next level.";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception and handle it appropriately
+                lblMessage.Text = "An error occurred: " + ex.Message;
+                throw; // Rethrow exception or handle as needed
+            }
         }
 
         private void UpdateSendToLogo(string monthYear)
@@ -121,6 +451,8 @@ namespace VMS_1
                                 if (rowsAffected > 0)
                                 {
                                     lblMessage.Text = "Report has been updated for the Logistic officer.";
+                                    lblMessage.ForeColor = System.Drawing.Color.Green;
+
                                 }
                             }
                         }
@@ -174,16 +506,19 @@ namespace VMS_1
                 string[] selectedDateP27 = Request.QueryString["date"].Split('-');
                 string monthYear = monthYearPicker.Value;
                 GenerateHtml(monthYear);
+                FillVAAccountDetails(monthYear);
             }
             else
             {
                 string[] selectedDateP27 = monthYearPicker.Value.Split('-');
                 string monthYear = monthYearPicker.Value;
                 GenerateHtml(monthYear);
+                FillVAAccountDetails(monthYear);
             }
         }
         private void GenerateHtml(string monthYear)
         {
+
             string[] selectedDateP27 = monthYear.Split('-');
             string COName = Request.Form["coVal"];
             string LOName = Request.Form["loVal"];
@@ -205,9 +540,9 @@ namespace VMS_1
             // Title and content based on provided image
             htmlBuilder.Append($"<tr><td colspan='13' style='font-size: 20px; font-weight: bold; text-align: center;'>ACCOUNT OF VICTUALLING STORES FOR THE MONTH OF {formattedMonthYear}</td></tr>");
 
-            htmlBuilder.Append("<tr><td>Name and Rank of the Commanding Officer:</td><td colspan='2'>" + commandingOfficer + "</td></tr>");
-            htmlBuilder.Append("<tr><td>Name and the Rank of the Logistics Officer:</td><td colspan='2'>" + logisticsOfficer + "</td></tr>");
-            htmlBuilder.Append("<tr><td>Name and Rank of the officer directly responsible for keeping the Account:</td><td colspan='2'>" + accountingOfficer + "</td></tr>");
+            htmlBuilder.Append("<tr><td>Name and Rank of the Commanding Officer:</td><td colspan='2'>" + coVal.Value + "</td></tr>");
+            htmlBuilder.Append("<tr><td>Name and the Rank of the Logistics Officer:</td><td colspan='2'>" + loVal.Value + "</td></tr>");
+            htmlBuilder.Append("<tr><td>Name and Rank of the officer directly responsible for keeping the Account:</td><td colspan='2'>" + aoVal.Value + "</td></tr>");
 
             // Instructions
             htmlBuilder.Append("<tr><td colspan='13' style='font-weight: bold; text-align: center;'>INSTRUCTIONS</td></tr>");
@@ -360,7 +695,7 @@ namespace VMS_1
                         // Find the row in receiptMasterTable where ItemName matches InLieuItem and referenceNos matches
                         if (row["ItemName"].Equals(receiptRow["InLieuItem"]))
                         {
-                            htmlTables += $"<th>{receiptRow["quantities"]}</th>";
+                            htmlTables += $"<th>{row["Qty"]}</th>";
                         }
                         else
                         {
@@ -1158,7 +1493,7 @@ namespace VMS_1
             return dataTable;
         }
 
-        #endregion 
+        #endregion
 
         #region Page 8
         protected void GenerateHTMLViewP8()
@@ -1432,7 +1767,7 @@ namespace VMS_1
             htmlBuilder.Append("</table>");
 
             // Get the generated HTML string
-            string htmlString = htmlBuilder.ToString();            
+            string htmlString = htmlBuilder.ToString();
 
             HTMLContentLiteralP10.Text = htmlBuilder.ToString();
         }
@@ -1629,7 +1964,14 @@ namespace VMS_1
             htmlBuilder.Append("<tr><td>(v)</td><td colspan='10'>The periodicity of issue of fish has been restricted in accordance with NI 2/98 as amended from time to time.</td></tr>");
 
             htmlBuilder.Append("<tr><td colspan='2' style='text-align: left;'>Signature of the Commanding Officer</td></tr>");
-            htmlBuilder.Append("<tr><td colspan='2' style='text-align: left;'>(" + commandingOfficer + ")</td></tr>");
+            if (ViewState["co"] != null)
+            {
+                htmlBuilder.Append("<tr><td colspan='2' style='text-align: left; color:#ac4b4b;font-weight:bold;'>(Digitally Approved By-" + coVal.Value + ")</td></tr>");
+            }
+            else
+            {
+                htmlBuilder.Append("<tr><td colspan='2' style='text-align: left; color:#ac4b4b;font-weight:bold;'></td></tr>");
+            }
             htmlBuilder.Append("<tr><td colspan='2' style='text-align: left;'>Commodore</td></tr>");
             htmlBuilder.Append("<tr><td colspan='2' style='text-align: left;'>Commanding Officer</td></tr>");
             htmlBuilder.Append("<tr><td colspan='2' style='text-align: left;'>INS Hamla</td></tr>");
@@ -2169,8 +2511,54 @@ namespace VMS_1
 
         }
 
+
         #endregion
 
-
+        protected void btnReject1_Click(object sender, EventArgs e)
+        {
+            InsertConversation(Convert.ToInt32(Request.QueryString["id"]), "1234567A");
+        }
+        protected void btnApprove1_Click(object sender, EventArgs e)
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection connection = new SqlConnection(connStr))
+            {
+                string query = "EXEC usp_GetVALogoApproved " + Request.QueryString["id"] + "";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    connection.Open();
+                    SqlDataAdapter adapter = new SqlDataAdapter(command);
+                    adapter.Fill(dt);
+                }
+            }
+            if (dt.Rows.Count > 0)
+            {
+                InsertConversation(Convert.ToInt32(Request.QueryString["id"]), "nlao");
+                ApprovedByLOGO(Convert.ToInt32(Request.QueryString["id"]));
+            }
+            else
+            {
+                InsertConversation(Convert.ToInt32(Request.QueryString["id"]), "CM");
+                ApprovedByLOGO(Convert.ToInt32(Request.QueryString["id"]));
+            }
+        }
+        protected void btnApprove2_Click(object sender, EventArgs e)
+        {
+            InsertConversation(Convert.ToInt32(Request.QueryString["id"]), "12345Y");
+            ApprovedByCO(Convert.ToInt32(Request.QueryString["id"]));
+        }
+        protected void btnReject2_Click(object sender, EventArgs e)
+        {
+            InsertConversation(Convert.ToInt32(Request.QueryString["id"]), "1234567A");
+        }
+        protected void btnApproveAudit_Click(object sender, EventArgs e)
+        {
+            InsertConversation(Convert.ToInt32(Request.QueryString["id"]), "nlao");
+            ApprovedByAudit(Convert.ToInt32(Request.QueryString["id"]));
+        }
+        protected void btnRejectAudit_Click(object sender, EventArgs e)
+        {
+            InsertConversation(Convert.ToInt32(Request.QueryString["id"]), "1234567A");
+        }
     }
 }

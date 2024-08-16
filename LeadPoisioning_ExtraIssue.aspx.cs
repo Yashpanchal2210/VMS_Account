@@ -21,7 +21,33 @@ namespace VMS_1
             }
             LoadGridView();
         }
-
+        private int checkVAStatus(string[] Date)
+        {
+            int status = 0;
+            string[] data = Date[0].Split('-');
+            int selectedMonth = Convert.ToInt32(data[1]);
+            int selectedYear = Convert.ToInt32(data[0]);
+            DataTable dt = new DataTable();
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            using (SqlConnection connection = new SqlConnection(connStr))
+            {
+                string query = "EXEC usp_GetVACurrentStatusByMonth " + selectedMonth + "," + selectedYear + "";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    connection.Open();
+                    SqlDataAdapter adapter = new SqlDataAdapter(command);
+                    adapter.Fill(dt);
+                }
+            }
+            if (dt.Rows.Count > 0)
+            {
+                if (Session["NudId"].ToString() != dt.Rows[0]["FrowardedTo"].ToString())
+                {
+                    status = 1;
+                }
+            }
+            return status;
+        }
         protected void SubmitButton_Click(object sender, EventArgs e)
         {
             try
@@ -31,7 +57,13 @@ namespace VMS_1
                 string[] date = Request.Form.GetValues("date");
                 string[] strength = Request.Form.GetValues("strength");
                 string[] milk = Request.Form.GetValues("milk");
-
+                int status = checkVAStatus(date);
+                if (status > 0)
+                {
+                    lblStatus.Text = "you can not enter the data in this visualling account month";
+                    lblStatus.ForeColor = System.Drawing.Color.Red;
+                    return;
+                }
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();

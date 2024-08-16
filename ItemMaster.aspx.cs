@@ -261,7 +261,6 @@ ORDER BY
                             cmd.ExecuteNonQuery();
                         }
                     }
-
                     GridView1.EditIndex = -1;
                     LoadGridView();
                 }

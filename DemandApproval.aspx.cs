@@ -23,10 +23,12 @@ namespace VMS_1
                 {
                     FormsAuthentication.RedirectToLoginPage();
                 }
-                string MonthYear = System.DateTime.Now.ToString("MMM");
+                string MonthYear = System.DateTime.Now.ToString("yyyy-MM");
                 SubmitButton.Visible = false;
                 monthYearPicker.Value = MonthYear;
-                BindGridView(MonthYear);
+                monthapp.Value = MonthYear;
+                BindGridView("0");
+                BindApprovedGridView(MonthYear);
             }
         }
 
@@ -38,9 +40,10 @@ namespace VMS_1
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
-                    string query = "UPDATE Demand SET Status=1 WHERE Id=@ID";
+                    string query = "UPDATE Demand SET Status=1,DemandDate=@DemandDate WHERE Id=@ID";
                     SqlCommand cmd = new SqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@ID", Convert.ToInt32(ViewState["DemandId"]));
+                    cmd.Parameters.AddWithValue("@DemandDate", System.DateTime.Now);
                     cmd.ExecuteNonQuery();
                 }
                 lblStatus.Text = "Data approved successfully.";
@@ -91,7 +94,15 @@ namespace VMS_1
                 {
                     conn.Open();
                     DataTable dt = new DataTable();
-                    SqlCommand cmd = new SqlCommand("SELECT ID,DemandNo,ItemCode,ItemName,ItemDeno,Qty,DemandDate,SupplyDate FROM Demand WHERE Status=0 AND  CONVERT(VARCHAR(7), DemandDate, 120) = @Month ORDER By Id desc", conn);
+                    SqlCommand cmd = new SqlCommand();
+                    if (monthYear == "0"|| monthYear=="")
+                    {
+                        cmd = new SqlCommand("SELECT ID,DemandNo,ItemCode,ItemName,ItemDeno,Qty,ReqDate,SupplyDate FROM Demand WHERE Status=0 ORDER By Id desc", conn);
+                    }
+                    else
+                    {
+                        cmd = new SqlCommand("SELECT ID,DemandNo,ItemCode,ItemName,ItemDeno,Qty,ReqDate,SupplyDate FROM Demand WHERE Status=0 AND  CONVERT(VARCHAR(7), ReqDate, 120) = @Month ORDER By Id desc", conn);
+                    }
                     cmd.Parameters.AddWithValue("@Month", monthYear);
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                     adapter.Fill(dt);
@@ -105,7 +116,7 @@ namespace VMS_1
                         SubmitButton.Visible = true;
                     }
                     else
-                    {                        
+                    {
                         SubmitButton.Visible = false;
                     }
                 }

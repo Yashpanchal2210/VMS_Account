@@ -37,6 +37,7 @@ namespace VMS_1
             //LoadGridViewPresentStock();
             LoadGridViewPage2to7();
             LoadGridViewMonthStock();
+            BindConversation();
             //LoadGridViewDivers();
             //LoadOfficerSheet();
             //LoadGridViewExtraIssue();
@@ -54,7 +55,28 @@ namespace VMS_1
             ClientScript.RegisterStartupScript(this.GetType(), "chartDataP", "<script>var chartDataP = " + chartDataP + ";</script>");
             ClientScript.RegisterStartupScript(this.GetType(), "chartDataST", "<script>var chartDataST = " + chartDataST + ";</script>");
         }
+        private void BindConversation()
+        {
+            try
+            {
+                string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
 
+                    SqlDataAdapter da = new SqlDataAdapter("EXEC usp_GetConversationList", conn);
+                    dtMonthStock = new DataTable();
+                    da.Fill(dtMonthStock);
+
+                    gvvalist.DataSource = dtMonthStock;
+                    gvvalist.DataBind();
+                }
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
+            }
+        }
         private void LoadGridViewMonthStock()
         {
             try

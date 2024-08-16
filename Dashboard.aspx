@@ -59,6 +59,27 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="nk-order-ovwg mt-5">
+                                    <asp:GridView ID="gvvalist" runat="server" AutoGenerateColumns="false" CssClass="table table-bordered table-striped">
+                                        <Columns>
+                                            <asp:BoundField HeaderText="AccountID" DataField="AccountID" />
+                                            <asp:TemplateField HeaderText="Victualling Account">
+                                                <ItemTemplate>
+                                                    <a id="alink" href='VictuallingManagement.aspx?date=<%# Eval("VA") %>&id=<%#Eval("AccountID") %>'>
+                                                        <asp:Label ID="lblVA" runat="server" Text='<%# Eval("VA") %>'></asp:Label>
+                                                    </a>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:BoundField HeaderText="ForwardedBy" DataField="ForwardedBy" />
+                                            <asp:BoundField HeaderText="ForwardedBy" DataField="ForwardedBy" />
+                                            <asp:BoundField HeaderText="Role" DataField="ForwardedByRole" />
+                                            <asp:BoundField HeaderText="ForwardedTo" DataField="ForwardedTo" />
+                                            <asp:BoundField HeaderText="Role" DataField="ForwardedToRole" />
+                                            <asp:BoundField HeaderText="Remark" DataField="Remark" />
+                                            <asp:BoundField HeaderText="Date" DataField="Date" />
+                                        </Columns>
+                                    </asp:GridView>
+                                </div>
                             </div>
                         </div>
                     </div>

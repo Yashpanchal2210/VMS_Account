@@ -43,6 +43,7 @@
                         <tr>
                             <th class="heading">In-lieu Item</th>
                             <th class="heading">Denomination</th>
+                            <th class="heading">Pattern No</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -50,7 +51,7 @@
                         <tr>
                             <td>
                                 <input type="text" class="form-control" name="ilieuitem" required />
-                            </td>
+                            </td>                            
                             <td>
                                 <select class="form-control" name="ilieudenom" required>
                                     <option value="">Select</option>
@@ -59,6 +60,9 @@
                                     <option value="Nos">Nos</option>
                                     <option value="Other">Other</option>
                                 </select>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" name="patternno" />
                             </td>
                         </tr>
                     </tbody>
@@ -80,6 +84,7 @@
                         <asp:BoundField DataField="BasicItem" HeaderText="Basic Item" />
                         <asp:BoundField DataField="BasicDenom" HeaderText="Denomination" />
                         <asp:BoundField DataField="iLueItem" HeaderText="In-lieu Item" />
+                        <asp:BoundField DataField="ItemCode" HeaderText="Pattern No" />
                         <asp:BoundField DataField="iLueDenom" HeaderText="Denomination" />
                         <asp:CommandField HeaderText="Action" ShowEditButton="true" ShowDeleteButton="true" />
                     </Columns>

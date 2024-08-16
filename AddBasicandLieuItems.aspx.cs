@@ -51,6 +51,7 @@ namespace VMS_1
                 string[] basicdenom = Request.Form.GetValues("basicdenom");
                 string[] ilieuitem = Request.Form.GetValues("ilieuitem");
                 string[] ilieudenom = Request.Form.GetValues("ilieudenom");
+                string[] ItemCode = Request.Form.GetValues("patternno");
 
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
@@ -76,13 +77,13 @@ namespace VMS_1
                         }
 
 
-                        SqlCommand cmd = new SqlCommand("INSERT INTO BasicLieuItems (BasicItem, BasicDenom, iLueItem, iLueDenom) VALUES (@BasicItem, @BasicDenom, @iLueItem, @iLueDenom)", conn);
+                        SqlCommand cmd = new SqlCommand("INSERT INTO BasicLieuItems (BasicItem, BasicDenom, iLueItem, iLueDenom,ItemCode) VALUES (@BasicItem, @BasicDenom, @iLueItem, @iLueDenom,@ItemCode)", conn);
 
                         cmd.Parameters.AddWithValue("@BasicItem", i < basicitem.Length ? basicitem[i] : basicitem[0]);
                         cmd.Parameters.AddWithValue("@BasicDenom", i < basicdenom.Length ? basicdenom[i] : basicdenom[0]);
                         cmd.Parameters.AddWithValue("@iLueItem", ilieuitem[i]);
                         cmd.Parameters.AddWithValue("@iLueDenom", ilieudenom[i]);
-
+                        cmd.Parameters.AddWithValue("@ItemCode", ItemCode[i]);
                         cmd.ExecuteNonQuery();
                     }
                 }
@@ -109,16 +110,18 @@ namespace VMS_1
             string basicDenom = (string)e.NewValues["BasicDenom"];
             string ilueItem = (string)e.NewValues["iLueItem"];
             string ilueDenom = (string)e.NewValues["iLueDenom"];
+            string ItemCode = (string)e.NewValues["ItemCode"];
 
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                string query = "UPDATE BasicLieuItems SET BasicItem=@BasicItem, BasicDenom=@BasicDenom, iLueItem=@iLueItem, iLueDenom=@iLueDenom WHERE ID=@ID";
+                string query = "UPDATE BasicLieuItems SET BasicItem=@BasicItem, BasicDenom=@BasicDenom, iLueItem=@iLueItem, iLueDenom=@iLueDenom,ItemCode=@ItemCode WHERE ID=@ID";
                 SqlCommand cmd = new SqlCommand(query, conn);
 
                 cmd.Parameters.AddWithValue("@BasicItem", basicItem);
                 cmd.Parameters.AddWithValue("@BasicDenom", basicDenom);
                 cmd.Parameters.AddWithValue("@iLueItem", ilueItem);
                 cmd.Parameters.AddWithValue("@iLueDenom", ilueDenom);
+                cmd.Parameters.AddWithValue("@ItemCode", ItemCode);
                 cmd.Parameters.AddWithValue("@ID", id);
 
                 conn.Open();

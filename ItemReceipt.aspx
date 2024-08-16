@@ -68,12 +68,12 @@
 
                 <label class="col-form-label" for="FileUpload1">File</label>
                 <asp:FileUpload CssClass="form-control mt-2" Width="20%" ID="FileUpload1" runat="server" ToolTip="Select Only Excel File" required />
-
+                <div>
+                    <asp:Label ID="lblStatus" runat="server" Text="" Font-Bold="true"></asp:Label>
+                </div>
                 <%--<asp:Button CssClass="btn btn-dark mt-2" Width="10%" ID="Button1" runat="server" Text="Upload" OnClick="UploadFileButton_Click" />--%>
             </div>
-            <div>
-                <asp:Label ID="lblStatus" runat="server" Text=""></asp:Label>
-            </div>
+
             <div class="text-center">
                 <button type="button" class="btn btn-primary mr-2" onclick="addRow()">Add Row</button>
                 <%
@@ -220,7 +220,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </form>
     </div>
 
