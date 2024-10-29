@@ -83,13 +83,15 @@ namespace VMS_1
             {
                 Denomination = string.Empty,
                 VegScale = string.Empty,
-                NonVegScale = string.Empty
+                NonVegScale = string.Empty,
+                CurrentStock=string.Empty,
+                YearMarkStock=string.Empty
             };
 
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                string query = "SELECT Denomination, VegScale, NonVegScale  FROM InLieuItems WHERE Id = @BasicItem";
+                string query = "SELECT Denomination, VegScale, NonVegScale,[dbo].[usp_GetPresetStock](InLieuItem)CurrentStock,[dbo].[usp_GetYearMarkStock](InLieuItem)YearMarkStock  FROM InLieuItems WHERE Id = @BasicItem";
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@BasicItem", ItemVal);
 
@@ -101,14 +103,15 @@ namespace VMS_1
                     {
                         Denomination = reader["Denomination"].ToString(),
                         VegScale = reader["VegScale"].ToString(),
-                        NonVegScale = reader["NonVegScale"].ToString()
+                        NonVegScale = reader["NonVegScale"].ToString(),
+                        CurrentStock= reader["CurrentStock"].ToString(),
+                        YearMarkStock=reader["YearMarkStock"].ToString()
                     };
                 }
             }
 
             return new JavaScriptSerializer().Serialize(result);
-        }
-
+        }        
         [WebMethod]
         public static List<object> GetItemCategories()
         {
@@ -345,9 +348,19 @@ namespace VMS_1
                     SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM IssueMaster ORDER By Id Desc", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
-
                     GridViewIssue.DataSource = dt;
                     GridViewIssue.DataBind();
+                    //string[] date = new string[] { Convert.ToDateTime(dt.Rows[0]["Date"]).ToString("yyyy-MM-dd") };
+                    //int status = checkVAStatus(date);
+                    //if (status > 0)
+                    //{
+                    //    GridViewIssue.DataSource = dt;
+                    //    GridViewIssue.DataBind();
+                    //}
+                    //else
+                    //{
+                    //    this.GridViewIssue.Columns[7].Visible = false;
+                    //}
                 }
             }
             catch (Exception ex)
@@ -493,15 +506,49 @@ namespace VMS_1
                 if (Session["Role"] != null && Session["Role"].ToString() == "Store Keeper")
                 {
                     // Find the delete button in the row and hide it
-                    LinkButton deleteButton = e.Row.Cells[e.Row.Cells.Count - 1].Controls.OfType<LinkButton>().FirstOrDefault(btn => btn.CommandName == "Delete");
-                    if (deleteButton != null)
+                    //LinkButton deleteButton = e.Row.Cells[e.Row.Cells.Count - 1].Controls.OfType<LinkButton>().FirstOrDefault(btn => btn.CommandName == "Delete");
+                    //if (deleteButton != null)
+                    //{
+                    //    deleteButton.Visible = false;
+                    //}
+                    foreach (TableCell cell in e.Row.Cells)
                     {
-                        deleteButton.Visible = false;
+                        string str = e.Row.Cells[1].Text;
+                        LinkButton deleteButton = cell.Controls.OfType<LinkButton>().FirstOrDefault(btn => btn.CommandName == "Delete");
+                        LinkButton EditButton = cell.Controls.OfType<LinkButton>().FirstOrDefault(btn => btn.CommandName == "Edit");
+                        if (deleteButton != null)
+                        {
+                            deleteButton.Visible = false;                            
+                        }
+                        if (EditButton != null)
+                        {
+                            EditButton.Visible = false;
+                        }
+
+                    }
+                }
+                else if(Session["Role"] != null && Session["Role"].ToString() == "Logistic Officer")
+                {
+                    foreach (TableCell cell in e.Row.Cells)
+                    {                      
+                        string[] date = new string[] { Convert.ToDateTime(e.Row.Cells[1].Text).ToString("yyyy-MM-dd") };                       
+                        int status = checkVAStatus(date);
+                        if (status > 0)
+                        {
+                            LinkButton deleteButton = cell.Controls.OfType<LinkButton>().FirstOrDefault(btn => btn.CommandName == "Delete");
+                            LinkButton EditButton = cell.Controls.OfType<LinkButton>().FirstOrDefault(btn => btn.CommandName == "Edit");
+                            if (deleteButton != null)
+                            {
+                                deleteButton.Visible = false;
+                            }
+                            if (EditButton != null)
+                            {
+                                EditButton.Visible = false;
+                            }
+                        }
                     }
                 }
             }
         }
-
-
     }
 }

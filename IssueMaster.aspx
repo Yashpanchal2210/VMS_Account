@@ -1,13 +1,10 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="IssueMaster.aspx.cs" Inherits="VMS_1.IssueMaster" EnableEventValidation="false" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
-
     <style>
         .input-container {
             position: relative;
-        }
+        
 
             .input-container input {
                 padding-right: 30px; /* Adjust padding to accommodate the icon */
@@ -50,6 +47,10 @@
                             <th class="heading">Date</th>
                             <th class="heading">Item Name</th>
                             <th class="heading">Denomination</th>
+                            <th class="heading">Current Stock</th>
+                            <th class="heading">Year Mark Stock</th>
+                            <th class="heading">Daily Strength</th>
+                            <th class="heading">Days</th>
                             <th class="heading">Entitled Strength</th>
                             <th class="heading">Qty Issued</th>
                             <th class="heading"></th>
@@ -68,8 +69,20 @@
                                 <input type="text" class="form-control" id="denomsVal" name="denoms" readonly />
                             </td>
                             <td>
+                                <input type="text" class="form-control" id="denomscurrentstock" name="denoms" readonly />
+                            </td>
+                             <td>
+                                <input type="text" class="form-control" id="yearmarkstock" name="yearmarkstock" readonly />
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" id="dailystr" name="dailystr" onchange="attachInputListeners(0)"  />
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" id="days" name="days" onchange="attachInputListeners(0)" />
+                            </td>
+                            <td>
                                 <div class="input-container">
-                                    <input type="text" class="form-control" name="Strength" />
+                                    <input type="text" class="form-control" id="Strength" name="Strength" readonly />
                                     <i class="fas fa-info-circle" data-toggle="modal" data-target="#infoModal"></i>
                                 </div>
                             </td>
@@ -129,27 +142,10 @@
                     OnRowUpdating="GridViewIssue_RowUpdating"
                     OnRowCancelingEdit="GridViewIssue_RowCancelingEdit"
                     OnRowDeleting="GridViewIssue_RowDeleting"
-                    OnRowDataBound="GridViewIssue_RowDataBound">
+                    OnRowDataBound="GridViewIssue_RowDataBound" AllowDeleting="true">
                     <Columns>
                         <asp:BoundField DataField="Id" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
-                        <%--<asp:TemplateField HeaderText="Date">
-                            <ItemTemplate>
-                                <asp:Label ID="lblDate" runat="server" Text='<%# Eval("Date") %>'></asp:Label>
-                            </ItemTemplate>
-                            <EditItemTemplate>
-                                <asp:TextBox ID="txtDate" runat="server" Text='<%# Bind("Date") %>'></asp:TextBox>
-                            </EditItemTemplate>
-                        </asp:TemplateField>--%>
                         <asp:BoundField DataField="Date" HeaderText="Date" ReadOnly="true" />
-
-                        <%--<asp:TemplateField HeaderText="Item">
-                            <ItemTemplate>
-                                <asp:Label ID="lblItem" runat="server" Text='<%# Eval("ItemName") %>'></asp:Label>
-                            </ItemTemplate>
-                            <EditItemTemplate>
-                                <asp:TextBox ID="txtItem" runat="server" Text='<%# Bind("ItemName") %>'></asp:TextBox>
-                            </EditItemTemplate>
-                        </asp:TemplateField>--%>
                         <asp:BoundField DataField="ItemName" HeaderText="ItemName" ReadOnly="true" />
                         <asp:TemplateField HeaderText="Qty Issued">
                             <ItemTemplate>
@@ -158,26 +154,15 @@
                             <EditItemTemplate>
                                 <asp:TextBox ID="txtQtyIssued" runat="server" Text='<%# Bind("QtyIssued") %>'></asp:TextBox>
                             </EditItemTemplate>
-                        </asp:TemplateField>
-                        <%--<asp:TemplateField HeaderText="Denomination">
-                            <ItemTemplate>
-                                <asp:Label ID="lblDenomination" runat="server" Text='<%# Eval("Denomination") %>'></asp:Label>
-                            </ItemTemplate>
-                            <EditItemTemplate>
-                                <asp:TextBox ID="txtDenomination" runat="server" Text='<%# Bind("Denomination") %>'></asp:TextBox>
-                            </EditItemTemplate>
-                        </asp:TemplateField>--%>
+                        </asp:TemplateField>                       
                         <asp:BoundField DataField="Denomination" HeaderText="Denomination" ReadOnly="true" />
-
                         <asp:TemplateField HeaderText="Strength">
                             <ItemTemplate>
-                                <asp:Label ID="lblstrength" runat="server" Text='<%# Eval("EntitledStrength") %>'></asp:Label>
-                            </ItemTemplate>
-                            <EditItemTemplate>
-                                <asp:TextBox ID="txtstrength" runat="server" Text='<%# Bind("EntitledStrength") %>'></asp:TextBox>
-                            </EditItemTemplate>
+                                <asp:Label ID="lblstrength" runat="server" Text='<%#Eval("EntitledStrength") %>'></asp:Label>
+                            </ItemTemplate>                          
                         </asp:TemplateField>
                         <asp:CommandField HeaderText="Action" ShowDeleteButton="True" DeleteText="Delete Row" />
+                        <asp:CommandField HeaderText="Action" ShowEditButton="True" EditText="Edit" />
                     </Columns>
                 </asp:GridView>
             </div>
@@ -246,13 +231,6 @@
         </form>
 
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-
     <script>
         $(document).ready(function () {
             $('#DropDownList1').select2({
@@ -350,7 +328,8 @@
 
                         var result = JSON.parse(data.d);
                         var denomination = result.Denomination;
-
+                        var currentstock = result.CurrentStock;
+                        var yearmarkstock = result.YearMarkStock;
                         var vegScale = result.VegScale;
                         var nonvegeScale = result.NonVegScale;
 
@@ -360,9 +339,17 @@
                         if (rowSequence > 1) {
                             var denomsDropdown = document.getElementById("denomsVal_" + part1);
                             denomsDropdown.value = denomination;
+                            var CurrentStock = document.getElementById("denomscurrentstock_" + part1);
+                            CurrentStock.value = currentstock;
+                            var Yearmarkstock = document.getElementById("yearmarkstock_" + part1);
+                            Yearmarkstock.value = yearmarkstock;
                         } else {
                             var denomsDropdown = document.getElementById("denomsVal");
                             denomsDropdown.value = denomination;
+                            var CurrentStock = document.getElementById("denomscurrentstock");
+                            CurrentStock.value = currentstock;
+                            var Yearmarkstock = document.getElementById("yearmarkstock");
+                            Yearmarkstock.value = yearmarkstock;
                         }
                     }
                 })
@@ -455,10 +442,22 @@
                                 <input type="text" class="form-control" id="denomsVal_${rowSequence}" name="denoms" readonly />
                             </td>
                             <td>
-                                <input type="text" class="form-control strength-input" name="Strength" id="Strength_${rowSequence}" />
+                                <input type="text" class="form-control" id="denomscurrentstock_${rowSequence}" name="denoms" readonly />
                             </td>
                             <td>
-                                <input type="text" class="form-control" name="Qtyissued" id="Qtyissued_${rowSequence}" />
+                                <input type="text" class="form-control" id="yearmarkstock_${rowSequence}" name="yearmarkstock" readonly />
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" id="dailystr_${rowSequence}" onchange="attachInputListeners(${rowSequence})" name="dailystr"  />
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" id="days_${rowSequence}" onchange="attachInputListeners(${rowSequence})" name="days"  />
+                            </td>
+                            <td>
+                                <input type="text" class="form-control strength-input" name="Strength" id="Strength_${rowSequence}" readonly  />
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" name="Qtyissued" id="Qtyissued_${rowSequence}"  />
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
@@ -552,7 +551,78 @@
                 timeOut: 3000
             });
         }
+        //$('#dailystr, #days').on('input', function () {
+        //    if (rowSequence == 1) {
+        //        var input1 = $('#dailystr').val();
+        //        var input2 = $('#days').val();
 
+        //        // Example logic: concatenate the values
+        //        var result = input1 * input2;
 
+        //        // Display the result in the third textbox
+        //        $('#Strength').val(result);
+        //    }
+        //    else {
+        //        var input1 = parseFloat($('#dailystr_' + rowSequence).val());
+        //        var input2 = parseFloat($('#days_' + rowSequence).val());
+
+        //        // Make sure both values are numbers before performing multiplication
+        //        if (!isNaN(input1) && !isNaN(input2)) {
+        //            var result = input1 * input2;
+        //            // Display the result in the Strength textbox of the current row
+        //            $('#Strength_' + rowSequence).val(result);
+        //        } else {
+        //            // Clear the result if one of the inputs is invalid
+        //            $('#Strength_' + rowSequence).val('');
+        //        }
+        //    }
+        //});
+
+        //$('#dailystr_' + rowSequence + ', #days_' + rowSequence).on('input', function () {
+        //    debugger;
+        //    var input1 = parseFloat($('#dailystr_' + rowSequence).val());
+        //    var input2 = parseFloat($('#days_' + rowSequence).val());
+
+        //    // Make sure both values are numbers before performing multiplication
+        //    if (!isNaN(input1) && !isNaN(input2)) {
+        //        var result = input1 * input2;
+        //        // Display the result in the Strength textbox of the current row
+        //        $('#Strength_' + rowSequence).val(result);
+        //    } else {
+        //        // Clear the result if one of the inputs is invalid
+        //        $('#Strength_' + rowSequence).val('');
+        //    }
+        //});
+
+        function attachInputListeners(rowSequence) {
+            if (rowSequence == 0) {
+                // For the first row
+                $('#dailystr, #days').on('input', function () {
+                    var input1 = parseFloat($('#dailystr').val());
+                    var input2 = parseFloat($('#days').val());
+
+                    // Ensure both values are numbers before performing multiplication
+                    if (!isNaN(input1) && !isNaN(input2)) {
+                        var result = input1 * input2;
+                        $('#Strength').val(result);
+                    } else {
+                        $('#Strength').val('');
+                    }
+                });
+            } else {
+                // For dynamic rows (2nd row onwards)
+                $('#dailystr_' + rowSequence + ', #days_' + rowSequence).on('input', function () {
+                    var input1 = parseFloat($('#dailystr_' + rowSequence).val());
+                    var input2 = parseFloat($('#days_' + rowSequence).val());
+
+                    if (!isNaN(input1) && !isNaN(input2)) {
+                        var result = input1 * input2;
+                        $('#Strength_' + rowSequence).val(result);
+                    } else {
+                        $('#Strength_' + rowSequence).val('');
+                    }
+                });
+            }
+        }
     </script>
 </asp:Content>

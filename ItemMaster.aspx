@@ -3,97 +3,97 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
         <h2 class="mb-4">Enter Scale of Items</h2>
-        <p style="color:yellow; background-color:black; font-size:large;">This is a one-time activity to be updated only when there are revised orders concerning INBR 14. Items and scales can be added or updated exclusively with the permission of the Logistic Officer and the Commanding Officer, using an admin ID login.</p>
+        <p style="color: yellow; background-color: black; font-size: large;">This is a one-time activity to be updated only when there are revised orders concerning INBR 14. Items and scales can be added or updated exclusively with the permission of the Logistic Officer and the Commanding Officer, using an admin ID login.</p>
 
         <form id="itemMasterForm" runat="server">
             <%--<div class="text-right">
                 <asp:LinkButton ID="DashboardButton" runat="server" Text="Go to Dashboard" CssClass="btn btn-info" PostBackUrl="~/Dashboard.aspx"></asp:LinkButton>
                 <asp:LinkButton ID="Receipt" runat="server" Text="Go to Receipt Module" CssClass="btn btn-info" PostBackUrl="~/ItemReceipt.aspx"></asp:LinkButton>
             </div>--%>
-
-            <h3>Basic Items</h3>
-            <div class="table-responsive">
-                <input type="hidden" id="categoryVal" />
-                <table class="table" id="myTable">
-                    <thead>
-                        <tr>
-                            <th class="heading">Category</th>
-                            <th class="heading">Basic Item</th>
-                            <th class="heading">Denomination</th>
-                            <th class="heading">Veg Scale</th>
-                            <th class="heading">NonVeg Scale</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody" runat="server">
-                        <tr>
-                            <td>
-                                <%--<input type="number" class="form-control" name="officerScale" required min="0" step="0.001" />--%>
-                                <select class="form-control" name="category" id="CategoryBasic" onchange="changeCategory(this.value)" required>
-                                    <option value="">Select</option>
-                                    <option value="Officer">Officer</option>
-                                    <option value="Sailor">Sailor</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select class="form-control" name="basicItem" id="basicnameVal" onchange="fetchBasicDenom()">
-                                    <option value="">Select</option>
-                                </select>
-                                <%--<asp:DropDownList ID="basicItem" runat="server" CssClass="form-control" required>
+            <div id="entry" runat="server">
+                <h3>Basic Items</h3>
+                <div class="table-responsive">
+                    <input type="hidden" id="categoryVal" />
+                    <table class="table" id="myTable">
+                        <thead>
+                            <tr>
+                                <th class="heading">Category</th>
+                                <th class="heading">Basic Item</th>
+                                <th class="heading">Denomination</th>
+                                <th class="heading">Veg Scale</th>
+                                <th class="heading">NonVeg Scale</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody" runat="server">
+                            <tr>
+                                <td>
+                                    <%--<input type="number" class="form-control" name="officerScale" required min="0" step="0.001" />--%>
+                                    <select class="form-control" name="category" id="CategoryBasic" onchange="changeCategory(this.value)" required>
+                                        <option value="">Select</option>
+                                        <option value="Officer">Officer</option>
+                                        <option value="Sailor">Sailor</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control" name="basicItem" id="basicnameVal" onchange="fetchBasicDenom()">
+                                        <option value="">Select</option>
+                                    </select>
+                                    <%--<asp:DropDownList ID="basicItem" runat="server" CssClass="form-control" required>
                                     <asp:ListItem Text="Select" Value="" />
                                 </asp:DropDownList>--%>
-                            </td>
-                            <td>
-                                <input type="text" class="form-control" id="denomsVal" name="denoms" readonly />
-                            </td>
-                            <td>
-                                <input type="number" class="form-control" name="veg" required min="0" step="0.00000001" /></td>
-                            <td>
-                                <input type="number" class="form-control" name="nonveg" required min="0" step="0.00000001" /></td>
-                        </tr>
-                    </tbody>
-                </table>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" id="denomsVal" name="denoms" readonly />
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control" name="veg" required min="0" step="0.00000001" /></td>
+                                <td>
+                                    <input type="number" class="form-control" name="nonveg" required min="0" step="0.00000001" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>In-lieu Items Details</h3>
+                <div class="table-responsive">
+                    <table class="table" id="Table2">
+                        <thead>
+                            <tr>
+                                <th class="heading">In-lieu Item</th>
+                                <th class="heading">Category</th>
+                                <th class="heading">Denomination</th>
+                                <th class="heading">Veg Scale</th>
+                                <th class="heading">NonVeg Scale</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="Tbody1" runat="server">
+                            <tr>
+                                <td>
+                                    <select class="form-control" name="inlieuItem" id="inlieuItemVal" onchange="changeInlieuItem(this.value)">
+                                        <option value="">Select</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="categoryIlue" id="categoryIlue" readonly /></td>
+                                <td>
+                                    <input type="text" class="form-control" id="denoms" name="denoms" readonly />
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control" name="vegscaleIlue" min="0" step="0.00000001" />
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control" name="nonvegscaleIlue" min="0" step="0.00000001" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Submit Button -->
+                <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-success" OnClick="btnSubmit_Click" />
+                <button type="button" class="btn btn-primary" onclick="addAlternativeItem()">Add Alternative Item</button>
             </div>
-
-            <h3>In-lieu Items Details</h3>
-            <div class="table-responsive">
-                <table class="table" id="Table2">
-                    <thead>
-                        <tr>
-                            <th class="heading">In-lieu Item</th>
-                            <th class="heading">Category</th>
-                            <th class="heading">Denomination</th>
-                            <th class="heading">Veg Scale</th>
-                            <th class="heading">NonVeg Scale</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="Tbody1" runat="server">
-                        <tr>
-                            <td>
-                                <select class="form-control" name="inlieuItem" id="inlieuItemVal" onchange="changeInlieuItem(this.value)">
-                                    <option value="">Select</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input type="text" class="form-control" name="categoryIlue" id="categoryIlue" readonly /></td>
-                            <td>
-                                <input type="text" class="form-control" id="denoms" name="denoms" readonly />
-                            </td>
-                            <td>
-                                <input type="number" class="form-control" name="vegscaleIlue" min="0" step="0.00000001" />
-                            </td>
-                            <td>
-                                <input type="number" class="form-control" name="nonvegscaleIlue" min="0" step="0.00000001" />
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Submit Button -->
-            <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-success" OnClick="btnSubmit_Click" />
-            <button type="button" class="btn btn-primary" onclick="addAlternativeItem()">Add Alternative Item</button>
-
             <!-- Alternative Item Fields Container -->
             <div id="alternateItemContainer"></div>
             <asp:Label ID="lblMessage" runat="server" ForeColor="Green"></asp:Label>
@@ -131,12 +131,12 @@
 
                         <asp:TemplateField HeaderText="Actions">
                             <ItemTemplate>
-                                <asp:LinkButton ID="EditButton" runat="server" CommandName="Edit" Text="Edit"></asp:LinkButton>
-                                <asp:LinkButton ID="DeleteButton" runat="server" CommandName="Delete" Text="Delete"></asp:LinkButton>
+                                <asp:LinkButton ID="EditButton" runat="server" CommandName="Edit" Text="Edit" Visible='<%# IsLogisticOfficer() %>'></asp:LinkButton>
+                                <asp:LinkButton ID="DeleteButton" runat="server" CommandName="Delete" Text="Delete" Visible='<%# IsLogisticOfficer() %>'></asp:LinkButton>
                             </ItemTemplate>
                             <EditItemTemplate>
-                                <asp:LinkButton ID="UpdateButton" runat="server" CommandName="Update" Text="Update"></asp:LinkButton>
-                                <asp:LinkButton ID="CancelButton" runat="server" CommandName="Cancel" Text="Cancel"></asp:LinkButton>
+                                <asp:LinkButton ID="UpdateButton" runat="server" CommandName="Update" Text="Update" Visible='<%# IsLogisticOfficer() %>'></asp:LinkButton>
+                                <asp:LinkButton ID="CancelButton" runat="server" CommandName="Cancel" Text="Cancel" Visible='<%# IsLogisticOfficer() %>'></asp:LinkButton>
                             </EditItemTemplate>
                         </asp:TemplateField>
                     </Columns>
@@ -147,11 +147,6 @@
 
         </form>
     </div>
-
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
 
         var rowSequence = 1;
@@ -180,7 +175,7 @@
                     return;
                 }
             }
-            
+
 
             var tableBody = document.getElementById("MainContent_Tbody1");
             var newRow = document.createElement("tr");

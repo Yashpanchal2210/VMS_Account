@@ -31,52 +31,83 @@
                             <td colspan="6">
                                 <div>
                                     <asp:GridView ID="GridViewRationScale" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="false">
-                                        <columns>
-                                             <asp:TemplateField HeaderText="">
-                                                <itemtemplate>
+                                        <Columns>
+                                            <asp:TemplateField HeaderText="">
+                                                <ItemTemplate>
                                                     <asp:CheckBox ID="chkitem" runat="server"></asp:CheckBox>
-                                                </itemtemplate>
+                                                </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="ID" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
                                             <asp:BoundField DataField="DemandNo" HeaderText="DemandNo" />
                                             <asp:BoundField DataField="ItemCode" HeaderText="Pattern Number" />
                                             <asp:TemplateField HeaderText="Item Name">
-                                                <itemtemplate>
+                                                <ItemTemplate>
                                                     <asp:Label ID="lblItemName" runat="server" Text='<%# Eval("ItemName") %>'></asp:Label>
-                                                </itemtemplate>
+                                                </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="ItemDeno" HeaderText="Denomination" />
                                             <asp:BoundField DataField="DemandDate" HeaderText="DemandDate" />
                                             <asp:BoundField DataField="SupplyDate" HeaderText="Supply Date" />
                                             <asp:BoundField DataField="Qty" HeaderText="Requested Qty" />
                                             <asp:TemplateField HeaderText="Issued Qty">
-                                                <itemtemplate>
-                                                    <asp:Textbox ID="txtIssueQty" runat="server" Text="0"></asp:Textbox>
-                                                </itemtemplate>
+                                                <ItemTemplate>
+                                                    <asp:TextBox ID="txtIssueQty" runat="server" Text="0" Width="100px"></asp:TextBox>
+                                                </ItemTemplate>
                                             </asp:TemplateField>
-                                        </columns>
+                                            <asp:TemplateField HeaderText="Batch No">
+                                                <ItemTemplate>
+                                                    <asp:TextBox ID="txtBatch" runat="server"></asp:TextBox>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                             <asp:TemplateField HeaderText="Close" >
+                                                <ItemTemplate>
+                                                   <asp:CheckBox ID="chkclose" runat="server" />
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:BoundField DataField="UnitName" HeaderText="UnitName" />                                            
+                                            <asp:TemplateField HeaderText="Issued Qty" Visible="false">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblUnitCode" runat="server" Text='<%# Eval("UnitCode") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+
+                                        </Columns>
                                     </asp:GridView>
                                 </div>
                             </td>
                         </tr>
                         <tr>
-                            <td><asp:label ID="lblRef" runat="server" Text="Issue Reference No" Font-Bold="true" required ></asp:label> </td>
-                            <td ><asp:TextBox ID="txtIssueRefNo" runat="server" required ></asp:TextBox> </td>
-                            <td>
-                                <asp:Button ID="SubmitButton" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-primary" />
-                            </td>                            
-                            <td></td>
-                            <td></td>
+                            <td colspan="6">
+                                <table style="width: 100%;" id="rmk" runat="server">
+                                    <tr>
+                                        <td>
+                                            <asp:Label ID="lblRef" runat="server" Text="Issue Reference No" Font-Bold="true" required></asp:Label>
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtIssueRefNo" runat="server" required></asp:TextBox>
+                                        </td>
+                                        <td>
+                                            <asp:Label ID="Label1" runat="server" Text="Remark" Font-Bold="true"></asp:Label>
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtRemark" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td>
+                                            &nbsp;</td>
+                                        <td>
+                                            &nbsp;</td>
+                                        <td>
+                                            <asp:Button ID="SubmitButton" runat="server" Text="Submit" OnClick="SubmitButton_Click" CssClass="btn btn-primary" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
                         </tr>
                     </table>
                 </div>
             </div>
         </form>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         $(document).ready(function () {
             fetchItems('');

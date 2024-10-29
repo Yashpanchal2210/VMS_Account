@@ -40,7 +40,7 @@ namespace VMS_1
                 {
                     conn.Open();
                     DataTable dt = new DataTable();
-                    SqlCommand cmd = new SqlCommand("SELECT ID,DemandNo,ItemCode,ItemName,ItemDeno,Qty,DemandDate,SupplyDate,dbo.usp_get_demandIssuedQty(DemandNo)IssuedQty FROM Demand WHERE Status=1 AND DemandNo IN(SELECT DemandNo FROM BVYardIssue) ORDER By Id desc", conn);
+                    SqlCommand cmd = new SqlCommand("SELECT ID,DemandNo,ItemCode,ItemName,ItemDeno,Qty,DemandDate,SupplyDate,dbo.usp_get_demandIssuedQty(DemandNo)IssuedQty,[dbo].[usp_get_demandReceiptdQty](ItemName,DemandNo)ReceiptQty FROM Demand WHERE Status=1 AND DemandNo IN(SELECT DemandNo FROM BVYardIssue) ORDER By Id desc", conn);
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                     adapter.Fill(dt);
                     GridViewRationScale.DataSource = dt;

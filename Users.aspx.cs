@@ -91,23 +91,25 @@ namespace VMS_1
                     //string answer = ((TextBox)row.FindControl("txtAnswer")).Text;
                     DropDownList ddlRole = (DropDownList)row.FindControl("ddlRole");
                     string role = ddlRole.SelectedValue;
-
-                    using (SqlConnection conn = new SqlConnection(connStr))
+                    if (!string.IsNullOrEmpty(password))
                     {
-                        string query = "UPDATE usermaster SET rank = @Rank, Designation = @Designation, name = @Name, Password = @Password, Role = @Role WHERE NudId = @NudId";
-                        SqlCommand cmd = new SqlCommand(query, conn);
-                        cmd.Parameters.AddWithValue("@Rank", rank);
-                        cmd.Parameters.AddWithValue("@Designation", designation);
-                        cmd.Parameters.AddWithValue("@NudId", nuid);
-                        cmd.Parameters.AddWithValue("@Password", password);
-                        //cmd.Parameters.AddWithValue("@SecretQuestion", secretQuestion);
-                        //cmd.Parameters.AddWithValue("@Answer", answer);
-                        cmd.Parameters.AddWithValue("@Role", role);
-                        cmd.Parameters.AddWithValue("@Name", name);
+                        using (SqlConnection conn = new SqlConnection(connStr))
+                        {
+                            string query = "UPDATE usermaster SET rank = @Rank, Designation = @Designation, name = @Name, Password = @Password, Role = @Role WHERE NudId = @NudId";
+                            SqlCommand cmd = new SqlCommand(query, conn);
+                            cmd.Parameters.AddWithValue("@Rank", rank);
+                            cmd.Parameters.AddWithValue("@Designation", designation);
+                            cmd.Parameters.AddWithValue("@NudId", nuid);
+                            cmd.Parameters.AddWithValue("@Password", password);
+                            //cmd.Parameters.AddWithValue("@SecretQuestion", secretQuestion);
+                            //cmd.Parameters.AddWithValue("@Answer", answer);
+                            cmd.Parameters.AddWithValue("@Role", role);
+                            cmd.Parameters.AddWithValue("@Name", name);
 
-                        conn.Open();
-                        cmd.ExecuteNonQuery();
-                        conn.Close();
+                            conn.Open();
+                            cmd.ExecuteNonQuery();
+                            conn.Close();
+                        }
                     }
 
                     GridViewUser.EditIndex = -1;

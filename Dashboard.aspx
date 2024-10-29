@@ -3,10 +3,6 @@
 <%@ Import Namespace="System.Web.Security" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-
-    <link rel="stylesheet" href="wwwroot/assets/css/dashlite.css" />
-    <link id="skin-default" rel="stylesheet" href="wwwroot/assets/css/theme.css" />
-
     <style>
         .issue-row {
             color: red;
@@ -17,14 +13,15 @@
             align-items: center;
         }
 
+        /k, c--
         .form-control {
             flex: 1;
             margin-right: 10px;
         }
 
-            .form-control:last-child {
-                margin-right: 0;
-            }
+        .form-control:last-child {
+            margin-right: 0;
+        }
     </style>
     <form id="form1" runat="server">
         <div class="container">
@@ -39,10 +36,11 @@
                                     </div>
                                 </div>
                                 <div class="row row-align col-md-6">
-                                    <input type="month" class="form-control col-md-4" id="vmsDate" />
-                                    <button class="btn btn-primary form-control col-md-2" onclick="getVMSStatus()">Check</button>
+                                    <input type="month" class="fo rm-control col-md-4" id="vmsDate" runat="server" />
+                                    <%-- <button class="btn btn-primary form-control col-md-2" onclick="getVMSStatus()">Check</button>--%>
+                                    <asp:Button ID="btncheck" runat="server" Text="Check" class="btn btn-primary form-control col-md-2" OnClick="btncheck_Click" />
                                 </div>
-                                <div class="nk-order-ovwg mt-5">
+                                <%--<div class="nk-order-ovwg mt-5">
                                     <div class="row g-4 align-end">
                                         <div class="col-xxl-8">
                                             <div class="nk-order-ovwg-ck">
@@ -58,9 +56,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div>--%>
                                 <div class="nk-order-ovwg mt-5">
-                                    <asp:GridView ID="gvvalist" runat="server" AutoGenerateColumns="false" CssClass="table table-bordered table-striped">
+                                    <asp:GridView ID="gvvalist" runat="server" AutoGenerateColumns="false" CssClass="table table-bordered table-striped" EmptyDataText="Record not found">
                                         <Columns>
                                             <asp:BoundField HeaderText="AccountID" DataField="AccountID" />
                                             <asp:TemplateField HeaderText="Victualling Account">
@@ -71,12 +69,12 @@
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:BoundField HeaderText="ForwardedBy" DataField="ForwardedBy" />
-                                            <asp:BoundField HeaderText="ForwardedBy" DataField="ForwardedBy" />
                                             <asp:BoundField HeaderText="Role" DataField="ForwardedByRole" />
                                             <asp:BoundField HeaderText="ForwardedTo" DataField="ForwardedTo" />
                                             <asp:BoundField HeaderText="Role" DataField="ForwardedToRole" />
                                             <asp:BoundField HeaderText="Remark" DataField="Remark" />
                                             <asp:BoundField HeaderText="Date" DataField="Date" />
+                                            <asp:BoundField HeaderText="UnitName" DataField="UnitName" />
                                         </Columns>
                                     </asp:GridView>
                                 </div>
@@ -104,8 +102,10 @@
                                     <div class="row g-4 align-end">
                                         <div class="col-xxl-8">
                                             <div class="nk-order-ovwg-ck">
-                                                <div style="width: 100%; overflow-x: auto;">
-                                                    <canvas class="order-overview-chart" id="orderOverviewPresent"></canvas>
+                                                <div style="width: 100%; height: 200px; overflow: auto;">
+                                                    <%--<canvas class="order-overview-chart" id="orderOverviewPresent"></canvas>--%>
+                                                    <asp:GridView ID="GridViewPresentStock" runat="server" CssClass="table table-bordered table-striped">
+                                                    </asp:GridView>
                                                 </div>
                                             </div>
                                         </div>
@@ -118,7 +118,7 @@
                         </div>
                         <!-- .card -->
                     </div>
-                    <div class="col-lg-8">
+                    <div class="col-lg-12">
                         <div class="card card-bordered h-100">
                             <div class="card-inner">
                                 <div class="card-title-group align-start mb-3">
@@ -132,7 +132,26 @@
                                     <div class="row g-4 align-end">
                                         <div class="col-xxl-8">
                                             <div class="nk-order-ovwg-ck">
-                                                <canvas class="order-overview-chart" id="orderOverviewIssue" width="891" height="225"></canvas>
+                                                <%--<canvas class="order-overview-chart" id="orderOverviewIssue" width="891" height="225"></canvas>--%>
+                                                <div style="width: 100%; height: 200px; overflow: auto;">
+                                                    <asp:GridView ID="GridViewIssue" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False">
+                                                        <Columns>
+                                                            <asp:BoundField DataField="Date" HeaderText="Date" ReadOnly="true" />
+                                                            <asp:BoundField DataField="ItemName" HeaderText="ItemName" ReadOnly="true" />
+                                                            <asp:TemplateField HeaderText="Qty Issued">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblQtyIssued" runat="server" Text='<%# Eval("QtyIssued") %>'></asp:Label>
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                            <asp:BoundField DataField="Denomination" HeaderText="Denomination" ReadOnly="true" />
+                                                            <asp:TemplateField HeaderText="Strength">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblstrength" runat="server" Text='<%# Eval("EntitledStrength") %>'></asp:Label>
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
                                             </div>
                                         </div>
                                         <!-- .col -->
@@ -145,7 +164,7 @@
                         <!-- .card -->
                     </div>
                     <!-- .col Reference -->
-                    <div class="col-lg-4">
+                    <%--<div class="col-lg-4">
                         <div class="card card-bordered h-100">
                             <div class="card-inner-group">
                                 <div class="card-inner card-inner-md">
@@ -179,7 +198,7 @@
                             <!-- .card-inner-group -->
                         </div>
                         <!-- .card -->
-                    </div>
+                    </div>--%>
                     <!-- .col RECEIPT Status -->
                     <div class="col-lg-12">
                         <div class="card card-bordered h-100">
@@ -195,7 +214,20 @@
                                     <div class="row g-4 align-end">
                                         <div class="col-xxl-8">
                                             <div class="nk-order-ovwg-ck">
-                                                <canvas class="order-overview-chart" id="orderOverviewReceipt"></canvas>
+                                                <%--<canvas class="order-overview-chart" id="orderOverviewReceipt"></canvas>--%>
+                                                <div style="width: 100%; height: 200px; overflow: auto;">
+                                                    <asp:GridView ID="gvreceipt" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="False">
+                                                        <Columns>
+                                                            <asp:BoundField DataField="itemnames" HeaderText="ItemName" ReadOnly="true" />
+                                                            <asp:TemplateField HeaderText="TotalQuantity">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblTotalQuantity" runat="server" Text='<%# Eval("TotalQuantity") %>'></asp:Label>
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                            <asp:BoundField DataField="FreshStatus" HeaderText="FreshStatus" />
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
                                             </div>
                                         </div>
                                         <!-- .col -->
@@ -211,7 +243,7 @@
 
 
                     <!-- .card Strength -->
-                    <div class="col-lg-12 mb-5">
+                    <div class="col-lg-12 mb-5" style="display: none;">
                         <div class="card card-bordered h-100">
                             <div class="card-inner">
                                 <div class="card-title-group align-start mb-3">
@@ -274,7 +306,7 @@
                     </div>
                 </div>
 
-                <h2>Month Stock</h2>
+                <h4>Month Stock</h4>
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label" for="ddlMonths">Select Month:</label>
                     <div class="col-sm-4">
@@ -316,12 +348,9 @@
             </div>--%>
         </div>
 
-        <%--<div class="container">
-            <h2>Present Stock</h2>
-            <asp:GridView ID="GridViewPresentStock" runat="server" CssClass="table table-bordered table-striped">
-            </asp:GridView>
-            <asp:Button ID="ExportPresentStockButton" runat="server" Text="Export Present Stock to Excel" OnClick="ExportPresentStockButton_Click" CssClass="btn btn-primary" />
-        </div>--%>
+        <div class="container">
+            <%--<asp:Button ID="ExportPresentStockButton" runat="server" Text="Export Present Stock to Excel" OnClick="ExportPresentStockButton_Click" CssClass="btn btn-primary" />--%>
+        </div>
 
         <%--<div class="container">
             <h2 class="mt-4">Export Issue</h2>
@@ -355,16 +384,7 @@
         </div>--%>
     </form>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="wwwroot/js/js/bundle.js"></script>
-    <script src="wwwroot/js/js/scripts.js"></script>
-    <script src="wwwroot/js/js/charts/gd-default.js"></script>
-    <script src="wwwroot/js/js/example-chart.js"></script>
-    <script src="wwwroot/js/js/charts/chart-crm.js"></script>
+
     <script>
         window.onload = function () {
             var ctx = document.getElementById('orderOverviewStrength').getContext('2d');

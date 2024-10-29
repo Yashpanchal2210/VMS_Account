@@ -34,17 +34,21 @@ namespace VMS_1
             {
                 FormsAuthentication.RedirectToLoginPage();
             }
-            //LoadGridViewPresentStock();
+            LoadGridViewPresentStock();
             LoadGridViewPage2to7();
             LoadGridViewMonthStock();
-            BindConversation();
+            
+            string val=vmsDate.Value;
             //LoadGridViewDivers();
             //LoadOfficerSheet();
             //LoadGridViewExtraIssue();
+            LoadGridView();
+            LoadReceiptGridView();
             FilterDataByMonth(Convert.ToString(DateTime.Now.Month));
             if(!IsPostBack)
             {
                 GetVMSStatus(Convert.ToString(DateTime.Now.Month));
+                BindConversation(0);
             }
             string chartDataR = GenerateReceiptChartData();
             string chartDataI = GenerateIssueChartData();
@@ -55,7 +59,7 @@ namespace VMS_1
             ClientScript.RegisterStartupScript(this.GetType(), "chartDataP", "<script>var chartDataP = " + chartDataP + ";</script>");
             ClientScript.RegisterStartupScript(this.GetType(), "chartDataST", "<script>var chartDataST = " + chartDataST + ";</script>");
         }
-        private void BindConversation()
+        private void BindConversation(int month)
         {
             try
             {
@@ -64,11 +68,11 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("EXEC usp_GetConversationList", conn);
-                    dtMonthStock = new DataTable();
-                    da.Fill(dtMonthStock);
+                    SqlDataAdapter da = new SqlDataAdapter("EXEC usp_GetConversationhomeList " + month + "", conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
 
-                    gvvalist.DataSource = dtMonthStock;
+                    gvvalist.DataSource = dt;
                     gvvalist.DataBind();
                 }
             }
@@ -164,29 +168,73 @@ namespace VMS_1
             return filteredData;
         }
 
-        //private void LoadGridViewPresentStock()
-        //{
-        //    try
-        //    {
-        //        string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
-        //        using (SqlConnection conn = new SqlConnection(connStr))
-        //        {
-        //            conn.Open();
+        private void LoadGridViewPresentStock()
+        {
+            try
+            {
+                string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
 
-        //            SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM PresentStockMaster", conn);
-        //            DataTable dt = new DataTable();
-        //            da.Fill(dt);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM PresentStockMaster", conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
 
-        //            GridViewPresentStock.DataSource = dt;
-        //            GridViewPresentStock.DataBind();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
-        //    }
-        //}
+                    GridViewPresentStock.DataSource = dt;
+                    GridViewPresentStock.DataBind();
+                }
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
+            }
+        }
 
+        private void LoadGridView()
+        {
+            try
+            {
+                string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM IssueMaster WHERE Date >= GETDATE() - 10 ORDER By Id Desc", conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    GridViewIssue.DataSource = dt;
+                    GridViewIssue.DataBind();
+                }
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
+            }
+        }
+        private void LoadReceiptGridView()
+        {
+            try
+            {
+                string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT  RM.itemnames, SUM(RM.quantities) AS TotalQuantity,  CASE WHEN BLI.Fresh = 'True' THEN 'Fresh' ELSE 'Dry' END AS FreshStatus FROM ReceiptMaster RM LEFT JOIN BasicLieuItems BLI ON RM.itemnames = BLI.iLueItem WHERE RM.Dates >= GETDATE() - 20 AND RM.receivedFrom = 'BV Yard' GROUP BY RM.itemnames, BLI.Fresh", conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    gvreceipt.DataSource = dt;
+                    gvreceipt.DataBind();
+                }
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = "An error occurred while binding the grid view: " + ex.Message;
+            }
+        }
         private void LoadGridViewPage2to7()
         {
             try
@@ -1495,6 +1543,14 @@ namespace VMS_1
             }
         }
 
-
+        protected void btncheck_Click(object sender, EventArgs e)
+        {
+            string date = vmsDate.Value;
+            string[] Datem = date.Split('-');
+            if (Datem.Length > 0)
+            {
+                BindConversation(Convert.ToInt32(Datem[1]));
+            }
+        }
     }
 }

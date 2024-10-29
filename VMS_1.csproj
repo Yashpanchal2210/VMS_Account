@@ -330,10 +330,22 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AddBasicandLieuItems.aspx" />
+    <Content Include="AuditUnit.aspx" />
+    <Content Include="ByYardIssue.aspx" />
     <Content Include="Cover.aspx" />
+    <Content Include="CreateDemand.aspx" />
+    <Content Include="CurrentStockList.aspx" />
     <Content Include="Dashboard.aspx" />
+    <Content Include="DemandApproval.aspx" />
+    <Content Include="DemandIssue.aspx" />
+    <Content Include="DemandIssueList.aspx" />
+    <Content Include="DemandReceipt.aspx" />
+    <Content Include="DemandStatus.aspx" />
+    <Content Include="DiverReport.aspx" />
     <Content Include="Divers_ExtraIssue.aspx" />
+    <Content Include="EmtDashbord.aspx" />
     <Content Include="ExportIssueOfficerandSailor.aspx" />
+    <Content Include="ExtraIssue.aspx" />
     <Content Include="ForgetPassword.aspx" />
     <Content Include="IssueMaster.aspx" />
     <Content Include="ItemMaster.aspx" />
@@ -343,18 +355,23 @@
     <Content Include="LimeFresh_ExtraIssue.aspx" />
     <Content Include="LOGIN.aspx" />
     <Content Include="MilkSugarandTea_ExtraIssue.aspx" />
+    <Content Include="OfficerVAcc.aspx" />
     <Content Include="OfficerWorksheet.aspx" />
     <Content Include="OtherShips.aspx" />
     <Content Include="Page01.aspx" />
     <Content Include="Page08.aspx" />
+    <Content Include="Page10-11.aspx" />
+    <Content Include="Page12.aspx" />
     <Content Include="Page14.aspx" />
     <Content Include="Page2_7Report.aspx" />
     <Content Include="Patients.aspx" />
     <Content Include="PestControl_ExtraIssue.aspx" />
     <Content Include="RationIssueOnPayment.aspx" />
     <Content Include="RationScale.aspx" />
+    <Content Include="RegulatingOfficer.aspx" />
     <Content Include="ReportsGenerate.aspx" />
     <Content Include="ResetPassword.aspx" />
+    <Content Include="SailorsVAcc.aspx" />
     <Content Include="Strength.aspx" />
     <Content Include="UnapprovedUsers.aspx" />
     <Content Include="UserRegister.aspx" />
@@ -363,11 +380,146 @@
     <Content Include="VictuallingManagement.aspx" />
     <Content Include="Wastage.aspx" />
     <Content Include="Web.config" />
+    <Content Include="WebForm1.aspx" />
+    <Content Include="WebForm2.aspx" />
+    <Content Include="wwwroot\assets\css\dashlite.css" />
+    <Content Include="wwwroot\assets\css\dashlite.min.css" />
+    <Content Include="wwwroot\assets\css\dashlite.rtl.css" />
+    <Content Include="wwwroot\assets\css\dashlite.rtl.min.css" />
+    <Content Include="wwwroot\assets\css\editors\quill.css" />
+    <Content Include="wwwroot\assets\css\editors\quill.rtl.css" />
+    <Content Include="wwwroot\assets\css\editors\summernote.css" />
+    <Content Include="wwwroot\assets\css\editors\summernote.rtl.css" />
+    <Content Include="wwwroot\assets\css\editors\tinymce.css" />
+    <Content Include="wwwroot\assets\css\editors\tinymce.rtl.css" />
+    <Content Include="wwwroot\assets\css\libs\bootstrap-icons.css" />
+    <Content Include="wwwroot\assets\css\libs\fontawesome-icons.css" />
+    <Content Include="wwwroot\assets\css\libs\jstree.css" />
+    <Content Include="wwwroot\assets\css\libs\themify-icons.css" />
+    <Content Include="wwwroot\assets\css\skins\theme-blue.css" />
+    <Content Include="wwwroot\assets\css\skins\theme-egyptian.css" />
+    <Content Include="wwwroot\assets\css\skins\theme-green.css" />
+    <Content Include="wwwroot\assets\css\skins\theme-purple.css" />
+    <Content Include="wwwroot\assets\css\skins\theme-red.css" />
+    <Content Include="wwwroot\assets\css\style-email.css" />
+    <Content Include="wwwroot\assets\css\theme.css" />
+    <Content Include="wwwroot\assets\fonts\fa-brands-400.svg" />
+    <Content Include="wwwroot\assets\fonts\fa-regular-400.svg" />
+    <Content Include="wwwroot\assets\fonts\fa-solid-900.svg" />
+    <Content Include="wwwroot\assets\fonts\Nioicon.svg" />
+    <Content Include="wwwroot\assets\fonts\themify.svg" />
+    <Content Include="wwwroot\assets\images\jsTree\32px-dark.png" />
+    <Content Include="wwwroot\assets\images\jsTree\32px.png" />
+    <Content Include="wwwroot\assets\images\jsTree\40px-dark.png" />
+    <Content Include="wwwroot\assets\images\jsTree\40px.png" />
+    <Content Include="wwwroot\assets\images\jsTree\throbber-dark.gif" />
+    <Content Include="wwwroot\assets\images\jsTree\throbber.gif" />
+    <Content Include="wwwroot\assets\js\apps\calendar.js" />
+    <Content Include="wwwroot\assets\js\apps\chats.js" />
+    <Content Include="wwwroot\assets\js\apps\file-manager.js" />
+    <Content Include="wwwroot\assets\js\apps\inbox.js" />
+    <Content Include="wwwroot\assets\js\apps\kanban.js" />
+    <Content Include="wwwroot\assets\js\apps\messages.js" />
+    <Content Include="wwwroot\assets\js\bundle.js" />
+    <Content Include="wwwroot\assets\js\charts\chart-crm.js" />
+    <Content Include="wwwroot\assets\js\charts\chart-hotel.js" />
+    <Content Include="wwwroot\assets\js\charts\chart-widgets.js" />
+    <Content Include="wwwroot\assets\js\charts\gd-analytics.js" />
+    <Content Include="wwwroot\assets\js\charts\gd-default.js" />
+    <Content Include="wwwroot\assets\js\charts\gd-invest.js" />
+    <Content Include="wwwroot\assets\js\editors.js" />
+    <Content Include="wwwroot\assets\js\example-chart.js" />
+    <Content Include="wwwroot\assets\js\example-dragula.js" />
+    <Content Include="wwwroot\assets\js\example-listbox.js" />
+    <Content Include="wwwroot\assets\js\example-map.js" />
+    <Content Include="wwwroot\assets\js\example-sweetalert.js" />
+    <Content Include="wwwroot\assets\js\example-toastr.js" />
+    <Content Include="wwwroot\assets\js\example-tree.js" />
+    <Content Include="wwwroot\assets\js\libs\datatable-btns.js" />
+    <Content Include="wwwroot\assets\js\libs\dragula.js" />
+    <Content Include="wwwroot\assets\js\libs\dual-listbox.js" />
+    <Content Include="wwwroot\assets\js\libs\editors\quill.js" />
+    <Content Include="wwwroot\assets\js\libs\editors\skins\content\default\content.css" />
+    <Content Include="wwwroot\assets\js\libs\editors\summernote.js" />
+    <Content Include="wwwroot\assets\js\libs\editors\tinymce.js" />
+    <Content Include="wwwroot\assets\js\libs\fullcalendar.js" />
+    <Content Include="wwwroot\assets\js\libs\jkanban.js" />
+    <Content Include="wwwroot\assets\js\libs\jqvmap.js" />
+    <Content Include="wwwroot\assets\js\libs\jstree.js" />
+    <Content Include="wwwroot\assets\js\libs\tagify.js" />
+    <Content Include="wwwroot\assets\js\scripts.js" />
+    <Content Include="wwwroot\css\all.min.css" />
     <Content Include="wwwroot\css\bootstrap.min.css" />
+    <Content Include="wwwroot\css\font-awesome.min.css" />
     <Content Include="wwwroot\css\style.css" />
     <Content Include="wwwroot\Images\ins-hamla.png" />
+    <Content Include="wwwroot\Images\loginpage.jpg" />
     <Content Include="wwwroot\js\bootstrap.min.js" />
+    <Content Include="wwwroot\js\chart.js" />
+    <Content Include="wwwroot\js\jquery-3.5.1.slim.min.js" />
     <Content Include="wwwroot\js\jquery.min.js" />
+    <Content Include="wwwroot\js\js\apps\calendar.js" />
+    <Content Include="wwwroot\js\js\apps\chats.js" />
+    <Content Include="wwwroot\js\js\apps\file-manager.js" />
+    <Content Include="wwwroot\js\js\apps\inbox.js" />
+    <Content Include="wwwroot\js\js\apps\kanban.js" />
+    <Content Include="wwwroot\js\js\apps\messages.js" />
+    <Content Include="wwwroot\js\js\bundle.js" />
+    <Content Include="wwwroot\js\js\charts\chart-crm.js" />
+    <Content Include="wwwroot\js\js\charts\chart-hotel.js" />
+    <Content Include="wwwroot\js\js\charts\chart-widgets.js" />
+    <Content Include="wwwroot\js\js\charts\gd-analytics.js" />
+    <Content Include="wwwroot\js\js\charts\gd-default.js" />
+    <Content Include="wwwroot\js\js\charts\gd-invest.js" />
+    <Content Include="wwwroot\js\js\editors.js" />
+    <Content Include="wwwroot\js\js\example-chart.js" />
+    <Content Include="wwwroot\js\js\example-dragula.js" />
+    <Content Include="wwwroot\js\js\example-listbox.js" />
+    <Content Include="wwwroot\js\js\example-map.js" />
+    <Content Include="wwwroot\js\js\example-sweetalert.js" />
+    <Content Include="wwwroot\js\js\example-toastr.js" />
+    <Content Include="wwwroot\js\js\example-tree.js" />
+    <Content Include="wwwroot\js\js\libs\datatable-btns.js" />
+    <Content Include="wwwroot\js\js\libs\dragula.js" />
+    <Content Include="wwwroot\js\js\libs\dual-listbox.js" />
+    <Content Include="wwwroot\js\js\libs\editors\quill.js" />
+    <Content Include="wwwroot\js\js\libs\editors\skins\content\default\content.css" />
+    <Content Include="wwwroot\js\js\libs\editors\summernote.js" />
+    <Content Include="wwwroot\js\js\libs\editors\tinymce.js" />
+    <Content Include="wwwroot\js\js\libs\fullcalendar.js" />
+    <Content Include="wwwroot\js\js\libs\jkanban.js" />
+    <Content Include="wwwroot\js\js\libs\jqvmap.js" />
+    <Content Include="wwwroot\js\js\libs\jstree.js" />
+    <Content Include="wwwroot\js\js\libs\tagify.js" />
+    <Content Include="wwwroot\js\js\scripts.js" />
+    <Content Include="wwwroot\js\js\vendors\jquery-steps\jquery.steps.js" />
+    <Content Include="wwwroot\js\js\vendors\jquery-steps\jquery.steps.min.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\jquery.vmap.min.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\continents\jquery.vmap.africa.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\continents\jquery.vmap.asia.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\continents\jquery.vmap.australia.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\continents\jquery.vmap.europe.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\continents\jquery.vmap.north-america.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\continents\jquery.vmap.south-america.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\jquery.vmap.algeria.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\jquery.vmap.argentina.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\jquery.vmap.brazil.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\jquery.vmap.canada.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\jquery.vmap.europe.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\jquery.vmap.france.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\jquery.vmap.germany.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\jquery.vmap.greece.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\jquery.vmap.iran.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\jquery.vmap.iraq.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\jquery.vmap.russia.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\jquery.vmap.tunisia.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\jquery.vmap.turkey.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\jquery.vmap.usa.js" />
+    <Content Include="wwwroot\js\js\vendors\jqvmap\maps\jquery.vmap.world.js" />
+    <Content Include="wwwroot\js\js\vendors\knob\jquery.knob.js" />
+    <Content Include="wwwroot\js\js\vendors\knob\jquery.knob.min.js" />
+    <Content Include="wwwroot\js\js\vendors\nioapp\nioapp.min.js" />
+    <Content Include="wwwroot\js\js\vendors\prettify.js" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddBasicandLieuItems.aspx.cs">
@@ -377,12 +529,40 @@
     <Compile Include="AddBasicandLieuItems.aspx.designer.cs">
       <DependentUpon>AddBasicandLieuItems.aspx</DependentUpon>
     </Compile>
+    <Compile Include="AuditUnit.aspx.cs">
+      <DependentUpon>AuditUnit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AuditUnit.aspx.designer.cs">
+      <DependentUpon>AuditUnit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ByYardIssue.aspx.cs">
+      <DependentUpon>ByYardIssue.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ByYardIssue.aspx.designer.cs">
+      <DependentUpon>ByYardIssue.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Cover.aspx.cs">
       <DependentUpon>Cover.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Cover.aspx.designer.cs">
       <DependentUpon>Cover.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="CreateDemand.aspx.cs">
+      <DependentUpon>CreateDemand.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CreateDemand.aspx.designer.cs">
+      <DependentUpon>CreateDemand.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="CurrentStockList.aspx.cs">
+      <DependentUpon>CurrentStockList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CurrentStockList.aspx.designer.cs">
+      <DependentUpon>CurrentStockList.aspx</DependentUpon>
     </Compile>
     <Compile Include="Dashboard.aspx.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>
@@ -391,6 +571,48 @@
     <Compile Include="Dashboard.aspx.designer.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>
     </Compile>
+    <Compile Include="DemandApproval.aspx.cs">
+      <DependentUpon>DemandApproval.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DemandApproval.aspx.designer.cs">
+      <DependentUpon>DemandApproval.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="DemandIssue.aspx.cs">
+      <DependentUpon>DemandIssue.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DemandIssue.aspx.designer.cs">
+      <DependentUpon>DemandIssue.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="DemandIssueList.aspx.cs">
+      <DependentUpon>DemandIssueList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DemandIssueList.aspx.designer.cs">
+      <DependentUpon>DemandIssueList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="DemandReceipt.aspx.cs">
+      <DependentUpon>DemandReceipt.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DemandReceipt.aspx.designer.cs">
+      <DependentUpon>DemandReceipt.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="DemandStatus.aspx.cs">
+      <DependentUpon>DemandStatus.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DemandStatus.aspx.designer.cs">
+      <DependentUpon>DemandStatus.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="DiverReport.aspx.cs">
+      <DependentUpon>DiverReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DiverReport.aspx.designer.cs">
+      <DependentUpon>DiverReport.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Divers_ExtraIssue.aspx.cs">
       <DependentUpon>Divers_ExtraIssue.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -398,12 +620,26 @@
     <Compile Include="Divers_ExtraIssue.aspx.designer.cs">
       <DependentUpon>Divers_ExtraIssue.aspx</DependentUpon>
     </Compile>
+    <Compile Include="EmtDashbord.aspx.cs">
+      <DependentUpon>EmtDashbord.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="EmtDashbord.aspx.designer.cs">
+      <DependentUpon>EmtDashbord.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ExportIssueOfficerandSailor.aspx.cs">
       <DependentUpon>ExportIssueOfficerandSailor.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ExportIssueOfficerandSailor.aspx.designer.cs">
       <DependentUpon>ExportIssueOfficerandSailor.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ExtraIssue.aspx.cs">
+      <DependentUpon>ExtraIssue.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ExtraIssue.aspx.designer.cs">
+      <DependentUpon>ExtraIssue.aspx</DependentUpon>
     </Compile>
     <Compile Include="ForgetPassword.aspx.cs">
       <DependentUpon>ForgetPassword.aspx</DependentUpon>
@@ -468,6 +704,13 @@
     <Compile Include="MilkSugarandTea_ExtraIssue.aspx.designer.cs">
       <DependentUpon>MilkSugarandTea_ExtraIssue.aspx</DependentUpon>
     </Compile>
+    <Compile Include="OfficerVAcc.aspx.cs">
+      <DependentUpon>OfficerVAcc.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="OfficerVAcc.aspx.designer.cs">
+      <DependentUpon>OfficerVAcc.aspx</DependentUpon>
+    </Compile>
     <Compile Include="OfficerWorksheet.aspx.cs">
       <DependentUpon>OfficerWorksheet.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -495,6 +738,20 @@
     </Compile>
     <Compile Include="Page08.aspx.designer.cs">
       <DependentUpon>Page08.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Page10-11.aspx.cs">
+      <DependentUpon>Page10-11.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Page10-11.aspx.designer.cs">
+      <DependentUpon>Page10-11.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Page12.aspx.cs">
+      <DependentUpon>Page12.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Page12.aspx.designer.cs">
+      <DependentUpon>Page12.aspx</DependentUpon>
     </Compile>
     <Compile Include="Page14.aspx.cs">
       <DependentUpon>Page14.aspx</DependentUpon>
@@ -539,6 +796,13 @@
     <Compile Include="RationScale.aspx.designer.cs">
       <DependentUpon>RationScale.aspx</DependentUpon>
     </Compile>
+    <Compile Include="RegulatingOfficer.aspx.cs">
+      <DependentUpon>RegulatingOfficer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RegulatingOfficer.aspx.designer.cs">
+      <DependentUpon>RegulatingOfficer.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ReportsGenerate.aspx.cs">
       <DependentUpon>ReportsGenerate.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -553,12 +817,26 @@
     <Compile Include="ResetPassword.aspx.designer.cs">
       <DependentUpon>ResetPassword.aspx</DependentUpon>
     </Compile>
+    <Compile Include="SailorsVAcc.aspx.cs">
+      <DependentUpon>SailorsVAcc.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SailorsVAcc.aspx.designer.cs">
+      <DependentUpon>SailorsVAcc.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Site.Master.designer.cs">
       <DependentUpon>Site.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Site1.Master.cs">
+      <DependentUpon>Site1.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Site1.Master.designer.cs">
+      <DependentUpon>Site1.Master</DependentUpon>
     </Compile>
     <Compile Include="Strength.aspx.cs">
       <DependentUpon>Strength.aspx</DependentUpon>
@@ -609,6 +887,20 @@
     <Compile Include="Wastage.aspx.designer.cs">
       <DependentUpon>Wastage.aspx</DependentUpon>
     </Compile>
+    <Compile Include="WebForm1.aspx.cs">
+      <DependentUpon>WebForm1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WebForm1.aspx.designer.cs">
+      <DependentUpon>WebForm1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="WebForm2.aspx.cs">
+      <DependentUpon>WebForm2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WebForm2.aspx.designer.cs">
+      <DependentUpon>WebForm2.aspx</DependentUpon>
+    </Compile>
     <Compile Include="wwwroot\css\style.css.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -619,14 +911,293 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Site.Master" />
+    <Content Include="Page14_Report_20240714225455.xlsx" />
+    <Content Include="Site1.Master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+    <Content Include="wwwroot\assets\fonts\bootstrap-icons.woff" />
+    <Content Include="wwwroot\assets\fonts\bootstrap-icons.woff2" />
+    <Content Include="wwwroot\assets\fonts\fa-brands-400.eot" />
+    <Content Include="wwwroot\assets\fonts\fa-brands-400.ttf" />
+    <Content Include="wwwroot\assets\fonts\fa-brands-400.woff" />
+    <Content Include="wwwroot\assets\fonts\fa-brands-400.woff2" />
+    <Content Include="wwwroot\assets\fonts\fa-regular-400.eot" />
+    <Content Include="wwwroot\assets\fonts\fa-regular-400.ttf" />
+    <Content Include="wwwroot\assets\fonts\fa-regular-400.woff" />
+    <Content Include="wwwroot\assets\fonts\fa-regular-400.woff2" />
+    <Content Include="wwwroot\assets\fonts\fa-solid-900.eot" />
+    <Content Include="wwwroot\assets\fonts\fa-solid-900.ttf" />
+    <Content Include="wwwroot\assets\fonts\fa-solid-900.woff" />
+    <Content Include="wwwroot\assets\fonts\fa-solid-900.woff2" />
+    <Content Include="wwwroot\assets\fonts\Nioicon.eot" />
+    <Content Include="wwwroot\assets\fonts\Nioicon.ttf" />
+    <Content Include="wwwroot\assets\fonts\Nioicon.woff" />
+    <Content Include="wwwroot\assets\fonts\Nunito-Bold.eot" />
+    <Content Include="wwwroot\assets\fonts\Nunito-Bold.ttf" />
+    <Content Include="wwwroot\assets\fonts\Nunito-Bold.woff" />
+    <Content Include="wwwroot\assets\fonts\Nunito-Bold.woff2" />
+    <Content Include="wwwroot\assets\fonts\Nunito-Regular.eot" />
+    <Content Include="wwwroot\assets\fonts\Nunito-Regular.ttf" />
+    <Content Include="wwwroot\assets\fonts\Nunito-Regular.woff" />
+    <Content Include="wwwroot\assets\fonts\Nunito-Regular.woff2" />
+    <Content Include="wwwroot\assets\fonts\Roboto-Bold.eot" />
+    <Content Include="wwwroot\assets\fonts\Roboto-Bold.ttf" />
+    <Content Include="wwwroot\assets\fonts\Roboto-Bold.woff" />
+    <Content Include="wwwroot\assets\fonts\Roboto-Bold.woff2" />
+    <Content Include="wwwroot\assets\fonts\Roboto-Light.eot" />
+    <Content Include="wwwroot\assets\fonts\Roboto-Light.ttf" />
+    <Content Include="wwwroot\assets\fonts\Roboto-Light.woff" />
+    <Content Include="wwwroot\assets\fonts\Roboto-Light.woff2" />
+    <Content Include="wwwroot\assets\fonts\Roboto-Medium.eot" />
+    <Content Include="wwwroot\assets\fonts\Roboto-Medium.ttf" />
+    <Content Include="wwwroot\assets\fonts\Roboto-Medium.woff" />
+    <Content Include="wwwroot\assets\fonts\Roboto-Medium.woff2" />
+    <Content Include="wwwroot\assets\fonts\Roboto-Regular.eot" />
+    <Content Include="wwwroot\assets\fonts\Roboto-Regular.ttf" />
+    <Content Include="wwwroot\assets\fonts\Roboto-Regular.woff" />
+    <Content Include="wwwroot\assets\fonts\Roboto-Regular.woff2" />
+    <Content Include="wwwroot\assets\fonts\summernote.eot" />
+    <Content Include="wwwroot\assets\fonts\summernote.ttf" />
+    <Content Include="wwwroot\assets\fonts\summernote.woff" />
+    <Content Include="wwwroot\assets\fonts\summernote.woff2" />
+    <Content Include="wwwroot\assets\fonts\themify.eot" />
+    <Content Include="wwwroot\assets\fonts\themify.ttf" />
+    <Content Include="wwwroot\assets\fonts\themify.woff" />
+    <Content Include="wwwroot\assets\fonts\tinymce-mobile.woff" />
+    <Content Include="wwwroot\js\popper.min.js" />
+    <Content Include="wwwroot\js\select2.min.js" />
+    <Content Include="wwwroot\js\toastr.min.js" />
+    <Content Include="wwwroot\PDFFile\Revised INBR 14.pdf" />
+    <Content Include="wwwroot\scss\apps\_asterisk.scss" />
+    <Content Include="wwwroot\scss\apps\_attach.scss" />
+    <Content Include="wwwroot\scss\apps\_chats.scss" />
+    <Content Include="wwwroot\scss\apps\_file-manager.scss" />
+    <Content Include="wwwroot\scss\apps\_inbox.scss" />
+    <Content Include="wwwroot\scss\apps\_messages.scss" />
+    <Content Include="wwwroot\scss\apps\_reply-comment.scss" />
+    <Content Include="wwwroot\scss\core\components\_accordions.scss" />
+    <Content Include="wwwroot\scss\core\components\_alert.scss" />
+    <Content Include="wwwroot\scss\core\components\_badge.scss" />
+    <Content Include="wwwroot\scss\core\components\_block.scss" />
+    <Content Include="wwwroot\scss\core\components\_card.scss" />
+    <Content Include="wwwroot\scss\core\components\_data-list.scss" />
+    <Content Include="wwwroot\scss\core\components\_dropdown.scss" />
+    <Content Include="wwwroot\scss\core\components\_feature.scss" />
+    <Content Include="wwwroot\scss\core\components\_forms.scss" />
+    <Content Include="wwwroot\scss\core\components\_icons.scss" />
+    <Content Include="wwwroot\scss\core\components\_link.scss" />
+    <Content Include="wwwroot\scss\core\components\_list.scss" />
+    <Content Include="wwwroot\scss\core\components\_misc.scss" />
+    <Content Include="wwwroot\scss\core\components\_modal.scss" />
+    <Content Include="wwwroot\scss\core\components\_nav.scss" />
+    <Content Include="wwwroot\scss\core\components\_projects.scss" />
+    <Content Include="wwwroot\scss\core\components\_rating.scss" />
+    <Content Include="wwwroot\scss\core\components\_search.scss" />
+    <Content Include="wwwroot\scss\core\components\_sliders.scss" />
+    <Content Include="wwwroot\scss\core\components\_table.scss" />
+    <Content Include="wwwroot\scss\core\components\_team.scss" />
+    <Content Include="wwwroot\scss\core\components\_text.scss" />
+    <Content Include="wwwroot\scss\core\components\_title.scss" />
+    <Content Include="wwwroot\scss\core\components\_toggle.scss" />
+    <Content Include="wwwroot\scss\core\components\_users.scss" />
+    <Content Include="wwwroot\scss\core\components\_wgm.scss" />
+    <Content Include="wwwroot\scss\core\fonts\_nunito.scss" />
+    <Content Include="wwwroot\scss\core\fonts\_roboto.scss" />
+    <Content Include="wwwroot\scss\core\layouts\_base.scss" />
+    <Content Include="wwwroot\scss\core\layouts\_footer.scss" />
+    <Content Include="wwwroot\scss\core\layouts\_header.scss" />
+    <Content Include="wwwroot\scss\core\layouts\_menu-main.scss" />
+    <Content Include="wwwroot\scss\core\layouts\_sidebar.scss" />
+    <Content Include="wwwroot\scss\core\layouts\_split.scss" />
+    <Content Include="wwwroot\scss\core\pages\auths\_base.scss" />
+    <Content Include="wwwroot\scss\core\pages\errors\_base.scss" />
+    <Content Include="wwwroot\scss\core\pages\_misc.scss" />
+    <Content Include="wwwroot\scss\core\utilites\_noclass.scss" />
+    <Content Include="wwwroot\scss\core\utilites\_reboot.scss" />
+    <Content Include="wwwroot\scss\core\utilites\_sizing.scss" />
+    <Content Include="wwwroot\scss\core\utilites\_spacing.scss" />
+    <Content Include="wwwroot\scss\core\_components.scss" />
+    <Content Include="wwwroot\scss\core\_dark-skin.scss" />
+    <Content Include="wwwroot\scss\core\_layouts.scss" />
+    <Content Include="wwwroot\scss\core\_misc.scss" />
+    <Content Include="wwwroot\scss\core\_mode-override.scss" />
+    <Content Include="wwwroot\scss\core\_pages.scss" />
+    <Content Include="wwwroot\scss\core\_preview.scss" />
+    <Content Include="wwwroot\scss\core\_style.scss" />
+    <Content Include="wwwroot\scss\core\_utilites.scss" />
+    <Content Include="wwwroot\scss\dashlite.rtl.scss" />
+    <Content Include="wwwroot\scss\dashlite.scss" />
+    <Content Include="wwwroot\scss\editors\quill.rtl.scss" />
+    <Content Include="wwwroot\scss\editors\quill.scss" />
+    <Content Include="wwwroot\scss\editors\summernote.rtl.scss" />
+    <Content Include="wwwroot\scss\editors\summernote.scss" />
+    <Content Include="wwwroot\scss\editors\tinymce.rtl.scss" />
+    <Content Include="wwwroot\scss\editors\tinymce.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\components\_alert.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\components\_badge.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\components\_breadcrumb.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\components\_button-group.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\components\_buttons.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\components\_card.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\components\_custom-forms.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\components\_dropdown.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\components\_forms.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\components\_grid.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\components\_link.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\components\_media.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\components\_modal.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\components\_nav.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\components\_pagination.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\components\_progress.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\components\_tables.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\components\_toast.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\utilites\_background.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\utilites\_borders.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\utilites\_common.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\utilites\_flex.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\utilites\_position.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\utilites\_reboot.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\utilites\_sizing.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\utilites\_spacing.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\utilites\_text.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\utilites\_type.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_bootstrap.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_extend.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_override_base\utilities\_borders.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_override_base\utilities\_float.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_override_base\utilities\_spacing.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_override_base\utilities\_text.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_override_base\_alert.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_override_base\_breadcrumb.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_override_base\_button-group.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_override_base\_card.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_override_base\_close.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_override_base\_custom-forms.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_override_base\_dropdown.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_override_base\_forms.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_override_base\_input-group.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_override_base\_list-group.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_override_base\_modal.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_override_base\_navbar.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_override_base\_pagination.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_override_base\_reboot.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_override_base\_type.scss" />
+    <Content Include="wwwroot\scss\extend\bootstrap\_variables.scss" />
+    <Content Include="wwwroot\scss\global\comps\_profiles.scss" />
+    <Content Include="wwwroot\scss\global\comps\_tb-compact.scss" />
+    <Content Include="wwwroot\scss\global\comps\_tb-odr.scss" />
+    <Content Include="wwwroot\scss\global\comps\_tb-tnx.scss" />
+    <Content Include="wwwroot\scss\global\comps\_wizard.scss" />
+    <Content Include="wwwroot\scss\global\tables\_base.scss" />
+    <Content Include="wwwroot\scss\global\tables\_tranx.scss" />
+    <Content Include="wwwroot\scss\global\wgs\_db-analytic.scss" />
+    <Content Include="wwwroot\scss\global\wgs\_db-invest.scss" />
+    <Content Include="wwwroot\scss\global\wgs\_gallery.scss" />
+    <Content Include="wwwroot\scss\global\wgs\_invoice.scss" />
+    <Content Include="wwwroot\scss\global\wgs\_misc.scss" />
+    <Content Include="wwwroot\scss\global\wgs\_pricing.scss" />
+    <Content Include="wwwroot\scss\global\wgs\_products.scss" />
+    <Content Include="wwwroot\scss\global\wgs\_timeline.scss" />
+    <Content Include="wwwroot\scss\global\_style.scss" />
+    <Content Include="wwwroot\scss\libs\bootstrap-icons.scss" />
+    <Content Include="wwwroot\scss\libs\fontawesome-icons.scss" />
+    <Content Include="wwwroot\scss\libs\jstree.scss" />
+    <Content Include="wwwroot\scss\libs\themify-icons.scss" />
+    <Content Include="wwwroot\scss\skins\theme-blue.scss" />
+    <Content Include="wwwroot\scss\skins\theme-egyptian.scss" />
+    <Content Include="wwwroot\scss\skins\theme-green.scss" />
+    <Content Include="wwwroot\scss\skins\theme-purple.scss" />
+    <Content Include="wwwroot\scss\skins\theme-red.scss" />
+    <Content Include="wwwroot\scss\skins\_variable_blue.scss" />
+    <Content Include="wwwroot\scss\skins\_variable_egyptian.scss" />
+    <Content Include="wwwroot\scss\skins\_variable_green.scss" />
+    <Content Include="wwwroot\scss\skins\_variable_purple.scss" />
+    <Content Include="wwwroot\scss\skins\_variable_red.scss" />
+    <Content Include="wwwroot\scss\style-email.scss" />
+    <Content Include="wwwroot\scss\theme.scss" />
+    <Content Include="wwwroot\scss\vendors\bootstrap-icons\_bootstrap-icons.scss" />
+    <Content Include="wwwroot\scss\vendors\bundle.scss" />
+    <Content Include="wwwroot\scss\vendors\datatable\_buttons.bootstrap4.scss" />
+    <Content Include="wwwroot\scss\vendors\datatable\_datatable.scss" />
+    <Content Include="wwwroot\scss\vendors\datepicker\_bootstrap-datepicker.scss" />
+    <Content Include="wwwroot\scss\vendors\dropzone\_dropzone.scss" />
+    <Content Include="wwwroot\scss\vendors\dual-listbox\_dual-listbox.scss" />
+    <Content Include="wwwroot\scss\vendors\fontawesome\brands.scss" />
+    <Content Include="wwwroot\scss\vendors\fontawesome\fontawesome.scss" />
+    <Content Include="wwwroot\scss\vendors\fontawesome\regular.scss" />
+    <Content Include="wwwroot\scss\vendors\fontawesome\solid.scss" />
+    <Content Include="wwwroot\scss\vendors\fontawesome\v4-shims.scss" />
+    <Content Include="wwwroot\scss\vendors\fontawesome\_animated.scss" />
+    <Content Include="wwwroot\scss\vendors\fontawesome\_bordered-pulled.scss" />
+    <Content Include="wwwroot\scss\vendors\fontawesome\_core.scss" />
+    <Content Include="wwwroot\scss\vendors\fontawesome\_fixed-width.scss" />
+    <Content Include="wwwroot\scss\vendors\fontawesome\_icons.scss" />
+    <Content Include="wwwroot\scss\vendors\fontawesome\_larger.scss" />
+    <Content Include="wwwroot\scss\vendors\fontawesome\_list.scss" />
+    <Content Include="wwwroot\scss\vendors\fontawesome\_mixins.scss" />
+    <Content Include="wwwroot\scss\vendors\fontawesome\_rotated-flipped.scss" />
+    <Content Include="wwwroot\scss\vendors\fontawesome\_screen-reader.scss" />
+    <Content Include="wwwroot\scss\vendors\fontawesome\_shims.scss" />
+    <Content Include="wwwroot\scss\vendors\fontawesome\_stacked.scss" />
+    <Content Include="wwwroot\scss\vendors\fontawesome\_variables.scss" />
+    <Content Include="wwwroot\scss\vendors\jsTree\_style.scss" />
+    <Content Include="wwwroot\scss\vendors\magnific-popup\_main.scss" />
+    <Content Include="wwwroot\scss\vendors\magnific-popup\_settings.scss" />
+    <Content Include="wwwroot\scss\vendors\nioicon\nioicon.scss" />
+    <Content Include="wwwroot\scss\vendors\nioicon\_variables.scss" />
+    <Content Include="wwwroot\scss\vendors\nouislider\_nouislider.scss" />
+    <Content Include="wwwroot\scss\vendors\quill\_quill.scss" />
+    <Content Include="wwwroot\scss\vendors\select2\core.scss" />
+    <Content Include="wwwroot\scss\vendors\select2\mixins\_gradients.scss" />
+    <Content Include="wwwroot\scss\vendors\select2\theme\default\layout.scss" />
+    <Content Include="wwwroot\scss\vendors\select2\theme\default\_multiple.scss" />
+    <Content Include="wwwroot\scss\vendors\select2\theme\default\_single.scss" />
+    <Content Include="wwwroot\scss\vendors\select2\_dropdown.scss" />
+    <Content Include="wwwroot\scss\vendors\select2\_multiple.scss" />
+    <Content Include="wwwroot\scss\vendors\select2\_single.scss" />
+    <Content Include="wwwroot\scss\vendors\slick\_slick.scss" />
+    <Content Include="wwwroot\scss\vendors\summernote\_elements.scss" />
+    <Content Include="wwwroot\scss\vendors\summernote\_summernote-bs4.scss" />
+    <Content Include="wwwroot\scss\vendors\summernote\_summernote-common.scss" />
+    <Content Include="wwwroot\scss\vendors\summernote\_summernote-icons.scss" />
+    <Content Include="wwwroot\scss\vendors\sweetalert2\scss\_animations.scss" />
+    <Content Include="wwwroot\scss\vendors\sweetalert2\scss\_body.scss" />
+    <Content Include="wwwroot\scss\vendors\sweetalert2\scss\_core.scss" />
+    <Content Include="wwwroot\scss\vendors\sweetalert2\scss\_mixins.scss" />
+    <Content Include="wwwroot\scss\vendors\sweetalert2\scss\_polyfills.scss" />
+    <Content Include="wwwroot\scss\vendors\sweetalert2\scss\_theming.scss" />
+    <Content Include="wwwroot\scss\vendors\sweetalert2\scss\_toasts-animations.scss" />
+    <Content Include="wwwroot\scss\vendors\sweetalert2\scss\_toasts-body.scss" />
+    <Content Include="wwwroot\scss\vendors\sweetalert2\scss\_toasts.scss" />
+    <Content Include="wwwroot\scss\vendors\sweetalert2\variables.scss" />
+    <Content Include="wwwroot\scss\vendors\sweetalert2\_sweetalert2.scss" />
+    <Content Include="wwwroot\scss\vendors\themify-icons\_themify-icons.scss" />
+    <Content Include="wwwroot\scss\vendors\timepicker\_jquery.timepicker.scss" />
+    <Content Include="wwwroot\scss\vendors\tinymce\ui\_content.inline.scss" />
+    <Content Include="wwwroot\scss\vendors\tinymce\ui\_content.mobile.scss" />
+    <Content Include="wwwroot\scss\vendors\tinymce\ui\_content.scss" />
+    <Content Include="wwwroot\scss\vendors\tinymce\ui\_skin.mobile.scss" />
+    <Content Include="wwwroot\scss\vendors\tinymce\ui\_skin.scss" />
+    <Content Include="wwwroot\scss\vendors\tinymce\_content.scss" />
+    <Content Include="wwwroot\scss\vendors\toastr\_toastr.scss" />
+    <Content Include="wwwroot\scss\vendors\_dragula.scss" />
+    <Content Include="wwwroot\scss\vendors\_fullcalendar.scss" />
+    <Content Include="wwwroot\scss\vendors\_jkanban.scss" />
+    <Content Include="wwwroot\scss\vendors\_jqvmap.scss" />
+    <Content Include="wwwroot\scss\vendors\_map.scss" />
+    <Content Include="wwwroot\scss\vendors\_prettify.scss" />
+    <Content Include="wwwroot\scss\vendors\_simplebar.scss" />
+    <Content Include="wwwroot\scss\vendors\_tagify.scss" />
+    <Content Include="wwwroot\scss\_dashlite_variables.scss" />
+    <Content Include="wwwroot\fonts\fontawesome-webfont.woff2" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Audit\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

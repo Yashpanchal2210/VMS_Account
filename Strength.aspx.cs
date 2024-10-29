@@ -30,10 +30,36 @@ namespace VMS_1
                     ViewState["DataTable"] = new DataTable();
                 }
                 BindGridView();
-                GridViewStrength.Visible = false;
+                //GridViewStrength.Visible = false;
             }
         }
-
+        private int checkVAStatus(string[] Date)
+        {
+            int status = 0;
+            string[] data = Date[0].Split('-');
+            int selectedMonth = Convert.ToInt32(data[1]);
+            int selectedYear = Convert.ToInt32(data[0]);
+            DataTable dt = new DataTable();
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            using (SqlConnection connection = new SqlConnection(connStr))
+            {
+                string query = "EXEC usp_GetVACurrentStatusByMonth " + selectedMonth + "," + selectedYear + "";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    connection.Open();
+                    SqlDataAdapter adapter = new SqlDataAdapter(command);
+                    adapter.Fill(dt);
+                }
+            }
+            if (dt.Rows.Count > 0)
+            {
+                if (Session["NudId"].ToString() != dt.Rows[0]["FrowardedTo"].ToString())
+                {
+                    status = 1;
+                }
+            }
+            return status;
+        }
         protected void SubmitButton_Click(object sender, EventArgs e)
         {
             try
@@ -41,20 +67,37 @@ namespace VMS_1
                 string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
 
                 string[] dates = Request.Form.GetValues("date");
+                string[] StdOfficer = Request.Form.GetValues("stdOfficer");
                 string[] vegOfficers = Request.Form.GetValues("VegOfficer");
                 string[] nonVegOfficers = Request.Form.GetValues("NonVegOfficer");
+                string[] StdrikOfficer = Request.Form.GetValues("StdrikOfficer");
                 string[] vegrikOfficers = Request.Form.GetValues("VegrikOfficer");
                 string[] nonVegrikOfficers = Request.Form.GetValues("NonVegRikOfficer");
+
+                string[] StdSailor = Request.Form.GetValues("StdSailor");
                 string[] vegSailor = Request.Form.GetValues("vegSailor");
                 string[] nonVegSailor = Request.Form.GetValues("nonVegSailor");
+
+                string[] StdSailorRik = Request.Form.GetValues("StdSailorRik");
                 string[] vegSailorRik = Request.Form.GetValues("VegSailorRik");
                 string[] nonVegSailorRik = Request.Form.GetValues("NonVegSailorRik");
+
+                string[] StdNonEntitledOfficer = Request.Form.GetValues("StdNonEntitledOfficer");
                 string[] vegNonEntitledOfficer = Request.Form.GetValues("VegNonEntitledOfficer");
                 string[] nonVegNonEntitledOfficer = Request.Form.GetValues("NonVegNonEntitledOfficer");
+
+                string[] StdNonEntitledSailor = Request.Form.GetValues("StdNonEntitledSailor");
                 string[] vegNonEntitledSailor = Request.Form.GetValues("VegNonEntitledSailor");
                 string[] NonVegNonEntitledSailor = Request.Form.GetValues("NonVegNonEntitledSailor");
-                string[] civilians = Request.Form.GetValues("Civilian");
 
+                string[] civilians = Request.Form.GetValues("Civilian");
+                int status = checkVAStatus(dates);
+                if (status > 0)
+                {
+                    lblStatus.Text = "you can not enter the data in this visualling account month";
+                    lblStatus.ForeColor = System.Drawing.Color.Red;
+                    return;
+                }
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
@@ -78,14 +121,27 @@ namespace VMS_1
                         cmd.Parameters.AddWithValue("@VegNonEntitledSailor", vegNonEntitledSailor[i]);
                         cmd.Parameters.AddWithValue("@NonVegNonEntitledSailor", NonVegNonEntitledSailor[i]);
                         cmd.Parameters.AddWithValue("@Civilians", civilians[i]);
-
-                        cmd.ExecuteNonQuery();
+                        cmd.Parameters.AddWithValue("@stdOfficers", StdOfficer[i]);
+                        cmd.Parameters.AddWithValue("@stdrikOfficers", vegrikOfficers[i]);
+                        cmd.Parameters.AddWithValue("@stdSailor", StdSailor[i]);
+                        cmd.Parameters.AddWithValue("@stdSailorRik", StdSailorRik[i]);
+                        cmd.Parameters.AddWithValue("@stdNonEntitledOfficer", StdNonEntitledOfficer[i]);
+                        cmd.Parameters.AddWithValue("@stdNonEntitledSailor", StdNonEntitledSailor[i]);
+                        int row = cmd.ExecuteNonQuery();
+                        if (row == 1)
+                        {
+                            lblStatus.Text = "Data entered successfully.";
+                        }
+                        else
+                        {
+                            lblStatus.Text = "You can not update this date strength data";
+                        }
                     }
                 }
 
-                lblStatus.Text = "Data entered successfully.";
+
                 BindGridView();
-                BindTotalGridView((DataTable)ViewState["DataTable"]);
+                //BindTotalGridView((DataTable)ViewState["DataTable"]);
             }
             catch (Exception ex)
             {
@@ -104,9 +160,12 @@ namespace VMS_1
                 if (role == "Regulating Officer")
                 {
                     query = "SELECT * FROM Strength WHERE IsApproved = 0 OR IsApproved IS NULL;";
-                }else if (role == "Regulating Office")
+                }
+                else if (role == "Regulating Office")
                 {
                     query = "SELECT * FROM Strength where IsApproved = 1";
+                    BindGridViewUnApprov();
+                    lblUnapproved.Visible = true;
                 }
                 else
                 {
@@ -121,11 +180,21 @@ namespace VMS_1
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
                     adapter.Fill(dt);
+                    if (dt.Rows.Count > 0)
+                    {
+                        ViewState["DataTable"] = dt;
+                        GridViewStrength.DataSource = dt;
+                        GridViewStrength.DataBind();
+                    }
+                    else
+                    {
+                        GridViewStrength.DataSource = null;
+                        GridViewStrength.DataBind();
+                        ViewState["DataTable"] = null;
 
-                    ViewState["DataTable"] = dt;
-                    GridViewStrength.DataSource = dt;
-                    GridViewStrength.DataBind();
+                    }
                 }
+                
             }
             catch (Exception ex)
             {
@@ -133,6 +202,43 @@ namespace VMS_1
             }
         }
 
+        private void BindGridViewUnApprov()
+        {
+            try
+            {
+                string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+                string query = string.Empty;
+                string role = Session["Role"].ToString();
+                if (role == "Regulating Office")
+                {
+                    query = "SELECT * FROM Strength where IsApproved = 0";
+                }
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    adapter.Fill(dt);
+                    if (dt.Rows.Count > 0)
+                    {
+                        ViewState["DataTable"] = dt;
+                        gvUnapprovedSt.DataSource = dt;
+                        gvUnapprovedSt.DataBind();
+                    }
+                    else
+                    {
+                        gvUnapprovedSt.DataSource = null;
+                        gvUnapprovedSt.DataBind();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = "An error occurred while fetching data: " + ex.Message;
+            }
+        }
         private void BindTotalGridView(DataTable dt)
         {
             DataRow totalRow = dt.NewRow();
@@ -196,7 +302,7 @@ namespace VMS_1
 
             // Rebind the GridView after the action
             BindGridView();
-            BindTotalGridView((DataTable)ViewState["DataTable"]);
+            //BindTotalGridView((DataTable)ViewState["DataTable"]);
         }
 
         private void DeleteRecord(int id)
@@ -229,6 +335,7 @@ namespace VMS_1
                     SqlCommand cmd = new SqlCommand("UPDATE Strength SET IsApproved = 1 WHERE Id = @Id", conn);
                     cmd.Parameters.AddWithValue("@Id", id);
                     cmd.ExecuteNonQuery();
+                    lblStatus.Text = "Strength Approved Successfully !";
                 }
             }
             catch (Exception ex)

@@ -33,15 +33,23 @@ namespace VMS_1
             string name;
             string nuid;
             string rank;
-
-            if (ValidateUser(username, password, out role, out rank, out name, out nuid))
+            string unitcode;
+            if (ValidateUser(username, password, out role, out rank, out name, out nuid,out unitcode))
             {
                 Session["UserName"] = name;
                 Session["Role"] = role;
                 Session["NudId"] = nuid;
                 Session["Rank"] = rank;
+                Session["UnitCode"] = unitcode;
                 FormsAuthentication.SetAuthCookie(username, false);
-                Response.Redirect("Dashboard.aspx");
+                if (role == "Auditor" || role == "Regulating Office" || role == "Regulating Officer" || role == "Accounting Officer" || role == "Admin"||role== "Accounting"||role== "IHQ"||role== "NHQ")
+                {
+                    Response.Redirect("EmtDashbord.aspx");
+                }
+                else
+                {
+                    Response.Redirect("Dashboard.aspx");
+                }
             }
             else
             {
@@ -52,7 +60,7 @@ namespace VMS_1
             }
         }
 
-        private bool ValidateUser(string username, string password, out string role, out string rank, out string name, out string nuid)
+        private bool ValidateUser(string username, string password, out string role, out string rank, out string name, out string nuid,out string unitcode)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
             string query = "SELECT COUNT(*) FROM usermaster WHERE NudId = @Username AND Password = @Password";
@@ -80,17 +88,20 @@ namespace VMS_1
                             role = null;
                             name = null;
                             nuid = null;
-                            rank= null;
+                            rank = null;
+                            unitcode = null;
 
                             string roleQuery = "SELECT Role FROM usermaster WHERE NudId = @Username AND Password = @Password";
                             string nameQuery = "SELECT name FROM usermaster WHERE NudId = @Username AND Password = @Password";
                             string rankQuery = "SELECT Rank FROM usermaster WHERE NudId = @Username AND Password = @Password";
                             string nuidQuery = "SELECT NudId FROM usermaster WHERE NudId = @Username AND Password = @Password";
+                            string UnitQuery = "SELECT UnitCode FROM usermaster WHERE NudId = @Username AND Password = @Password";
 
                             using (SqlCommand roleCmd = new SqlCommand(roleQuery, con))
                             using (SqlCommand rankCmd = new SqlCommand(rankQuery, con))
                             using (SqlCommand nudidCmd = new SqlCommand(nuidQuery, con))
                             using (SqlCommand nameCmd = new SqlCommand(nameQuery, con))
+                            using (SqlCommand UnitCmd = new SqlCommand(UnitQuery, con))
                             {
                                 roleCmd.Parameters.AddWithValue("@Username", username);
                                 roleCmd.Parameters.AddWithValue("@Password", password);
@@ -127,6 +138,14 @@ namespace VMS_1
                                 {
                                     rank = rankObj.ToString();
                                 }
+                                UnitCmd.Parameters.AddWithValue("@Username", username);
+                                UnitCmd.Parameters.AddWithValue("@Password", password);
+
+                                object unitObj = UnitCmd.ExecuteScalar();
+                                if (unitObj != null)
+                                {
+                                    unitcode = unitObj.ToString();
+                                }
 
                                 return true;
                             }
@@ -137,7 +156,7 @@ namespace VMS_1
                             name = null;
                             nuid = null;
                             rank = null;
-
+                            unitcode = null;
                             return false;
                         }
                     }
@@ -148,6 +167,7 @@ namespace VMS_1
             name = null;
             nuid = null;
             rank = null;
+            unitcode = null;
             return false;
         }
 

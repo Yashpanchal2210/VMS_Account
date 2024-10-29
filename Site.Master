@@ -5,19 +5,21 @@
 <head runat="server">
     <title>VMS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="wwwroot/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <script src="wwwroot/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="wwwroot/assets/css/dashlite.css" />
+    <link  rel="stylesheet" href="wwwroot/assets/css/theme.css" />
+    <link href="wwwroot/css/all.min.css" rel="stylesheet" />
+    <script src="wwwroot/js/js/example-chart.js"></script>
+    <script src="wwwroot/js/js/charts/gd-default.js"></script>
+    <script src="wwwroot/js/js/scripts.js"></script>
+    <script src="wwwroot/js/js/charts/chart-crm.js"></script>
+    <script src="wwwroot/js/jquery-3.5.1.slim.min.js"></script>
+    <script src="wwwroot/js/popper.min.js"></script>
     <script src="wwwroot/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-
-    <%--   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>--%>
-    <%--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />--%>
-    <%--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>--%>
-    <%--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>--%>
-
+    <script src="wwwroot/js/toastr.min.js"></script>
+    <script src="wwwroot/js/select2.min.js"></script>
+    <script src="wwwroot/js/js/bundle.js"></script>    
+    <script src="wwwroot/js/js/charts/chart-crm.js"></script>
+    <script src="wwwroot/js/chart.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -289,12 +291,12 @@
     </header>
     <header>
         <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #7091E6;">
-            <a class="navbar-brand text-white" href="Dashboard.aspx">Home</a>
+            <a class="navbar-brand text-white" href="Dashboard.aspx" id="hdnhome" runat="server">Home</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <% if (IsUserInRole("Regulating Office"))
+                <% if (IsUserInRole("Regulating Office")||IsUserInRole("Regulating Officer"))
                     { %>
                 <ul class="navbar-nav">
                     <a class="nav-link text-white dark-theme-text font-weight-bold" href="Strength.aspx" role="button" aria-expanded="false">Update Strength
@@ -320,8 +322,32 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="DemandDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Demand
                         </a>
+                        <div class="dropdown-menu" aria-labelledby="DemandDropdownMenuLink">                           
+                            <a class="dropdown-item" href="DemandIssueList.aspx">Demand Status</a>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="navbar-nav" style="margin-left: auto;">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= GetUserName() %> (<%= GetUserRole() %>)
+                            <i class="bi bi-gear-fill"></i>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" style="margin-left: -70px;">
+                            <a class="dropdown-item" href="UserUpdate.aspx" runat="server">Reset Password</a>
+                            <a class="dropdown-item" href="~/LOGIN.aspx?m=logout" runat="server">Logout</a>
+                        </div>
+                    </li>
+                </ul>
+                <%}%>
+                    <% if (IsUserInRole("Accounting"))
+                    { %>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="DemandDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Demand
+                        </a>
                         <div class="dropdown-menu" aria-labelledby="DemandDropdownMenuLink">
-                            <a class="dropdown-item" href="ByYardIssue.aspx">Issue Demand</a>
+                            <a class="dropdown-item" href="ByYardIssue.aspx">Demand Inbox</a>
+                            <a class="dropdown-item" href="DemandIssueList.aspx">Demand Status</a>
                         </div>
                     </li>
                 </ul>
@@ -387,6 +413,7 @@
                             <a class="dropdown-item" href="OtherShips.aspx">Other Ships</a>
                             <a class="dropdown-item" href="Patients.aspx">Patients</a>
                             <a class="dropdown-item" href="Wastage.aspx">Wastage</a>
+                              
                         </div>
                     </li>
 
@@ -413,9 +440,10 @@
                             <a class="dropdown-item" href="Page12.aspx">Fresh Ration Receipt(Page 12)</a>
                             <a class="dropdown-item" href="ReportsGenerate.aspx">Strength Report(Page 13)</a>
                             <a class="dropdown-item" href="Page14.aspx">Page14</a>
-                            <a class="dropdown-item" href="transfervoucher.aspx">Transfer Voucher</a>
+                            <%--<a class="dropdown-item" href="transfervoucher.aspx">Transfer Voucher</a>--%>
                             <%--<a class="dropdown-item" href="DiverReport.aspx">Diver Report</a>--%>
                             <a class="dropdown-item" href="VictuallingManagement.aspx"><%--Victualling Account Reports--%></a>
+                            <a class="dropdown-item" href="CurrentStockList.aspx">Current Stock</a>
                             <%--<a class="dropdown-item" href="Cat-ISchool.aspx">Cat-I School</a>--%>
                             <%--<a class="dropdown-item" href="Cat-IISchool.aspx">Cat-II School</a>--%>
                             <%--<a class="dropdown-item" href="Overdrawal.aspx">OverDrawal</a>--%>
@@ -510,9 +538,10 @@
                             <a class="dropdown-item" href="Page12.aspx">Fresh Ration Receipt(Page 12)</a>
                             <a class="dropdown-item" href="ReportsGenerate.aspx">Strength Report(Page 13)</a>
                             <a class="dropdown-item" href="Page14.aspx">Page14</a>
-                            <a class="dropdown-item" href="transfervoucher.aspx">Transfer Voucher</a>
+                            <%--<a class="dropdown-item" href="transfervoucher.aspx">Transfer Voucher</a>--%>
                             <%--<a class="dropdown-item" href="DiverReport.aspx">Diver Report</a>--%>
                             <a class="dropdown-item" href="VictuallingManagement.aspx"><%--Victualling Account Reports--%></a>
+                            <a class="dropdown-item" href="CurrentStockList.aspx">Current Stock</a>
                             <%--<a class="dropdown-item" href="Cat-ISchool.aspx">Cat-I School</a>--%>
                             <%--<a class="dropdown-item" href="Cat-IISchool.aspx">Cat-II School</a>--%>
                             <%--<a class="dropdown-item" href="Overdrawal.aspx">OverDrawal</a>--%>
@@ -532,32 +561,7 @@
                 </ul>
                 <%}%>
                 <% if (IsUserInRole("Commanding Officer"))
-                    { %>
-                <a class="nav-link text-white dark-theme-text font-weight-bold" href="VictuallingManagement.aspx" role="button" aria-haspopup="true" aria-expanded="false">View Reports</a>
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Generate Report 
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="Page01.aspx">Page1</a>
-                            <a class="dropdown-item" href="OfficerVAcc.aspx">Officer Worksheet</a>
-                            <a class="dropdown-item" href="SailorsVAcc.aspx">Sailor Worksheet</a>
-                            <a class="dropdown-item" href="Page2_7Report.aspx">Page2-7</a>
-                            <a class="dropdown-item" href="Page08.aspx">Page 08</a>
-                            <a class="dropdown-item" href="ExtraIssue.aspx">Extra Issue(Page9)</a>
-                            <a class="dropdown-item" href="Page10-11.aspx">Payment Issue(Page10-11)</a>
-                            <a class="dropdown-item" href="Page12.aspx">Fresh Ration Receipt(Page 12)</a>
-                            <a class="dropdown-item" href="ReportsGenerate.aspx">Strength Report(Page 13)</a>
-                            <a class="dropdown-item" href="Page14.aspx">Page14</a>
-                            <a class="dropdown-item" href="transfervoucher.aspx">Transfer Voucher</a>
-                            <%--<a class="dropdown-item" href="DiverReport.aspx">Diver Report</a>--%>
-                            <a class="dropdown-item" href="VictuallingManagement.aspx"><%--Victualling Account Reports--%></a>
-                            <%--<a class="dropdown-item" href="Cat-ISchool.aspx">Cat-I School</a>--%>
-                            <%--<a class="dropdown-item" href="Cat-IISchool.aspx">Cat-II School</a>--%>
-                            <%--<a class="dropdown-item" href="Overdrawal.aspx">OverDrawal</a>--%>
-                        </div>
-                    </li>
-                </ul>
+                    { %>               
                 <ul class="navbar-nav" style="margin-left: auto;">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= GetUserName() %> (<%= GetUserRole() %>)
@@ -572,6 +576,7 @@
                 <%}%>
                 <% if (IsUserInRole("Admin"))
                     { %>
+                <a class="navbar-brand text-white" href="EmtDashbord.aspx" id="A1" runat="server">Home</a>
                 <ul class="navbar-nav">
                     <a class="nav-link text-white dark-theme-text font-weight-bold" href="AddBasicandLieuItems.aspx" role="button" aria-expanded="false">Add Items
                     </a>
@@ -582,6 +587,7 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item " href="Users.aspx">Edit Users</a>
                             <a class="dropdown-item " href="UnapprovedUsers.aspx">Approve Users</a>
+                            <a class="dropdown-item " href="EmtDashbord.aspx">Users List</a>
                         </div>
                     </li>
                 </ul>
@@ -590,32 +596,42 @@
                     </a>
                 </ul>
                 <a class="nav-link text-white dark-theme-text font-weight-bold" href="RationScale.aspx" role="button" aria-haspopup="true" aria-expanded="false">Item Rate
-                </a>
-                <a class="nav-link text-white dark-theme-text font-weight-bold" href="VictuallingManagement.aspx" role="button" aria-haspopup="true" aria-expanded="false">View Reports</a>
-                <ul class="navbar-nav">
+                </a>          
+                <ul class="navbar-nav" style="margin-left: auto;">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Generate Report 
+                        <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= GetUserName() %> (<%= GetUserRole() %>)
+                            <i class="bi bi-gear-fill"></i>
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="Page01.aspx">Page1</a>
-                            <a class="dropdown-item" href="OfficerVAcc.aspx">Officer Worksheet</a>
-                            <a class="dropdown-item" href="SailorsVAcc.aspx">Sailor Worksheet</a>
-                            <a class="dropdown-item" href="Page2_7Report.aspx">Page2-7</a>
-                            <a class="dropdown-item" href="Page08.aspx">Page 08</a>
-                            <a class="dropdown-item" href="ExtraIssue.aspx">Extra Issue(Page9)</a>
-                            <a class="dropdown-item" href="Page10-11.aspx">Payment Issue(Page10-11)</a>
-                            <a class="dropdown-item" href="Page12.aspx">Fresh Ration Receipt(Page 12)</a>
-                            <a class="dropdown-item" href="ReportsGenerate.aspx">Strength Report(Page 13)</a>
-                            <a class="dropdown-item" href="Page14.aspx">Page14</a>
-                            <a class="dropdown-item" href="transfervoucher.aspx">Transfer Voucher</a>
-                            <%--<a class="dropdown-item" href="DiverReport.aspx">Diver Report</a>--%>
-                            <a class="dropdown-item" href="VictuallingManagement.aspx"><%--Victualling Account Reports--%></a>
-                            <%--<a class="dropdown-item" href="Cat-ISchool.aspx">Cat-I School</a>--%>
-                            <%--<a class="dropdown-item" href="Cat-IISchool.aspx">Cat-II School</a>--%>
-                            <%--<a class="dropdown-item" href="Overdrawal.aspx">OverDrawal</a>--%>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" style="margin-left: -70px;">
+                            <a class="dropdown-item" href="UserUpdate.aspx" runat="server">Reset Password</a>
+                            <a class="dropdown-item" href="~/LOGIN.aspx?m=logout" runat="server">Logout</a>
                         </div>
                     </li>
                 </ul>
+                <%}%>
+                <% if (IsUserInRole("NHQ"))
+                    { %>
+                <a class="navbar-brand text-white" href="EmtDashbord.aspx" id="A3" runat="server">Home</a>
+                <ul class="navbar-nav">
+                    <a class="nav-link text-white dark-theme-text font-weight-bold" href="AddBasicandLieuItems.aspx" role="button" aria-expanded="false">Add Items
+                    </a>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle dark-theme-text text-white font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item " href="Users.aspx">Edit Users</a>
+                            <a class="dropdown-item " href="UnapprovedUsers.aspx">Approve Users</a>
+                            <a class="dropdown-item " href="EmtDashbord.aspx">Users List</a>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <a class="nav-link text-white dark-theme-text font-weight-bold" href="ItemMaster.aspx" role="button" aria-expanded="false">Ration Scale
+                    </a>
+                </ul>
+                <a class="nav-link text-white dark-theme-text font-weight-bold" href="RationScale.aspx" role="button" aria-haspopup="true" aria-expanded="false">Item Rate
+                </a>          
                 <ul class="navbar-nav" style="margin-left: auto;">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= GetUserName() %> (<%= GetUserRole() %>)
@@ -630,7 +646,7 @@
                 <%}%>
                 <% if (IsUserInRole("Auditor"))
                     { %>
-
+                <a class="navbar-brand text-white" href="EmtDashbord.aspx" id="A2" runat="server">Home</a>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle dark-theme-text text-white font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Audit </a>
@@ -638,31 +654,7 @@
                             <a class="dropdown-item" href="AuditUnit.aspx">Audit VA</a>
                         </div>
                     </li>
-                </ul>
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Generate Report 
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="Page01.aspx">Page1</a>
-                            <a class="dropdown-item" href="OfficerVAcc.aspx">Officer Worksheet</a>
-                            <a class="dropdown-item" href="SailorsVAcc.aspx">Sailor Worksheet</a>
-                            <a class="dropdown-item" href="Page2_7Report.aspx">Page2-7</a>
-                            <a class="dropdown-item" href="Page08.aspx">Page 08</a>
-                            <a class="dropdown-item" href="ExtraIssue.aspx">Extra Issue(Page9)</a>
-                            <a class="dropdown-item" href="Page10-11.aspx">Payment Issue(Page10-11)</a>
-                            <a class="dropdown-item" href="Page12.aspx">Fresh Ration Receipt(Page 12)</a>
-                            <a class="dropdown-item" href="ReportsGenerate.aspx">Strength Report(Page 13)</a>
-                            <a class="dropdown-item" href="Page14.aspx">Page14</a>
-                            <a class="dropdown-item" href="transfervoucher.aspx">Transfer Voucher</a>
-                            <%--<a class="dropdown-item" href="DiverReport.aspx">Diver Report</a>--%>
-                            <a class="dropdown-item" href="VictuallingManagement.aspx"><%--Victualling Account Reports--%></a>
-                            <%--<a class="dropdown-item" href="Cat-ISchool.aspx">Cat-I School</a>--%>
-                            <%--<a class="dropdown-item" href="Cat-IISchool.aspx">Cat-II School</a>--%>
-                            <%--<a class="dropdown-item" href="Overdrawal.aspx">OverDrawal</a>--%>
-                        </div>
-                    </li>
-                </ul>
+                </ul>                
                 <ul class="navbar-nav" style="margin-left: auto;">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-white dark-theme-text font-weight-bold" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= GetUserName() %> (<%= GetUserRole() %>)

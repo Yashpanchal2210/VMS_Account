@@ -21,15 +21,34 @@ namespace VMS_1.Audit
         private string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            
         }
 
         protected void btnView_Click(object sender, EventArgs e)
         {
             string Date = monthYearPicker.Value;
-            string url = "VictuallingManagement.aspx?date=" + Server.UrlEncode(Date);
-            string script = $"<script type='text/javascript'>window.open('{url}', '_blank');</script>";
-            ClientScript.RegisterStartupScript(this.GetType(), "OpenInNewTab", script);
+            string[] Datem = Date.Split('-');
+            string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+            DataTable dt = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "select AccountID from VictuallingAccountList where ApprovedByCO IS NOT NULL AND AYear = " + Datem[0]+ " AND Amonth="+ Datem[1]+ "";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                conn.Open();
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                adapter.Fill(dt);
+                if(dt.Rows.Count>0)
+                {
+                    string url = "VictuallingManagement.aspx?date=" + Server.UrlEncode(Date);
+                    string script = $"<script type='text/javascript'>window.open('{url}', '_blank');</script>";
+                    ClientScript.RegisterStartupScript(this.GetType(), "OpenInNewTab", script);
+                }
+                else
+                {
+                    lblmsg.Text= "You don't have permission to access this month data";
+                    lblmsg.ForeColor = System.Drawing.Color.Red;
+                }
+            }   
         }
 
         protected void btnApprove_Click(object sender, EventArgs e)

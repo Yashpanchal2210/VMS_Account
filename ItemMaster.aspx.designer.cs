@@ -24,6 +24,15 @@ namespace VMS_1
         protected global::System.Web.UI.HtmlControls.HtmlForm itemMasterForm;
 
         /// <summary>
+        /// entry control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl entry;
+
+        /// <summary>
         /// tableBody control.
         /// </summary>
         /// <remarks>

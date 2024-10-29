@@ -66,8 +66,11 @@
                                 </div>
                                 <div class="row row-align col-md-12">
                                     <div class="col-md-2"></div>
-                                    <div class="col-md-10">
+                                    <div class="col-md-2">
                                         <asp:Button ID="btnView" class="btn btn-primary" runat="server" Text="View Victualling Account" OnClick="btnView_Click" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <asp:Label ID="lblmsg" runat="server" Font-Bold="true"></asp:Label>
                                     </div>
                                 </div>
                                 <div class="row row-align col-md-12">

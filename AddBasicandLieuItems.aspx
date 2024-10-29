@@ -44,6 +44,7 @@
                             <th class="heading">In-lieu Item</th>
                             <th class="heading">Denomination</th>
                             <th class="heading">Pattern No</th>
+                            <th class="heading">Category</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -63,6 +64,13 @@
                             </td>
                             <td>
                                 <input type="text" class="form-control" name="patternno" />
+                            </td>
+                            <td>
+                                <select class="form-control" name="ilieudecat">
+                                    <option value="">Select</option>
+                                    <option value="F">Frsh</option>
+                                    <option value="D">Dry</option>                                    
+                                </select>
                             </td>
                         </tr>
                     </tbody>
@@ -86,16 +94,13 @@
                         <asp:BoundField DataField="iLueItem" HeaderText="In-lieu Item" />
                         <asp:BoundField DataField="ItemCode" HeaderText="Pattern No" />
                         <asp:BoundField DataField="iLueDenom" HeaderText="Denomination" />
+                        <asp:BoundField DataField="Category" HeaderText="Category" />
                         <asp:CommandField HeaderText="Action" ShowEditButton="true" ShowDeleteButton="true" />
                     </Columns>
                 </asp:GridView>
             </div>
         </form>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
     <script type="text/javascript">
         function addNewItem() {
             var tableBody = document.getElementById("MainContent_Tbody1");

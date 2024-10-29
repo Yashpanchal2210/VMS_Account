@@ -18,7 +18,10 @@ namespace VMS_1
                 FormsAuthentication.SignOut();
                 Response.Redirect(FormsAuthentication.LoginUrl);
             }
+            if (Session["Role"].ToString() == "Auditor" || Session["Role"].ToString() == "Regulating Officer" || Session["Role"].ToString() == "Regulating Office" || Session["Role"].ToString() == "Accounting Officer"|| Session["Role"].ToString() == "Admin" || Session["Role"].ToString() == "IHQ" || Session["Role"].ToString() == "NHQ" || Session["Role"].ToString() == "Accounting")
+            {
+                hdnhome.Visible = false;
+            }
         }
-
     }
 }

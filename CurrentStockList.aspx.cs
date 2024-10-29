@@ -15,11 +15,24 @@ namespace VMS_1
 {
     public partial class CurrentStockList : System.Web.UI.Page
     {
+        protected override void Render(HtmlTextWriter writer)
+        {
+            Page.ClientScript.RegisterForEventValidation(this.UniqueID);
+            base.Render(writer);
+        }
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                LoadGridView();
+                if (Session["Role"].ToString() == "Logistic Officer")
+                {
+                    btnSave.Visible = true;
+                }
+                else
+                {
+                    btnSave.Visible = false;
+                }
+                    LoadGridView();
             }
         }
         public override void VerifyRenderingInServerForm(Control control)
@@ -35,7 +48,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT Id,ItemName,Qty,Denos  FROM PresentStockMaster", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT Id,ItemName,Qty,Denos,ISNULL(YearMarkStock,0)YearMarkStock  FROM PresentStockMaster", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 
@@ -97,6 +110,32 @@ namespace VMS_1
                 //Print the GridView.
                 string script = "window.onload = function() { PrintGrid('" + gridHTML + "', '" + gridCSS + "'); }";
                 ClientScript.RegisterStartupScript(this.GetType(), "GridPrint", script, true);
+            }
+        }
+
+        protected void btnSave_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
+                    foreach (GridViewRow itm in gvStock.Rows)
+                    {
+                        TextBox txtqty = (TextBox)itm.FindControl("txtyearStock");
+                        SqlCommand updatePresentStockCmd = new SqlCommand("UPDATE PresentStockMaster SET YearMarkStock = @YearMarkStock WHERE ItemName = @ItemName", conn);
+                        updatePresentStockCmd.Parameters.AddWithValue("@ItemName", itm.Cells[1].Text);
+                        updatePresentStockCmd.Parameters.AddWithValue("@YearMarkStock", Convert.ToDecimal(txtqty.Text));
+                        updatePresentStockCmd.ExecuteNonQuery();
+                        lblmsg.Text = "Year Mark Stock Update Successfully.";
+                    }                    
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
     }

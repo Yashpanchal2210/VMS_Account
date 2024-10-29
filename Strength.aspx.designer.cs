@@ -33,15 +33,6 @@ namespace VMS_1
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl tableBody;
 
         /// <summary>
-        /// lblStatus control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblStatus;
-
-        /// <summary>
         /// SubmitButton control.
         /// </summary>
         /// <remarks>
@@ -69,6 +60,15 @@ namespace VMS_1
         protected global::System.Web.UI.WebControls.Button btnFilter;
 
         /// <summary>
+        /// lblStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblStatus;
+
+        /// <summary>
         /// GridViewStrength control.
         /// </summary>
         /// <remarks>
@@ -76,5 +76,23 @@ namespace VMS_1
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView GridViewStrength;
+
+        /// <summary>
+        /// lblUnapproved control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblUnapproved;
+
+        /// <summary>
+        /// gvUnapprovedSt control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvUnapprovedSt;
     }
 }

@@ -147,37 +147,37 @@ namespace VMS_1
                             //    lblStatus.Text = "Denomination not found for item: " + itm.Cells[3].Text;
                             //    return;
                             //}
-                        
 
-                        //for (int i = 0; i < itemNames.Length; i++)
-                        //{
-                        //    DateTime date;
-                        //    if (!DateTime.TryParse(dateStr, out date))
-                        //    {
-                        //        lblStatus.Text = "Invalid date format for item: " + itemNames[i];
-                        //        return;
-                        //    }
 
-                        //    string itemName = itemNames[i];
-                        //    decimal quantity;
-                        //    if (!decimal.TryParse(quantities[i], out quantity))
-                        //    {
-                        //        lblStatus.Text = "Invalid quantity format for item: " + itemNames[i];
-                        //        return;
-                        //    }
+                            //for (int i = 0; i < itemNames.Length; i++)
+                            //{
+                            //    DateTime date;
+                            //    if (!DateTime.TryParse(dateStr, out date))
+                            //    {
+                            //        lblStatus.Text = "Invalid date format for item: " + itemNames[i];
+                            //        return;
+                            //    }
+
+                            //    string itemName = itemNames[i];
+                            //    decimal quantity;
+                            //    if (!decimal.TryParse(quantities[i], out quantity))
+                            //    {
+                            //        lblStatus.Text = "Invalid quantity format for item: " + itemNames[i];
+                            //        return;
+                            //    }
 
                             //string receivedFromValue = receivedFrom == "Others" ? otherReceivedFrom : receivedFrom;
-
-                            SqlCommand cmd = new SqlCommand("INSERT INTO ReceiptMaster (itemNames, quantities, denominations, receivedFrom, referenceNos, Dates) VALUES (@ItemName, @Quantity, @Denomination, @ReceivedFrom, @ReferenceNo, @Date)", conn);
+                            TextBox txtQty=(TextBox)itm.FindControl("txtQty");
+                            SqlCommand cmd = new SqlCommand("INSERT INTO ReceiptMaster (itemNames, quantities, denominations, receivedFrom, referenceNos, Dates,DemandNo) VALUES (@ItemName, @Quantity, @Denomination, @ReceivedFrom, @ReferenceNo, @Date,@DemandNo)", conn);
                             cmd.CommandType = CommandType.Text;
 
                             cmd.Parameters.AddWithValue("@ItemName", itm.Cells[3].Text);
-                            cmd.Parameters.AddWithValue("@Quantity", itm.Cells[5].Text);
+                            cmd.Parameters.AddWithValue("@Quantity", txtQty.Text);
                             cmd.Parameters.AddWithValue("@Denomination", itm.Cells[4].Text);
                             cmd.Parameters.AddWithValue("@ReceivedFrom", "BVYARD");
                             cmd.Parameters.AddWithValue("@ReferenceNo", itm.Cells[7].Text);
                             cmd.Parameters.AddWithValue("@Date", itm.Cells[6].Text);
-
+                            cmd.Parameters.AddWithValue("@DemandNo", itm.Cells[1].Text);
                             cmd.ExecuteNonQuery();
 
                             //if (FileUpload1.HasFile)
@@ -213,7 +213,7 @@ namespace VMS_1
                                 // If item exists, update the quantity
                                 SqlCommand updatePresentStockCmd = new SqlCommand("UPDATE PresentStockMaster SET Qty = Qty + @Quantity WHERE ItemName = @ItemName", conn);
                                 updatePresentStockCmd.Parameters.AddWithValue("@ItemName", itm.Cells[3].Text);
-                                updatePresentStockCmd.Parameters.AddWithValue("@Quantity", itm.Cells[5].Text);
+                                updatePresentStockCmd.Parameters.AddWithValue("@Quantity", txtQty.Text);
 
                                 updatePresentStockCmd.ExecuteNonQuery();
                             }
@@ -222,7 +222,7 @@ namespace VMS_1
                                 // If item does not exist, insert a new record
                                 SqlCommand insertPresentStockCmd = new SqlCommand("INSERT INTO PresentStockMaster (ItemName, Qty, Denos) VALUES (@ItemName, @Quantity, @Denos)", conn);
                                 insertPresentStockCmd.Parameters.AddWithValue("@ItemName", itm.Cells[3].Text);
-                                insertPresentStockCmd.Parameters.AddWithValue("@Quantity", itm.Cells[5].Text);
+                                insertPresentStockCmd.Parameters.AddWithValue("@Quantity", txtQty.Text);
                                 insertPresentStockCmd.Parameters.AddWithValue("@Denos", itm.Cells[4].Text);
 
                                 insertPresentStockCmd.ExecuteNonQuery();
@@ -243,7 +243,7 @@ namespace VMS_1
                                 updateCmd.Parameters.AddWithValue("@Month", Convert.ToDateTime(itm.Cells[6].Text).Month);
                                 updateCmd.Parameters.AddWithValue("@Year", Convert.ToDateTime(itm.Cells[6].Text).Year);
                                 updateCmd.Parameters.AddWithValue("@ItemName", itm.Cells[3].Text);
-                                updateCmd.Parameters.AddWithValue("@Quantity", itm.Cells[5].Text);
+                                updateCmd.Parameters.AddWithValue("@Quantity", txtQty.Text);
 
                                 updateCmd.ExecuteNonQuery();
                             }
@@ -253,7 +253,7 @@ namespace VMS_1
                                     "INSERT INTO MonthEndStockMaster (Date, ItemName, Qty, Type) VALUES (@Date, @ItemName, @Quantity, @Type)", conn);
                                 insertCmd.Parameters.AddWithValue("@Date", itm.Cells[6].Text); // Use the full date here
                                 insertCmd.Parameters.AddWithValue("@ItemName", itm.Cells[3].Text);
-                                insertCmd.Parameters.AddWithValue("@Quantity", itm.Cells[5].Text);
+                                insertCmd.Parameters.AddWithValue("@Quantity", txtQty.Text);
                                 insertCmd.Parameters.AddWithValue("@Type", "Receipt"); // Set the correct parameter name for Type
 
                                 insertCmd.ExecuteNonQuery();

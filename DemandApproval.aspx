@@ -35,26 +35,42 @@
 
             <div>
                 <asp:GridView ID="GridViewRationScale" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="false" AutoPostBack="true" DataKeyNames="ID" OnRowEditing="GridViewRationScale_RowEditing" OnRowUpdating="GridViewRationScale_RowUpdating" OnRowCancelingEdit="GridViewRationScale_RowCancelingEdit" OnRowDeleting="GridViewRationScale_RowDeleting" OnRowDataBound="GridViewRation_RowDataBound">
-                    <Columns>
-                        <asp:BoundField DataField="ID" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
-                        <asp:BoundField DataField="DemandNo" HeaderText="DemandNo" />
-                        <asp:BoundField DataField="ItemCode" HeaderText="Pattern Number" />
-                        <asp:TemplateField HeaderText="Item Name">
-                            <ItemTemplate>
-                                <asp:Label ID="lblItemName" runat="server" Text='<%# Eval("ItemName") %>'></asp:Label>
-                            </ItemTemplate>
-                            <EditItemTemplate>
-                                <asp:DropDownList ID="ddlItemName" runat="server" CssClass="form-control itemname" AppendDataBoundItems="true">
-                                    <asp:ListItem Text="Select" Value="" />
-                                </asp:DropDownList>
-                            </EditItemTemplate>
+                    <columns>
+                        <asp:TemplateField>
+                            <itemtemplate>
+                                <asp:CheckBox ID="chk" runat="server" />
+                            </itemtemplate>
                         </asp:TemplateField>
-                        <asp:BoundField DataField="Qty" HeaderText="Qty" />
+                        <asp:BoundField DataField="ID" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
+                        <asp:TemplateField HeaderText="DemandNo">
+                            <itemtemplate>
+                                <asp:Label ID="lblDemandNo" runat="server" Text='<%# Eval("DemandNo") %>'></asp:Label>
+                            </itemtemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Pattern Number">
+                            <itemtemplate>
+                                <asp:Label ID="lblItemCode" runat="server" Text='<%# Eval("ItemCode") %>'></asp:Label>
+                            </itemtemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Item Name">
+                            <itemtemplate>
+                                <asp:Label ID="lblItemName" runat="server" Text='<%# Eval("ItemName") %>'></asp:Label>
+                            </itemtemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Qty">
+                            <itemtemplate>
+                                <asp:Label ID="lblQty" runat="server" Text='<%# Eval("Qty") %>'></asp:Label>
+                            </itemtemplate>
+                            <edititemtemplate>
+                                <asp:TextBox ID="txtQty" runat="server" Text='<%# Eval("Qty") %>'></asp:TextBox>
+                            </edititemtemplate>
+                        </asp:TemplateField>
+                        <%--<asp:BoundField DataField="Qty" HeaderText="Qty" />--%>
                         <asp:BoundField DataField="ItemDeno" HeaderText="Denomination" />
                         <asp:BoundField DataField="ReqDate" HeaderText="Req Date" />
                         <asp:BoundField DataField="SupplyDate" HeaderText="Supply Date" />
                         <asp:CommandField HeaderText="Action" ShowEditButton="true" ShowDeleteButton="true" />
-                    </Columns>
+                    </columns>
                 </asp:GridView>
             </div>
             <div class="text-center">
@@ -77,7 +93,8 @@
                                 <asp:Button ID="btnApprovedSearch" runat="server" Text="Search" OnClick="btnApprovedSearch_Click" CssClass="btn btn-primary" />
                             </td>
                             <td style="width: 30%;">
-                                <asp:Label ID="Label1" runat="server" Text=""></asp:Label></td>
+                                <asp:Label ID="Label1" runat="server" Text=""></asp:Label>
+                            </td>
                             <td></td>
                             <td></td>
                         </tr>
@@ -87,7 +104,7 @@
 
             <div>
                 <asp:GridView ID="gvapproved" runat="server" CssClass="table table-bordered table-striped" AutoGenerateColumns="false" AutoPostBack="true" DataKeyNames="ID">
-                    <Columns>
+                    <columns>
                         <asp:BoundField DataField="ID" HeaderText="ID" ReadOnly="true" InsertVisible="false" Visible="false" />
                         <asp:BoundField DataField="DemandNo" HeaderText="DemandNo" />
                         <asp:BoundField DataField="ItemCode" HeaderText="Pattern Number" />
@@ -97,15 +114,11 @@
                         <asp:BoundField DataField="DemandDate" HeaderText="DemandDate" />
                         <asp:BoundField DataField="SupplyDate" HeaderText="Supply Date" />
 
-                    </Columns>
+                    </columns>
                 </asp:GridView>
             </div>
         </form>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         $(document).ready(function () {
             fetchItems('');

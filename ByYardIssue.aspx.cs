@@ -17,19 +17,30 @@ namespace VMS_1
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
+            if (Session["NudId"] != null)
             {
-                if (!HttpContext.Current.User.Identity.IsAuthenticated)
+                if (!IsPostBack)
                 {
-                    FormsAuthentication.RedirectToLoginPage();
+                    if (!HttpContext.Current.User.Identity.IsAuthenticated)
+                    {
+                        FormsAuthentication.RedirectToLoginPage();
+                    }
+                    string MonthYear = System.DateTime.Now.ToString("yyyy-MM");
+                    //SubmitButton.Visible = false;
+                    monthYearPicker.Value = MonthYear;
+                    if (Session["NudId"].ToString() == "2044567F")
+                    {
+                        BindGridView(MonthYear, "F");
+                    }
+                    else if (Session["NudId"].ToString() == "2344567D")
+                    {
+                        BindGridView(MonthYear, "D");
+                    }
+                    else
+                    { BindGridView(MonthYear, "ALL"); }
                 }
-                string MonthYear = System.DateTime.Now.ToString("yyyy-MM");
-                SubmitButton.Visible = false;
-                monthYearPicker.Value = MonthYear;
-                BindGridView(MonthYear);
             }
         }
-
         protected void SubmitButton_Click(object sender, EventArgs e)
         {
             try
@@ -38,24 +49,52 @@ namespace VMS_1
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
-                    foreach (GridViewRow item  in GridViewRationScale.Rows)
+                    foreach (GridViewRow item in GridViewRationScale.Rows)
                     {
                         TextBox txtQty = (TextBox)item.FindControl("txtIssueQty");
-                        if(((CheckBox)item.FindControl("chkitem")).Checked)                        
+                        Label lblUnit = (Label)item.FindControl("lblUnitCode");
+                        TextBox txtBatch = (TextBox)item.FindControl("txtBatch");
+                        CheckBox chkClose = (CheckBox)item.FindControl("chkclose");
+                        int close = 0;
+                        if (chkClose.Checked)
                         {
-                            string query = "INSERT INTO BVYardIssue (DemandNo,ItemCode ,QtyIssued ,DateIssued,IssueRefNo,Status)VALUES(@DemandNo,@ItemCode ,@QtyIssued ,@DateIssued,@IssueRefNo,0)";
+                            close = 1;
+                        }
+
+                        if (((CheckBox)item.FindControl("chkitem")).Checked)
+                        {
+                            string query = "INSERT INTO BVYardIssue (DemandNo,ItemCode ,QtyIssued ,DateIssued,IssueRefNo,Status,UnitCode,BatchNo)VALUES(@DemandNo,@ItemCode ,@QtyIssued ,@DateIssued,@IssueRefNo,0,@UnitCode,@BatchNo)";
                             SqlCommand cmd = new SqlCommand(query, conn);
                             cmd.Parameters.AddWithValue("@DemandNo", item.Cells[2].Text);
                             cmd.Parameters.AddWithValue("@ItemCode", item.Cells[3].Text);
                             cmd.Parameters.AddWithValue("@QtyIssued", Convert.ToInt32(txtQty.Text));
                             cmd.Parameters.AddWithValue("@DateIssued", System.DateTime.Now);
-                            cmd.Parameters.AddWithValue("@IssueRefNo",txtIssueRefNo.Text);
+                            cmd.Parameters.AddWithValue("@IssueRefNo", txtIssueRefNo.Text);
+                            cmd.Parameters.AddWithValue("@UnitCode", lblUnit.Text);
+                            cmd.Parameters.AddWithValue("@BatchNo", txtBatch.Text);                            
                             cmd.ExecuteNonQuery();
+                            if (close > 0)
+                            {
+                                string queryupdate = "update Demand SET CloseDemand=1 WHERE DemandNo=@DemandNo";
+                                SqlCommand cmdupdate = new SqlCommand(queryupdate, conn);
+                                cmdupdate.Parameters.AddWithValue("@DemandNo", item.Cells[2].Text);
+                                cmdupdate.ExecuteNonQuery();
+                            }
                         }
-                    }                    
+                    }
                 }
                 lblStatus.Text = "Demand Issued successfully.";
-                BindGridView(monthYearPicker.Value);
+                //BindGridView(monthYearPicker.Value);
+                if (Session["NudId"].ToString() == "2044567F")
+                {
+                    BindGridView(monthYearPicker.Value, "F");
+                }
+                else if (Session["NudId"].ToString() == "2344567D")
+                {
+                    BindGridView(monthYearPicker.Value, "D");
+                }
+                else
+                { BindGridView(monthYearPicker.Value, "ALL"); }
             }
             catch (Exception ex)
             {
@@ -63,7 +102,7 @@ namespace VMS_1
             }
         }
 
-        private void BindGridView(string monthYear)
+        private void BindGridView(string monthYear, string Category)
         {
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
 
@@ -73,23 +112,24 @@ namespace VMS_1
                 {
                     conn.Open();
                     DataTable dt = new DataTable();
-                    SqlCommand cmd = new SqlCommand("SELECT ID,DemandNo,ItemCode,ItemName,ItemDeno,Qty,DemandDate,SupplyDate FROM Demand WHERE Status=1 AND DemandNO NOT IN(SELECT DemandNO FROM BVYardIssue) AND  CONVERT(VARCHAR(7), DemandDate, 120) = @Month ORDER By Id desc", conn);
-                    cmd.Parameters.AddWithValue("@Month", monthYear);
+                    SqlCommand cmd = new SqlCommand("EXEC usp_GetDemandListForIssue '" + monthYear + "','" + Category + "'", conn);
+                    //cmd.Parameters.AddWithValue("@Month", monthYear);
+                    //cmd.Parameters.AddWithValue("@Category", Category);
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                     adapter.Fill(dt);
                     GridViewRationScale.DataSource = dt;
                     GridViewRationScale.DataBind();
                     if (dt.Rows.Count > 0)
                     {
-                        SubmitButton.Visible = true;
-                        lblRef.Visible = true;
-                        txtIssueRefNo.Visible = true;
+                        rmk.Visible = true;
+                        //lblRef.Visible = true;
+                        //txtIssueRefNo.Visible = true;
                     }
                     else
                     {
-                        SubmitButton.Visible = false;
-                        lblRef.Visible = false;
-                        txtIssueRefNo.Visible = false;
+                        rmk.Visible = false;
+                        //lblRef.Visible = false;
+                        //txtIssueRefNo.Visible = false;
                     }
                 }
             }
@@ -100,8 +140,16 @@ namespace VMS_1
         }
         protected void btnSearch_Click(object sender, EventArgs e)
         {
-            BindGridView(monthYearPicker.Value);
+            if (Session["NudId"].ToString() == "2044567F")
+            {
+                BindGridView(monthYearPicker.Value, "F");
+            }
+            else if (Session["NudId"].ToString() == "2344567D")
+            {
+                BindGridView(monthYearPicker.Value, "D");
+            }
+            else
+            { BindGridView(monthYearPicker.Value, "ALL"); }
         }
-       
     }
 }

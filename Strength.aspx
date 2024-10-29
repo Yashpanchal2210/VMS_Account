@@ -8,30 +8,36 @@
                 <asp:LinkButton ID="DashboardButton" runat="server" Text="Go to Dashboard" CssClass="btn btn-info" PostBackUrl="~/Dashboard.aspx"></asp:LinkButton>
             </div>--%>
             <div class="table-responsive">
-                <table class="table" id="myTable" style="width: 1440px">
+                <table class="table" id="myTable" style="width: 1600px;">
                     <thead>
                         <tr>
                             <th class="heading date" style="width: 123px"></th>
-                            <th class="heading veg-officer" colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Officer</th>
-                            <th class="heading rik-officer" colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Officer RIK</th>
-                            <th class="heading veg-staff" colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sailor</th>
-                            <th class="heading veg-staff" colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sailor RIK</th>
-                            <th class="heading veg-staff" colspan="2">&nbsp;Non Entitled Officer</th>
-                            <th class="heading veg-staff" colspan="2">&nbsp;Non Entitled Sailor</th>
-                            <th class="heading veg-staff" colspan="2">&nbsp;Civilian</th>
+                            <th class="heading veg-officer" colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Officer</th>
+                            <th class="heading rik-officer" colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Officer RIK</th>
+                            <th class="heading veg-staff" colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sailor</th>
+                            <th class="heading veg-staff" colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sailor RIK</th>
+                            <th class="heading veg-staff" colspan="3">&nbsp;Non Entitled Officer</th>
+                            <th class="heading veg-staff" colspan="3">&nbsp;Non Entitled Sailor</th>
+                            <th class="heading veg-staff" colspan="3">&nbsp;Civilian</th>
                         </tr>
                         <tr>
                             <th class="heading date" style="width: 123px">Date <i class="fa fa-info-circle" data-toggle="modal" data-target="#exampleModal"></i></th>
-                            <th class="heading veg-officer" style="width: 123px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
-                            <th class="heading non-veg-officer" style="width: 123px">&nbsp;&nbsp; NonVeg</th>
-                            <th class="heading rik-officer" style="width: 123px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
-                            <th class="heading rik-officer" style="width: 123px">&nbsp;&nbsp; NonVeg</th>
-                            <th class="heading veg-staff" style="width: 123px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
-                            <th class="heading non-veg-staff" style="width: 123px">&nbsp;&nbsp; NonVeg</th>
+                            <th class="heading veg-officer" style="width: 125px">&nbsp;&nbsp;&nbsp;&nbsp; Std</th>
+                            <th class="heading veg-officer" style="width: 125px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
+                            <th class="heading non-veg-officer" style="width: 125px">&nbsp;&nbsp; NonVeg</th>
+                            <th class="heading veg-officer" style="width: 125px">&nbsp;&nbsp;&nbsp;&nbsp; Std</th>
+                            <th class="heading rik-officer" style="width: 125px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
+                            <th class="heading rik-officer" style="width: 125px">&nbsp;&nbsp; NonVeg</th>
+                            <th class="heading veg-officer" style="width: 125px">&nbsp;&nbsp;&nbsp;&nbsp; Std</th>
+                            <th class="heading veg-staff" style="width: 125px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
+                            <th class="heading non-veg-staff" style="width: 125px">&nbsp;&nbsp; NonVeg</th>
+                            <th class="heading veg-officer" style="width: 123px">&nbsp;&nbsp;&nbsp;&nbsp; Std</th>
                             <th class="heading rik-staff" style="width: 123px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
                             <th class="heading rik-staff" style="width: 123px">&nbsp;&nbsp; NonVeg</th>
+                            <th class="heading veg-officer" style="width: 123px">&nbsp;&nbsp;&nbsp;&nbsp; Std</th>
                             <th class="heading non-entitled-officer" style="width: 123px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
                             <th class="heading non-entitled-officer" style="width: 147px">&nbsp;&nbsp; NonVeg</th>
+                            <th class="heading veg-officer" style="width: 123px">&nbsp;&nbsp;&nbsp;&nbsp; Std</th>
                             <th class="heading non-entitled-staff" style="width: 124px">&nbsp;&nbsp;&nbsp;&nbsp; Veg</th>
                             <th class="heading non-entitled-staff" style="width: 124px">&nbsp;&nbsp; NonVeg</th>
                             <th class="heading civilian" style="width: 124px"></th>
@@ -40,42 +46,34 @@
                     </thead>
                     <tbody id="tableBody" runat="server">
                         <tr>
-                            <td style="width: 123px">
-                                <input type="date" class="form-control" id="dateVal" name="date" style="width: 98%" onchange="fetchDate(this.id)" /></td>
-                            <td style="width: 123px">
-                                <input type="text" class="form-control" name="VegOfficer" min="0" /></td>
-                            <td style="width: 123px">
-                                <input type="text" class="form-control" name="NonVegOfficer" min="0" /></td>
-                            <td style="width: 123px">
-                                <input type="text" class="form-control" name="VegrikOfficer" min="0" /></td>
-                            <td style="width: 123px">
-                                <input type="text" class="form-control" name="NonVegRikOfficer" min="0" /></td>
-                            <td style="width: 123px">
-                                <input type="text" class="form-control" name="vegSailor" min="0" /></td>
-                            <td style="width: 123px">
-                                <input type="text" class="form-control" name="nonVegSailor" min="0" /></td>
-                            <td style="width: 123px">
-                                <input type="text" class="form-control" name="VegSailorRik" min="0" /></td>
-                            <td style="width: 123px">
-                                <input type="text" class="form-control" name="NonVegSailorRik" min="0" /></td>
-                            <td style="width: 123px">
-                                <input type="text" class="form-control" name="VegNonEntitledOfficer" min="0" /></td>
-                            <td style="width: 147px">
-                                <input type="text" class="form-control" name="NonVegNonEntitledOfficer" min="0" /></td>
+                            <td style="width: 123px"><input type="date" class="form-control" id="dateVal" name="date" style="width: 98%" onchange="fetchDate(this.id)" /></td>
+                            <td style="width: 125px"><input type="text" class="form-control" name="StdOfficer" min="0" /></td>
+                            <td style="width: 125px"><input type="text" class="form-control" name="VegOfficer" min="0" /></td>
+                            <td style="width: 125px"><input type="text" class="form-control" name="NonVegOfficer" min="0" /></td>
+                            <td style="width: 125px"><input type="text" class="form-control" name="StdrikOfficer" min="0" /></td>
+                            <td style="width: 125px"><input type="text" class="form-control" name="VegrikOfficer" min="0" /></td>
+                            <td style="width: 125px"><input type="text" class="form-control" name="NonVegRikOfficer" min="0" /></td>
+                            <td style="width: 125px"><input type="text" class="form-control" name="StdSailor" min="0" /></td>
+                            <td style="width: 125px"><input type="text" class="form-control" name="vegSailor" min="0" /></td>
+                            <td style="width: 125px"><input type="text" class="form-control" name="nonVegSailor" min="0" /></td>
+                            <td style="width: 125px"><input type="text" class="form-control" name="StdSailorRik" min="0" /></td>
+                            <td style="width: 125px"><input type="text" class="form-control" name="VegSailorRik" min="0" /></td>
+                            <td style="width: 125px"><input type="text" class="form-control" name="NonVegSailorRik" min="0" /></td>
+                            <td style="width: 125px"><input type="text" class="form-control" name="StdNonEntitledOfficer" min="0" /></td>
+                            <td style="width: 125px"><input type="text" class="form-control" name="VegNonEntitledOfficer" min="0" /></td>
+                            <td style="width: 147px"><input type="text" class="form-control" name="NonVegNonEntitledOfficer" min="0" /></td>
+                            <td style="width: 125px"><input type="text" class="form-control" name="StdNonEntitledSailor" min="0" /></td>
+                            <td style="width: 124px"><input type="text" class="form-control" name="VegNonEntitledSailor" min="0" /></td>
+                            <td style="width: 124px"><input type="text" class="form-control" name="NonVegNonEntitledSailor" min="0" /></td>
+                            <td style="width: 124px"><input type="text" class="form-control" name="Civilian" min="0" style="width: 96%" /></td>
                             <td style="width: 124px">
-                                <input type="text" class="form-control" name="VegNonEntitledSailor" min="0" /></td>
-                            <td style="width: 124px">
-                                <input type="text" class="form-control" name="NonVegNonEntitledSailor" min="0" /></td>
-                            <td style="width: 124px">
-                                <input type="text" class="form-control" name="Civilian" min="0" style="width: 96%" /></td>
-                            <td style="width: 124px">
-                                <button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>
+                                <%--<button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button>--%>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div>
-                <asp:Label ID="lblStatus" runat="server" Text=""></asp:Label>
             </div>
             <div style="color: red; background-color: yellow; padding: 10px; text-align: center; font-weight: bold;">
                 Data entered for the same date will be overwritten.
@@ -88,35 +86,54 @@
 
             </div>
             <div>
-                <h2 class="mt-4">Strength Data</h2>
+                <h2 class="mt-4">Approved Strength Data</h2>
 
             </div>
-            <%--  <div class="form-group">
-                <label for="monthYear">Select Month and Year:</label>
-                <input type="month" id="monthYear" name="monthYear" class="form-control" onchange="fetchFilteredData()" /><br />
-                &nbsp;
-            </div>--%>
             <div class="table-responsive">
-                <asp:TextBox ID="txtDate" type="month" runat="server" CssClass="form-control" placeholder="Enter date (MM/DD/YYYY)"></asp:TextBox>
-                <asp:Button ID="btnFilter" runat="server" CssClass="btn btn-primary" Text="Filter" OnClick="btnFilter_Click" />
-
+                <div style="width: 50%">
+                    <table style="width: 100%">
+                        <tr>
+                            <td>
+                                <asp:TextBox ID="txtDate" type="month" runat="server" CssClass="form-control" placeholder="Enter date (MM/DD/YYYY)"></asp:TextBox></td>
+                            <td>
+                                <asp:Button ID="btnFilter" runat="server" CssClass="btn btn-primary" Text="Filter" OnClick="btnFilter_Click" />
+                            </td>
+                            <td>
+                                <asp:Label ID="lblStatus" runat="server" Text="" Font-Bold="true"></asp:Label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
                 <asp:GridView ID="GridViewStrength" runat="server" CssClass="table table-bordered table-striped"
                     AutoGenerateColumns="False" DataKeyNames="Id">
                     <Columns>
                         <asp:BoundField DataField="Id" Visible="false" HeaderText="ID" ReadOnly="True" />
                         <asp:BoundField DataField="dates" HeaderText="Date" ReadOnly="True" />
-                        <asp:BoundField DataField="vegOfficers" HeaderText="vegOfficers" ReadOnly="True" />
-                        <asp:BoundField DataField="nonVegOfficers" HeaderText="nonVegOfficers" ReadOnly="True" />
-                        <asp:BoundField DataField="vegrikOfficers" HeaderText="vegrikOfficers" ReadOnly="True" />
-                        <asp:BoundField DataField="nonVegrikOfficers" HeaderText="nonVegrikOfficers" ReadOnly="True" />
-                        <asp:BoundField DataField="vegSailor" HeaderText="vegSailor" ReadOnly="True" />
-                        <asp:BoundField DataField="nonVegSailor" HeaderText="nonVegSailor" ReadOnly="True" />
-                        <asp:BoundField DataField="vegSailorRik" HeaderText="vegSailorRik" ReadOnly="True" />
-                        <asp:BoundField DataField="nonVegSailorRik" HeaderText="nonVegSailorRik" ReadOnly="True" />
-                        <asp:BoundField DataField="vegNonEntitledOfficer" HeaderText="vegNonEntitledOfficer" ReadOnly="True" />
-                        <asp:BoundField DataField="nonVegNonEntitledOfficer" HeaderText="nonVegNonEntitledOfficer" ReadOnly="True" />
-                        <asp:BoundField DataField="vegNonEntitledSailor" HeaderText="vegNonEntitledSailor" ReadOnly="True" />
-                        <asp:BoundField DataField="NonVegNonEntitledSailor" HeaderText="NonVegNonEntitledSailor" ReadOnly="True" />
+
+                        <asp:BoundField DataField="StdOfficers" HeaderText="Std Officers" ReadOnly="True" />
+                        <asp:BoundField DataField="vegOfficers" HeaderText="Veg Officers" ReadOnly="True" />
+                        <asp:BoundField DataField="nonVegOfficers" HeaderText="Non Veg Officers" ReadOnly="True" />
+
+                         <asp:BoundField DataField="StdrikOfficers" HeaderText="Std Vegrik Officers" ReadOnly="True" />
+                        <asp:BoundField DataField="vegrikOfficers" HeaderText="Vegrik Officers" ReadOnly="True" />
+                        <asp:BoundField DataField="nonVegrikOfficers" HeaderText="NonVegrik Officers" ReadOnly="True" />
+
+                         <asp:BoundField DataField="StdSailor" HeaderText="Std Sailor" ReadOnly="True" />
+                        <asp:BoundField DataField="vegSailor" HeaderText="Veg Sailor" ReadOnly="True" />
+                        <asp:BoundField DataField="nonVegSailor" HeaderText="Non Veg Sailor" ReadOnly="True" />
+
+                        <asp:BoundField DataField="StdSailorRik" HeaderText="Std Sailor Rik" ReadOnly="True" />
+                        <asp:BoundField DataField="vegSailorRik" HeaderText="Veg Sailor Rik" ReadOnly="True" />
+                        <asp:BoundField DataField="nonVegSailorRik" HeaderText="Non Veg Sailor Rik" ReadOnly="True" />
+
+                         <asp:BoundField DataField="StdNonEntitledOfficer" HeaderText="Std Non Entitled Officer" ReadOnly="True" />
+                        <asp:BoundField DataField="vegNonEntitledOfficer" HeaderText="Veg Non Entitled Officer" ReadOnly="True" />
+                        <asp:BoundField DataField="nonVegNonEntitledOfficer" HeaderText="Non Veg Non Entitled Officer" ReadOnly="True" />
+
+                        <asp:BoundField DataField="StdNonEntitledSailor" HeaderText="Std Non Entitled Sailor" ReadOnly="True" />
+                        <asp:BoundField DataField="vegNonEntitledSailor" HeaderText="Veg Non Entitled Sailor" ReadOnly="True" />
+                        <asp:BoundField DataField="NonVegNonEntitledSailor" HeaderText="Non Veg Non Entitled Sailor" ReadOnly="True" />
+
                         <asp:BoundField DataField="civilians" HeaderText="civilians" ReadOnly="True" />
                         <asp:BoundField DataField="IsApproved" HeaderText="Status" ReadOnly="True" />
                         <asp:TemplateField HeaderText="Actions">
@@ -133,6 +150,50 @@
                     </Columns>
                 </asp:GridView>
             </div>
+
+            <div>
+                <h2 class="mt-4">
+                    <asp:Label ID="lblUnapproved" runat="server" Text="Unapproved Strength Data" Visible="false"></asp:Label>
+                </h2>
+            </div>
+            <div class="table-responsive">
+                <asp:GridView ID="gvUnapprovedSt" runat="server" CssClass="table table-bordered table-striped"
+                    AutoGenerateColumns="False" DataKeyNames="Id">
+                    <Columns>
+                                                <asp:BoundField DataField="Id" Visible="false" HeaderText="ID" ReadOnly="True" />
+                        <asp:BoundField DataField="dates" HeaderText="Date" ReadOnly="True" />
+
+                        <asp:BoundField DataField="StdOfficers" HeaderText="Std Officers" ReadOnly="True" />
+                        <asp:BoundField DataField="vegOfficers" HeaderText="Veg Officers" ReadOnly="True" />
+                        <asp:BoundField DataField="nonVegOfficers" HeaderText="Non Veg Officers" ReadOnly="True" />
+
+                         <asp:BoundField DataField="StdrikOfficers" HeaderText="Std Vegrik Officers" ReadOnly="True" />
+                        <asp:BoundField DataField="vegrikOfficers" HeaderText="Vegrik Officers" ReadOnly="True" />
+                        <asp:BoundField DataField="nonVegrikOfficers" HeaderText="NonVegrik Officers" ReadOnly="True" />
+
+                         <asp:BoundField DataField="StdSailor" HeaderText="Std Sailor" ReadOnly="True" />
+                        <asp:BoundField DataField="vegSailor" HeaderText="Veg Sailor" ReadOnly="True" />
+                        <asp:BoundField DataField="nonVegSailor" HeaderText="Non Veg Sailor" ReadOnly="True" />
+
+                        <asp:BoundField DataField="StdSailorRik" HeaderText="Std Sailor Rik" ReadOnly="True" />
+                        <asp:BoundField DataField="vegSailorRik" HeaderText="Veg Sailor Rik" ReadOnly="True" />
+                        <asp:BoundField DataField="nonVegSailorRik" HeaderText="Non Veg Sailor Rik" ReadOnly="True" />
+
+                         <asp:BoundField DataField="StdNonEntitledOfficer" HeaderText="Std Non Entitled Officer" ReadOnly="True" />
+                        <asp:BoundField DataField="vegNonEntitledOfficer" HeaderText="Veg Non Entitled Officer" ReadOnly="True" />
+                        <asp:BoundField DataField="nonVegNonEntitledOfficer" HeaderText="Non Veg Non Entitled Officer" ReadOnly="True" />
+
+                        <asp:BoundField DataField="StdNonEntitledSailor" HeaderText="Std Non Entitled Sailor" ReadOnly="True" />
+                        <asp:BoundField DataField="vegNonEntitledSailor" HeaderText="Veg Non Entitled Sailor" ReadOnly="True" />
+                        <asp:BoundField DataField="NonVegNonEntitledSailor" HeaderText="Non Veg Non Entitled Sailor" ReadOnly="True" />
+
+                        <asp:BoundField DataField="civilians" HeaderText="civilians" ReadOnly="True" />
+                        <asp:BoundField DataField="IsApproved" HeaderText="Status" ReadOnly="True" />
+
+                    </Columns>
+                </asp:GridView>
+            </div>
+
 
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -155,9 +216,6 @@
         </form>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         function setTheme(theme) {
             var gridView = document.getElementById("GridView2");
@@ -187,26 +245,35 @@
             var newRow = document.createElement("tr");
             newRow.innerHTML = `<td style="width: 123px">
                                     <input type="date" class="form-control" name="date" id="dateVal_${rowSequence}" required style="width: 98%" onchange="fetchDate(this.id)" /></td>
+                                 <td style="width: 123px">
+                                    <input type="text" class="form-control" name="StdOfficer" required min="0" /></td>
                                 <td style="width: 123px">
                                     <input type="text" class="form-control" name="VegOfficer" required min="0" /></td>
                                 <td style="width: 123px">
                                     <input type="text" class="form-control" name="NonVegOfficer" required min="0" /></td>
                                 <td style="width: 123px">
+                                    <input type="text" class="form-control" name="StdrikOfficer" required min="0" /></td>
+                                <td style="width: 123px">
                                     <input type="text" class="form-control" name="VegrikOfficer" required min="0" /></td>
                                 <td style="width: 123px">
                                     <input type="text" class="form-control" name="NonVegRikOfficer" required min="0" /></td>
+                                 <td style="width: 123px">
+                                    <input type="text" class="form-control" name="StdSailor" required min="0" /></td>
                                 <td style="width: 123px">
                                     <input type="text" class="form-control" name="vegSailor" required min="0" /></td>
                                 <td style="width: 123px">
                                     <input type="text" class="form-control" name="nonVegSailor" required min="0" /></td>
+                                <td style="width: 125px"><input type="text" class="form-control" name="StdSailorRik" min="0" /></td>
                                 <td style="width: 123px">
                                     <input type="text" class="form-control" name="VegSailorRik" required min="0" /></td>
                                 <td style="width: 123px">
                                     <input type="text" class="form-control" name="NonVegSailorRik" required min="0" /></td>
+                                <td style="width: 125px"><input type="text" class="form-control" name="StdNonEntitledOfficer" min="0" /></td>
                                 <td style="width: 123px">
                                     <input type="text" class="form-control" name="VegNonEntitledOfficer" required min="0" /></td>
                                 <td style="width: 147px">
                                     <input type="text" class="form-control" name="NonVegNonEntitledOfficer" required min="0" /></td>
+                                <td style="width: 125px"><input type="text" class="form-control" name="StdNonEntitledSailor" min="0" /></td>
                                 <td style="width: 124px">
                                     <input type="text" class="form-control" name="VegNonEntitledSailor" required min="0" /></td>
                                 <td style="width: 124px">

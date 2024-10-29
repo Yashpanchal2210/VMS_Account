@@ -40,13 +40,20 @@ namespace VMS_1
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
-                    string query = "UPDATE Demand SET Status=1,DemandDate=@DemandDate WHERE Id=@ID";
-                    SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@ID", Convert.ToInt32(ViewState["DemandId"]));
-                    cmd.Parameters.AddWithValue("@DemandDate", System.DateTime.Now);
-                    cmd.ExecuteNonQuery();
-                }
-                lblStatus.Text = "Data approved successfully.";
+                    foreach (GridViewRow itm in GridViewRationScale.Rows)
+                    {                        
+                        if (((CheckBox)itm.FindControl("chk")).Checked)
+                        {
+                            Label lbldem = (Label)itm.FindControl("lblDemandNo");
+                            string query = "UPDATE Demand SET Status=1,DemandDate=@DemandDate WHERE DemandNo=@DemandNo";
+                            SqlCommand cmd = new SqlCommand(query, conn);
+                            cmd.Parameters.AddWithValue("@DemandNo", lbldem.Text);
+                            cmd.Parameters.AddWithValue("@DemandDate", System.DateTime.Now);
+                            cmd.ExecuteNonQuery();
+                            lblStatus.Text = "Data approved successfully.";
+                        }
+                    }                    
+                }               
                 BindGridView(monthYearPicker.Value);
             }
             catch (Exception ex)
@@ -95,7 +102,7 @@ namespace VMS_1
                     conn.Open();
                     DataTable dt = new DataTable();
                     SqlCommand cmd = new SqlCommand();
-                    if (monthYear == "0"|| monthYear=="")
+                    if (monthYear == "0" || monthYear == "")
                     {
                         cmd = new SqlCommand("SELECT ID,DemandNo,ItemCode,ItemName,ItemDeno,Qty,ReqDate,SupplyDate FROM Demand WHERE Status=0 ORDER By Id desc", conn);
                     }
@@ -216,17 +223,18 @@ namespace VMS_1
         {
             string connStr = ConfigurationManager.ConnectionStrings["InsProjConnectionString"].ConnectionString;
             int id = (int)e.Keys["ID"];
-            DropDownList ddlItemName = (DropDownList)GridViewRationScale.Rows[e.RowIndex].FindControl("ddlItemName");
-            string itemname = ddlItemName.SelectedItem.Text;
-            string rate = (string)e.NewValues["Rate"];
+            //DropDownList ddlItemName = (DropDownList)GridViewRationScale.Rows[e.RowIndex].FindControl("ddlItemName");
+            TextBox txtQty = (TextBox)GridViewRationScale.Rows[e.RowIndex].FindControl("txtQty");
+            //string itemname = ddlItemName.SelectedItem.Text;
+            //string rate = (string)e.NewValues["Rate"];
 
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                string query = "UPDATE Demand SET ItemName=@ItemName, Rate=@Rate WHERE Id=@ID";
+                string query = "UPDATE Demand SET Qty=@Qty WHERE Id=@ID";
                 SqlCommand cmd = new SqlCommand(query, conn);
 
-                cmd.Parameters.AddWithValue("@ItemName", itemname);
-                cmd.Parameters.AddWithValue("@Rate", rate);
+                cmd.Parameters.AddWithValue("@Qty", Convert.ToInt32(txtQty.Text));
+                //cmd.Parameters.AddWithValue("@Rate", rate);
                 cmd.Parameters.AddWithValue("@ID", id);
 
                 conn.Open();

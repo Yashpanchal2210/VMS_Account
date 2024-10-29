@@ -25,6 +25,16 @@ namespace VMS_1
             if (!IsPostBack)
             {
                 LoadGridView();
+                if (Session["Role"] != null && Session["Role"].ToString() == "Admin")
+                {
+                    btnSubmit.Visible = true;
+                    entry.Visible = true;
+                }
+                else
+                {
+                    btnSubmit.Visible = false;
+                    entry.Visible = false;
+                }
                 //LoadBasicItems();
             }
         }
@@ -287,6 +297,18 @@ ORDER BY
             }
 
             LoadGridView();
+        }
+        protected bool IsLogisticOfficer()
+        {
+            // Check if Session["Role"] exists and equals "Regulating Officer"
+            if (Session["Role"] != null && Session["Role"].ToString() == "Admin")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
     }

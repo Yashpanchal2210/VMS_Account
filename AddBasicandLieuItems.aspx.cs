@@ -52,7 +52,7 @@ namespace VMS_1
                 string[] ilieuitem = Request.Form.GetValues("ilieuitem");
                 string[] ilieudenom = Request.Form.GetValues("ilieudenom");
                 string[] ItemCode = Request.Form.GetValues("patternno");
-
+                string[] cate = Request.Form.GetValues("ilieudecat");
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
@@ -77,13 +77,14 @@ namespace VMS_1
                         }
 
 
-                        SqlCommand cmd = new SqlCommand("INSERT INTO BasicLieuItems (BasicItem, BasicDenom, iLueItem, iLueDenom,ItemCode) VALUES (@BasicItem, @BasicDenom, @iLueItem, @iLueDenom,@ItemCode)", conn);
+                        SqlCommand cmd = new SqlCommand("INSERT INTO BasicLieuItems (BasicItem, BasicDenom, iLueItem, iLueDenom,ItemCode,Category) VALUES (@BasicItem, @BasicDenom, @iLueItem, @iLueDenom,@ItemCode,@Category)", conn);
 
                         cmd.Parameters.AddWithValue("@BasicItem", i < basicitem.Length ? basicitem[i] : basicitem[0]);
                         cmd.Parameters.AddWithValue("@BasicDenom", i < basicdenom.Length ? basicdenom[i] : basicdenom[0]);
                         cmd.Parameters.AddWithValue("@iLueItem", ilieuitem[i]);
                         cmd.Parameters.AddWithValue("@iLueDenom", ilieudenom[i]);
                         cmd.Parameters.AddWithValue("@ItemCode", ItemCode[i]);
+                        cmd.Parameters.AddWithValue("@Category", cate[i]);
                         cmd.ExecuteNonQuery();
                     }
                 }
@@ -111,23 +112,46 @@ namespace VMS_1
             string ilueItem = (string)e.NewValues["iLueItem"];
             string ilueDenom = (string)e.NewValues["iLueDenom"];
             string ItemCode = (string)e.NewValues["ItemCode"];
+            string cate = (string)e.NewValues["Category"];
+            //using (SqlConnection conn = new SqlConnection(connStr))
+            //{
+            //    string query = "UPDATE BasicLieuItems SET BasicItem=@BasicItem, BasicDenom=@BasicDenom, iLueItem=@iLueItem, iLueDenom=@iLueDenom,ItemCode=@ItemCode,Category=@Category WHERE ID=@ID";
+            //    SqlCommand cmd = new SqlCommand(query, conn);
 
+            //    cmd.Parameters.AddWithValue("@BasicItem", basicItem);
+            //    cmd.Parameters.AddWithValue("@BasicDenom", basicDenom);
+            //    cmd.Parameters.AddWithValue("@iLueItem", ilueItem);
+            //    cmd.Parameters.AddWithValue("@iLueDenom", ilueDenom);
+            //    if (!string.IsNullOrEmpty(ItemCode))
+            //    {
+            //        cmd.Parameters.AddWithValue("@ItemCode", ItemCode);
+            //    }
+            //    cmd.Parameters.AddWithValue("@ID", id);
+            //    if (!string.IsNullOrEmpty(cate))
+            //        cmd.Parameters.AddWithValue("@Category", cate);
+            //    conn.Open();
+            //    cmd.ExecuteNonQuery();
+            //}
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                string query = "UPDATE BasicLieuItems SET BasicItem=@BasicItem, BasicDenom=@BasicDenom, iLueItem=@iLueItem, iLueDenom=@iLueDenom,ItemCode=@ItemCode WHERE ID=@ID";
-                SqlCommand cmd = new SqlCommand(query, conn);
+                string query = "UPDATE BasicLieuItems SET BasicItem = @BasicItem, BasicDenom = @BasicDenom, iLueItem = @iLueItem, iLueDenom = @iLueDenom, ItemCode = @ItemCode, Category = @Category WHERE ID = @ID";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    // Add parameters explicitly
+                    cmd.Parameters.Add(new SqlParameter("@BasicItem", SqlDbType.NVarChar) { Value = basicItem });
+                    cmd.Parameters.Add(new SqlParameter("@BasicDenom", SqlDbType.NVarChar) { Value = basicDenom });
+                    cmd.Parameters.Add(new SqlParameter("@iLueItem", SqlDbType.NVarChar) { Value = ilueItem });
+                    cmd.Parameters.Add(new SqlParameter("@iLueDenom", SqlDbType.NVarChar) { Value = ilueDenom });
 
-                cmd.Parameters.AddWithValue("@BasicItem", basicItem);
-                cmd.Parameters.AddWithValue("@BasicDenom", basicDenom);
-                cmd.Parameters.AddWithValue("@iLueItem", ilueItem);
-                cmd.Parameters.AddWithValue("@iLueDenom", ilueDenom);
-                cmd.Parameters.AddWithValue("@ItemCode", ItemCode);
-                cmd.Parameters.AddWithValue("@ID", id);
+                    // Check for null or empty values and handle appropriately
+                    cmd.Parameters.Add(new SqlParameter("@ItemCode", SqlDbType.NVarChar) { Value = string.IsNullOrEmpty(ItemCode) ? DBNull.Value : (object)ItemCode });
+                    cmd.Parameters.Add(new SqlParameter("@Category", SqlDbType.NVarChar) { Value = string.IsNullOrEmpty(cate) ? DBNull.Value : (object)cate });
+                    cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int) { Value = id });
 
-                conn.Open();
-                cmd.ExecuteNonQuery();
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
             }
-
             GridViewBasicInlieuItems.EditIndex = -1;
             LoadGridView();
         }

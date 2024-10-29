@@ -33,7 +33,7 @@ namespace VMS_1
 
             if (!IsPostBack)
             {
-                bool hasData = !string.IsNullOrEmpty(HTMLContentLiteralP2.Text);
+                bool hasData = true;// !string.IsNullOrEmpty(HTMLContentLiteralP2.Text);
                 if (hasData)
                 {
                     // Determine which buttons to show based on the role (assuming role logic from previous example)
@@ -42,6 +42,8 @@ namespace VMS_1
                     if (role == "Store Keeper")
                     {
                         btnSendToLogistic.Visible = true;
+                        GenerateHTMLViewButton.Visible = true;
+                        btnlogo.Visible = true;
                     }
                     else if (role == "Logistic Officer")
                     {
@@ -52,7 +54,7 @@ namespace VMS_1
                     {
                         ViewState["co"] = true;
                         btnApprove2.Visible = true;
-                        btnReject2.Visible = true;
+                        btnReject2.Visible = false;
                     }
 
                     // else handle other roles or default visibility as needed
@@ -160,6 +162,7 @@ namespace VMS_1
                         if (Session["Role"].ToString() == "Store Keeper")
                         {
                             btnSendToLogistic.Visible = true;
+                            GenerateHTMLViewButton.Visible = true;
                         }
                         else if (Session["Role"].ToString() == "Logistic Officer")
                         {
@@ -175,6 +178,7 @@ namespace VMS_1
                         {
                             btnApprove2.Visible = true;
                             btnReject2.Visible = true;
+                            auditDetail.Visible = true;
                         }
                         txtGRemark.Visible = true;
                         lblremark.Visible = true;
@@ -188,6 +192,8 @@ namespace VMS_1
                         btnReject1.Visible = false;
                         btnReject2.Visible = false;
                         btnSendToLogistic.Visible = false;
+                        GenerateHTMLViewButton.Visible = false;
+                        btnlogo.Visible = false;
                     }
                 }
 
@@ -276,7 +282,7 @@ namespace VMS_1
                     // Insert new record
                     string reportNo = $"{selectedYear}{selectedMonth}{DateTime.Now.Day}"; // Adjust as needed
 
-                    string insertQuery = "EXEC InsertVADetails " + selectedYear + "," + selectedMonth + ",'0000','" + Session["NudId"] + "','" + coVal.Value + "','" + loVal.Value + "','" + aoVal.Value + "','" + Session["NudId"] + "'";
+                    string insertQuery = "EXEC InsertVADetails " + selectedYear + "," + selectedMonth + ",'"+ Session["UnitCode"].ToString()+ "','" + Session["NudId"] + "','" + coVal.Value + "','" + loVal.Value + "','" + aoVal.Value + "','" + Session["NudId"] + "'";
 
                     using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
                     {
@@ -307,7 +313,7 @@ namespace VMS_1
                 using (SqlConnection connection = new SqlConnection(connStr))
                 {
                     connection.Open();
-                    string insertQuery = "EXEC InsertConversation " + AccountId + ",'" + Session["NudId"] + "','" + ForwardedTo + "','" + txtGRemark.Text + "'";
+                    string insertQuery = "EXEC InsertConversation " + AccountId + ",'" + Session["NudId"] + "','" + ForwardedTo + "','" + txtGRemark.Text + "','"+ txtpno.Text+ "','"+ txtName.Text+ "'";
                     using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
                     {
                         int rowsAffected = insertCommand.ExecuteNonQuery();
@@ -2159,11 +2165,19 @@ namespace VMS_1
                 htmlTables += "<tr>";
                 htmlTables += $"<td>{srno}</td>";
                 htmlTables += $"<td>{item["BasicItem"]}</td>";
-                htmlTables += $"<td>{OfficerTotal.Rows[0]["Total"]}</td>";
+                if (OfficerTotal.Rows.Count > 0)
+                {
+                    htmlTables += $"<td>{OfficerTotal.Rows[0]["Total"]}</td>";
+                }
+                //else { htmlTables += "0"; }
                 htmlTables += $"<td>x</td>";
                 htmlTables += $"<td>{item["VegScale"]}</td>";
                 htmlTables += $"<td>=</td>";
-                htmlTables += $"<td>{Convert.ToDecimal(OfficerTotal.Rows[0]["Total"]) * Convert.ToDecimal(item["VegScale"])}</td>";
+                if (OfficerTotal.Rows.Count > 0)
+                {
+                    htmlTables += $"<td>{Convert.ToDecimal(OfficerTotal.Rows[0]["Total"]) * Convert.ToDecimal(item["VegScale"])}</td>";
+                }
+                //else { htmlTables += "0"; }
                 htmlTables += $"<td></td>";
                 htmlTables += $"<td></td>";
                 htmlTables += "</tr>";
@@ -2190,7 +2204,11 @@ namespace VMS_1
                 htmlTables += $"<td>Total</td>";
                 htmlTables += $"<td></td>";
                 htmlTables += $"<td>=</td>";
-                htmlTables += $"<td>{Convert.ToDecimal(OfficerTotal.Rows[0]["Total"]) * Convert.ToDecimal(item["VegScale"])}</td>";
+                if (OfficerTotal.Rows.Count > 0)
+                {
+                    htmlTables += $"<td>{Convert.ToDecimal(OfficerTotal.Rows[0]["Total"]) * Convert.ToDecimal(item["VegScale"])}</td>";
+                }
+                //else { htmlTables += "0"; }
                 htmlTables += $"<td></td>";
                 htmlTables += $"<td></td>";
                 htmlTables += "</tr>";
@@ -2438,11 +2456,22 @@ namespace VMS_1
                 htmlTables += "<tr>";
                 htmlTables += $"<td>{srno}</td>";
                 htmlTables += $"<td>{item["BasicItem"]}</td>";
-                htmlTables += $"<td>{OfficerTotal.Rows[0]["Total"]}</td>";
+                if (OfficerTotal.Rows.Count > 0)
+                {
+                    htmlTables += $"<td>{OfficerTotal.Rows[0]["Total"]}</td>";
+                }
+                //else
+                //{
+                //    htmlTables += "0";
+                //}
                 htmlTables += $"<td>x</td>";
                 htmlTables += $"<td>{item["VegScale"]}</td>";
                 htmlTables += $"<td>=</td>";
-                htmlTables += $"<td>{Convert.ToDecimal(OfficerTotal.Rows[0]["Total"]) * Convert.ToDecimal(item["VegScale"])}</td>";
+                if (OfficerTotal.Rows.Count > 0)
+                {
+                    htmlTables += $"<td>{Convert.ToDecimal(OfficerTotal.Rows[0]["Total"]) * Convert.ToDecimal(item["VegScale"])}</td>";
+                }
+                //else { htmlTables += "0"; }
                 htmlTables += $"<td></td>";
                 htmlTables += $"<td></td>";
                 htmlTables += "</tr>";
@@ -2469,7 +2498,11 @@ namespace VMS_1
                 htmlTables += $"<td>Total</td>";
                 htmlTables += $"<td></td>";
                 htmlTables += $"<td>=</td>";
-                htmlTables += $"<td>{Convert.ToDecimal(OfficerTotal.Rows[0]["Total"]) * Convert.ToDecimal(item["VegScale"])}</td>";
+                if (OfficerTotal.Rows.Count > 0)
+                {
+                    htmlTables += $"<td>{Convert.ToDecimal(OfficerTotal.Rows[0]["Total"]) * Convert.ToDecimal(item["VegScale"])}</td>";
+                }
+                //else { htmlTables += "0"; }
                 htmlTables += $"<td></td>";
                 htmlTables += $"<td></td>";
                 htmlTables += "</tr>";
@@ -2544,7 +2577,7 @@ namespace VMS_1
         }
         protected void btnApprove2_Click(object sender, EventArgs e)
         {
-            InsertConversation(Convert.ToInt32(Request.QueryString["id"]), "12345Y");
+            InsertConversation(Convert.ToInt32(Request.QueryString["id"]), "nlao");
             ApprovedByCO(Convert.ToInt32(Request.QueryString["id"]));
         }
         protected void btnReject2_Click(object sender, EventArgs e)

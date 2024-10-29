@@ -63,7 +63,7 @@ namespace VMS_1
                             itemName = itemNameCmd.ExecuteScalar()?.ToString();
                         }
 
-                        SqlCommand cmd = new SqlCommand("INSERT INTO Demand (DemandNo,ItemCode,ItemName,ItemDeno,Qty,ReqDate,SupplyDate,Status) VALUES (@DemandNo,@ItemCode,@ItemName,@ItemDeno,@Qty,@ReqDate,@SupplyDate,0)", conn);
+                        SqlCommand cmd = new SqlCommand("INSERT INTO Demand (DemandNo,ItemCode,ItemName,ItemDeno,Qty,ReqDate,SupplyDate,Status,UnitCode,CloseDemand) VALUES (@DemandNo,@ItemCode,@ItemName,@ItemDeno,@Qty,@ReqDate,@SupplyDate,0,@UnitCode,0)", conn);
 
                         cmd.Parameters.AddWithValue("@DemandNo", demandno);
                         cmd.Parameters.AddWithValue("@ItemCode", itemcode[i]);
@@ -72,6 +72,7 @@ namespace VMS_1
                         cmd.Parameters.AddWithValue("@Qty", qty[i]);
                         cmd.Parameters.AddWithValue("@SupplyDate", date[0]);
                         cmd.Parameters.AddWithValue("@ReqDate", System.DateTime.Now);
+                        cmd.Parameters.AddWithValue("@UnitCode", Session["UnitCode"].ToString());
                         cmd.ExecuteNonQuery();
                         lblStatus.Text = "Data entered successfully.";
                     }
@@ -95,7 +96,7 @@ namespace VMS_1
                 {
                     conn.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT ID,DemandNo,ItemCode,ItemName,ItemDeno,Qty,ReqDate,SupplyDate FROM Demand order by id asc", conn);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT ID,DemandNo,ItemCode,ItemName,ItemDeno,Qty,ReqDate,SupplyDate FROM Demand order by id DESC", conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 
@@ -151,14 +152,14 @@ namespace VMS_1
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 conn.Open();                
-                string query = "SELECT *  FROM BasicLieuItems WHERE ItemCode = @ItemCode";
+                string query = "SELECT ItemCode,[dbo].[usp_GetPresetStock](iLueItem)YearMarkStock  FROM BasicLieuItems WHERE ItemCode = @ItemCode";
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@ItemCode", ItemVal);
 
                 SqlDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    Itemcode = reader["Itemcode"].ToString();
+                    Itemcode = reader["Itemcode"].ToString()+"$"+ reader["YearMarkStock"].ToString();
 
                 }
             }

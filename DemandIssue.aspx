@@ -1,7 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="DemandIssue.aspx.cs" Inherits="VMS_1.DemandIssue" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-
     <div class="container">
         <div>
             <h2 class="mt-4">Demand Status</h2>
@@ -34,9 +33,12 @@
                         </asp:TemplateField>
                         <asp:BoundField DataField="Qty" HeaderText="Requested Qty" />
                         <asp:BoundField DataField="IssuedQty" HeaderText="Issued Qty" />
+                        <asp:BoundField DataField="ReceiptQty" HeaderText="Received Qty" />
                         <asp:BoundField DataField="ItemDeno" HeaderText="Denomination" />
                         <asp:BoundField DataField="DemandDate" HeaderText="Demand Date" />
                         <asp:BoundField DataField="SupplyDate" HeaderText="Supply Date" />
+                        <asp:CommandField ShowDeleteButton="true" />
+                        <asp:CommandField ShowEditButton="true" />
                     </columns>
                 </asp:GridView>
             </div>

@@ -1,7 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="CreateDemand.aspx.cs" Inherits="VMS_1.CreateDemand" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-
     <div class="container">
         <h2 class="">Create Demand</h2>
         <form id="limeFreshForm" runat="server">
@@ -13,6 +12,7 @@
                             <th class="heading">Item</th>
                             <th class="heading">Pattern Number</th>
                             <th class="heading">Qty</th>
+                            <th class="heading">Current Stock</th>
                             <th class="heading">Denom</th>
                             <th class="heading">Action</th>
                         </tr>
@@ -24,11 +24,14 @@
                                     <option value="">Select</option>
                                 </select>
                             </td>
-                            <td style="width: 10%;">
-                                <input type="text" name="itemcode" id="itemcode" class="form-control" required />
-                            </td>
+                            <td style="width: 30%;">
+                                <input type="text" name="itemcode" id="itemcode" class="form-control" readonly required />
+                            </td>                            
                             <td style="width: 12%;">
                                 <input type="text" name="qty" id="qty" class="form-control" />
+                            </td>
+                             <td style="width: 30%;">
+                                <input type="text" name="yearmarkstock" id="yearmarkstock" class="form-control" readonly required />
                             </td>
                             <td>
                                 <input type="text" class="form-control" id="denoms" name="denoms" readonly />
@@ -71,11 +74,7 @@
             </div>
         </form>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
+        <script type="text/javascript">
         $(document).ready(function () {
             fetchItems('item');
         });
@@ -126,10 +125,13 @@
                     </select>
                 </td>
                 <td style="width:10%;">
-                    <input type="text" name="itemcode" id="itemcode_${rowSequence}" class="form-control" />
+                    <input type="text" name="itemcode" id="itemcode_${rowSequence}" readonly class="form-control" />
                 </td>
                  <td style="width:12%;">
                      <input type="text" name="qty" id="qty_${rowSequence}" class="form-control" />
+                 </td>
+                <td style="width:12%;">
+                     <input type="text" name="yearmarkstock" id="yearmarkstock_${rowSequence}" readonly class="form-control" />
                  </td>
                 <td>
                      <input type="text" class="form-control" id="denoms_${rowSequence}" name="denoms" readonly />
@@ -234,12 +236,17 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.d) {
+                        var splitData = data.d.split("$");
                         if (rowSequence >= 1) {
                             var denomsDropdown = document.getElementById("itemcode_" + part1);
-                            denomsDropdown.value = data.d;
+                            var ystock = document.getElementById("yearmarkstock_" + part1);
+                            denomsDropdown.value = splitData[0];
+                            ystock.value = splitData[1];
                         } else {
                             var denomsDropdown = document.getElementById("itemcode");
-                            denomsDropdown.value = data.d;
+                            var ystock = document.getElementById("yearmarkstock");
+                            denomsDropdown.value = splitData[0];
+                            ystock.value = splitData[1];
                         }
                     }
                 })

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="CurrentStockList.aspx.cs" Inherits="VMS_1.CurrentStockList" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="CurrentStockList.aspx.cs" Inherits="VMS_1.CurrentStockList" EnableEventValidation="false" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <script type="text/javascript">
@@ -57,17 +57,31 @@
                                 </div>
                                 <div class="row row-abglign col-md-12">
                                     <div class="col-md-4">
-                                        
                                     </div>
                                     <div class="col-md-4">
-                                        <asp:Button ID="btnPrintCurrent" CssClass="btn btn-warning" runat="server"  Text="Print" OnClick="PrintGridView" CommandArgument="All" />
+                                        <asp:Button ID="btnPrintCurrent" CssClass="btn btn-warning" runat="server" Text="Print" OnClick="PrintGridView" CommandArgument="All" />
+                                        <asp:Button ID="btnSave" CssClass="btn btn-success" runat="server" Text="Update" OnClick="btnSave_Click" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <asp:Label ID="lblmsg" runat="server" Text="" Font-Bold="true"></asp:Label>
+                                    </div>
+                                </div>
+                                <div class="row row-abglign col-md-12">
+                                    <div class="col-md-4" style="text-align: right;">
+                                    </div>
+                                    <div class="col-md-4">
                                         <asp:GridView ID="gvStock" runat="server" CssClass="table table-bordered table-striped"
                                             AutoGenerateColumns="False" PageSize="30" Width="100%">
                                             <Columns>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
                                                 <asp:BoundField DataField="ItemName" HeaderText="ItemName" />
-                                                <asp:BoundField DataField="Qty" HeaderText="Qty" />
                                                 <asp:BoundField DataField="Denos" HeaderText="Denos" />
+                                                <asp:BoundField DataField="Qty" HeaderText="Qty" />
+                                                <asp:TemplateField HeaderText="Year Mark Stock">
+                                                    <ItemTemplate>
+                                                        <asp:TextBox ID="txtyearStock" runat="server" Text='<%# Eval("YearMarkStock") %>'></asp:TextBox>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
                                             </Columns>
                                         </asp:GridView>
                                     </div>
